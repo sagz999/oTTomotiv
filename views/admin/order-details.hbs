@@ -1,0 +1,276 @@
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-6">
+
+                                <h5 style="font-weight: bold;">SUMMARY</h5>
+
+                                <p style="font-weight: bolder;">Order ID: <span
+                                        style="font-weight: lighter;">{{order._id}}</span></p>
+                                <p style="font-weight: bolder;">Order Date: <span
+                                        style="font-weight: lighter;">{{order.Date}}</span></p>
+                                <p style="font-weight: bolder;">Total Amount (₹): <span
+                                        style="font-weight: lighter;">{{order.Total_Amount}}</span></p>
+                                <p style="font-weight: bolder;">Payment method: <span
+                                        style="font-weight: lighter;">{{order.Pay_Method}}</span></p>
+                                <p style="font-weight: bolder;">Coupon code: <span
+                                        style="font-weight: lighter;">{{order.Coupon_Code}}</span></p>
+                            </div>
+
+                            <div class="col-6">
+
+                                <h5 style="font-weight: bold;">SHIPPING DETAILS</h5>
+
+                                <p style="font-weight: bolder;">{{order.Name}}</p>
+                                <p class='mb-0'>{{order.Address.Company_Name}}</p>
+                                <p class='mb-0'>{{order.Address.Street_Address}}, {{order.Address.Extra_Details}}</p>
+                                <p class='mb-0'>{{order.Address.Town_City}}, {{order.Address.Country_State}}</p>
+                                <p style="font-weight: bolder;">PIN: <span
+                                        style="font-weight: lighter;">{{order.Address.Post_Code}}</span></p>
+                                <p class='mb-0' style="font-weight: bolder;">Ph: <span
+                                        style="font-weight: lighter;">{{order.Phone.Phone}},
+                                        {{order.Phone.Alt_Phone}}</span></p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card text-center">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title " style="font-weight: bold;">Ordered Products</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                            <th style="font-weight: bold;">
+                                                Sl.No
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Product Image
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Product Name
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Price (₹)
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Quantity
+                                            </th>
+
+                                            <th style="font-weight: bold;">
+                                                Status
+                                            </th>
+
+
+                                        </thead>
+                                        <tbody>
+                                            {{#each prodsInOrder}}
+                                            <tr>
+                                                <td>
+                                                    {{add @index '1'}}
+                                                </td>
+                                                <td>
+                                                    <img style="width:50px;height:50px"
+                                                        src="/product-images/{{this.product._id}}_1.jpg" alt="">
+                                                </td>
+                                                <td>
+
+                                                    {{this.product.Product_Name}}
+                                                </td>
+                                                <td>
+                                                    {{this.product.Price}}
+                                                </td>
+                                                <td>
+                                                    {{this.quantity}}
+                                                </td>
+
+                                                <td>
+
+
+                                                    {{!-- <div class="dropdown">
+                                                        <button class="btn btn-sm btn-secondary dropdown-toggle"
+                                                            type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            {{this.status}}
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <a class="dropdown-item"
+                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Cancelled">Cancelled</a>
+                                                            <a class="dropdown-item"
+                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Delivered">Delivered</a>
+                                                            <a class="dropdown-item"
+                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Pending">Pending</a>
+                                                            <a class="dropdown-item"
+                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Placed">Placed</a>
+                                                            <a class="dropdown-item"
+                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Returned">Returned</a>
+                                                            <a class="dropdown-item"
+                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Shipped">Shipped</a>
+                                                        </div>
+                                                    </div> --}}
+
+                                                    {{#eq this.status 'Cancelled'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="{{this.product._id}}"
+                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+
+                                                        <option selected value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Placed">Placed</option>
+                                                        <option value="Returned">Returned</option>
+                                                        <option value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq this.status 'Delivered'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="{{this.product._id}}"
+                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option selected value="Delivered">Delivered</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Placed">Placed</option>
+                                                        <option value="Returned">Returned</option>
+                                                        <option value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq this.status 'Pending'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="{{this.product._id}}"
+                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option selected value="Pending">Pending</option>
+                                                        <option value="Placed">Placed</option>
+                                                        <option value="Returned">Returned</option>
+                                                        <option value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq this.status 'Placed'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="{{this.product._id}}"
+                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option selected value="Placed">Placed</option>
+                                                        <option value="Returned">Returned</option>
+                                                        <option value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq this.status 'Returned'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="{{this.product._id}}"
+                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Placed">Placed</option>
+                                                        <option selected value="Returned">Returned</option>
+                                                        <option value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq this.status 'Shipped'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="{{this.product._id}}"
+                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Placed">Placed</option>
+                                                        <option value="Returned">Returned</option>
+                                                        <option selected value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                </td>
+
+                                            </tr>
+                                            {{/each}}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{>admin-footer}}
+        <script>
+            const x = new Date().getFullYear();
+            let date = document.getElementById('date');
+            date.innerHTML = '&copy; ' + x + date.innerHTML;
+        </script>
+    </div>
+</div>
+
+
+<script>
+
+    function orderStatus(orderId, prodId) {
+
+
+
+        let statusUpdate = document.getElementById(prodId).value
+        console.log('The status is', statusUpdate)
+        $.ajax({
+
+            url: '/admin/Change-orderStat?orderId=' + orderId + '&prodId=' + prodId,
+
+            data: {
+                status: statusUpdate
+            },
+
+            method: 'post'
+
+        })
+
+    }
+
+</script>

@@ -1,0 +1,90 @@
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <a role="button" href="/admin/active-users" class="btn btn-success btn-sm"><span class="material-icons">settings_accessibility</span>Active users</a>
+                        <a role="button" href="/admin/blocked-users" class="btn btn-danger btn-sm"><span class="material-icons">person_off</span>Blocked users</a>
+                        <div class="card text-center">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title " style="font-weight: bold;">All Users</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                            <th style="font-weight: bold;">
+                                                Sl.No
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Name
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Email
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Status
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                View
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Action
+                                            </th>
+
+                                        </thead>
+                                        <tbody>
+                                            {{#each userdata}}
+                                            <tr>
+                                                <td>
+                                                    {{add @index '1'}}
+                                                </td>
+                                                <td>
+                                                    {{this.Username}}
+                                                </td>
+                                                <td>
+
+                                                    {{this.Email}}
+                                                </td>
+                                                <td>
+                                                    {{#if this.Status}}
+                                                    Active
+                                                    {{else}}
+                                                    Blocked
+                                                    {{/if}}
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-sm" href="">Orders</a>
+                                                </td>
+                                                <td>
+                                                    {{#if this.Status}}
+                                                     <a class="btn btn-danger btn-sm" href="/admin/change-userstats?id={{this._id}}&origin=main">Block</a>
+                                                    {{else}}
+                                                     <a class="btn btn-success btn-sm" href="/admin/change-userstats?id={{this._id}}&origin=main">Un-Block</a>
+                                                    {{/if}}
+                                                   
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{>admin-footer}}
+        <script>
+            const x = new Date().getFullYear();
+            let date = document.getElementById('date');
+            date.innerHTML = '&copy; ' + x + date.innerHTML;
+        </script>
+    </div>
+</div>

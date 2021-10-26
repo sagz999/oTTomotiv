@@ -1,0 +1,160 @@
+{{>userheader}}
+
+<section id="page-title" class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <h3>Product Details</h3>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<section id="shopgrid" class="shop shop-single">
+    <div class="container shop-content">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-5">
+                <div class="prodcut-images">
+                    <div class="product-img-slider">
+                        <img src="/product-images/{{product._id}}_1.jpg" alt="product image" class="zoom-image">
+                        <img src="/product-images/{{product._id}}_2.jpg" alt="product image" class="zoom-image">
+                        <img src="/product-images/{{product._id}}_3.jpg" alt="product image" class="zoom-image">
+                        <img src="/product-images/{{product._id}}_4.jpg" alt="product image" class="zoom-image">
+                        
+
+                    </div>
+                    <div class="product-img-nav">
+                        <img src="/product-images/{{product._id}}_1.jpg" alt="product image" style="height: 50px;">
+                        <img src="/product-images/{{product._id}}_2.jpg" alt="product image" style="height: 50px;" >
+                        <img src="/product-images/{{product._id}}_3.jpg" alt="product image" style="height: 50px;" >
+                        <img src="/product-images/{{product._id}}_4.jpg" alt="product image" style="height: 50px;" >
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-7">
+                <div class="product-title text-center-xs">
+                    <h3>{{product.Product_Name}}</h3>
+                </div>
+
+                <div class="product-meta mb-30">
+
+                    <div class="product-price pull-left pull-none-xs">
+                        <p>₹{{product.Price}}</p>
+                    </div>
+
+                </div>
+
+                <div class="product-desc text-center-xs">
+                    <p class="mb-0">{{product.Description}}</p>
+                </div>
+
+                <hr class="mt-30 mb-30">
+                <div class="product-details text-center-xs">
+                    <h5>Other Details :</h5>
+                    <ul class="list-unstyled">
+                        <li>Brand : <span>{{product.Product_Brand}}</span></li>
+                        <li>Category : <span>{{product.Sub_Category}}</span></li>
+                        <li>Compatible Car model : <span>{{product.Car_Model}}</span></li>
+                        <li>Stock left : <span>123</span></li>
+                    </ul>
+                </div>
+
+                <hr class="mt-30 mb-30">
+                <div class="product-action">
+                    <div class="product-quantity pull-left pull-none-xs">
+                        <span class="qua">Quantity : </span>
+                        <span>
+                            <a href="#"><i class="fa fa-minus"></i></a>
+                            <input type="text" value="2" id="pro-qunt" readonly>
+                            <a href="#"><i class="fa fa-plus"></i></a>
+                        </span>
+                    </div>
+                    <div class="product-cta text-right text-center-xs">
+                        <a class="btn btn-primary" href="#">add to cart</a>
+                        <a class="btn btn-primary bordered" href="#">wishlist</a>
+                        <a class="btn btn-primary" href="#">Buy Now</a>
+                    </div>
+                </div>
+
+                <hr class="mt-30 mb-30">
+                <div class="product-share  text-center-xs">
+                    <h5 class="share-title">share product: </h5>
+                    <a class="share-facebook" href="#"><i class="fa fa-facebook"></i></a>
+                    <a class="share-twitter" href="#"><i class="fa fa-twitter"></i></a>
+                    <a class="share-google-plus" href="#"><i class="fa fa-google-plus"></i></a>
+                    <a class="share-pinterest" href="#"><i class="fa fa-pinterest"></i></a>
+                    <a class="share-dribbble" href="#"><i class="fa fa-dribbble"></i></a>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 pager">
+                <div class="page-prev">
+                    <a href="#"><i class="fa fa-angle-left"></i></a>
+                </div>
+                <div class="page-next">
+                    <a href="#"><i class="fa fa-angle-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="widget-related-product">
+                    <div class="widget-title">
+                        <h4>Related Products</h4>
+                    </div>
+                    <div class="widget-content">
+                        <div class="row">
+                            {{#each relProduct}}
+                            <div class="col-xs-12 col-sm-6 col-md-3 product">
+                                <div class="product-img">
+                                    <img src="/product-images/{{this._id}}_1.jpg" alt="Product">
+                                    <div class="product-hover">
+                                        <div class="product-action">
+                                            <a class="btn btn-primary" href="#">Add To Cart</a>
+                                            <a class="btn btn-primary" href="/view-product?id={{this._id}}">Item Details</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="product-bio">
+                                    <div class="prodcut-cat">
+                                        <a href="#">{{this.Car_Model}}</a>
+                                    </div>
+
+                                    <div class="prodcut-title">
+                                        <h3>
+                                            <a href="#">{{this.Product_Name}}</a>
+                                        </h3>
+                                    </div>
+
+                                    <div class="product-price">
+                                        <span class="symbole">₹</span><span>{{this.Price}}</span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+{{>userfooter}}

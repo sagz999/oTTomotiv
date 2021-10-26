@@ -1,0 +1,167 @@
+<header id="navbar-spy" class="header header-1">
+
+  <nav id="primary-menu" class="navbar navbar-fixed-top">
+    <div class="container">
+
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+          data-target="#header-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="logo" href="/">
+          <img src="/images/logo/otto.png" alt="Autoshop">
+        </a>
+      </div>
+
+      <div class="collapse navbar-collapse pull-right" id="header-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-left">
+          <li class="active">
+            <a href="/">Home</a>
+          </li>
+
+          <li class="has-dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle">shop</a>
+            <ul class="dropdown-menu">
+
+              <li>
+                <a href="#">Shop by car </a>
+              </li>
+
+              <li>
+                <a href="#">Shop by category</a>
+              </li>
+
+              <li>
+                <a href="#">All products</a>
+              </li>
+
+            </ul>
+          </li>
+
+          <li>
+            <a href="about.html">about</a>
+          </li>
+
+          <li>
+            <a href="about.html">Contact</a>
+          </li>
+
+        </ul>
+
+        <div class="module module-search pull-left">
+          <div class="search-icon">
+            <i class="fa fa-search"></i>
+            <span class="title">search</span>
+          </div>
+          <div class="search-box">
+            <form class="search-form">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Type Your Search Words">
+                <span class="input-group-btn">
+                  <button class="btn" type="button"><i class="fa fa-search"></i></button>
+                </span>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+
+        <div class="module module-cart pull-left">
+
+          <div class="cart-icon">
+
+            <a href="/cart" style="color: #fff;"><i class="fa fa-shopping-cart"></i></a>
+            <span class="title">shop cart</span>
+            {{#if user}}
+            <span class="cart-label" id="cart-count">{{cartCount}}</span>
+            {{/if}}
+            
+          </div>
+  
+        </div>
+
+        {{!-- <div class="module module-wishlist pull-left">
+          <div class="wishlist-icon">
+            <i class="fa fa-heart"></i>
+            <span class="title">Wishlist</span>
+          </div>
+          <div class="search-box">
+
+          </div>
+        </div> --}}
+
+        <ul class="nav navbar-nav navbar-left">
+
+          {{#if user}}
+          
+          <li class="has-dropdown">
+
+            <a data-toggle="dropdown" class="dropdown-toggle">
+
+              <div class="module module-user pull-left">
+                <div class="user-icon">
+                  <i class="fa fa-user"></i>
+                  <span class="title">{{user.Username}}</span>
+                </div>
+              </div>
+
+            </a>
+            <ul class="dropdown-menu">
+
+              <li>
+                <a href="/profile">Profile</a>
+              </li>
+
+              <li>
+                <a href="/view-orders">Orders</a>
+              </li>
+
+              <li>
+                <a href="/logout">Logout</a>
+              </li>
+
+            </ul>
+          </li>
+
+          {{else}}
+
+          <li class="has-dropdown">
+
+            <a data-toggle="dropdown" class="dropdown-toggle">
+
+              <div class="module module-user pull-left">
+                <div class="user-icon">
+                  <i class="fa fa-user"></i>
+                  <span class="title">Account</span>
+                </div>
+              </div>
+
+            </a>
+            <ul class="dropdown-menu">
+
+              <li>
+                <a href="/login">Sign-in</a>
+              </li>
+
+              <li>
+                <a href="/signup">Register</a>
+              </li>
+
+            </ul>
+          </li>
+
+          {{/if}}
+
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </nav>
+</header>

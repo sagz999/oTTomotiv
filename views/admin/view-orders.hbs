@@ -1,0 +1,95 @@
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card text-center">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title " style="font-weight: bold;">All Orders</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                            <th style="font-weight: bold;">
+                                                Sl.No
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Date
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                User Id
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Pay Method
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Pay Stats
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Amount (₹)
+                                            </th>
+
+                                            <th style="font-weight: bold;">
+                                                Destination
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Action
+                                            </th>
+
+                                        </thead>
+                                        <tbody>
+                                            {{#each orders}}
+                                            <tr>
+                                                <td>
+                                                    {{add @index '1'}}
+                                                </td>
+                                                <td>
+
+                                                    {{this.Date}}
+                                                </td>
+                                                <td>
+                                                    {{this.UserId}}
+                                                </td>
+
+                                                <td>
+                                                    {{this.Pay_Method}}
+                                                </td>
+                                                <td>
+                                                    {{this.Payment_Stats}}
+                                                </td>
+                                                <td>
+                                                    {{this.Total_Amount}}
+                                                </td>
+
+                                                <td>
+                                                    {{this.Address.Town_City}}
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-danger btn-sm"
+                                                        href="/admin/order-details?id={{this._id}}">View order</a>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{>admin-footer}}
+        <script>
+            const x = new Date().getFullYear();
+            let date = document.getElementById('date');
+            date.innerHTML = '&copy; ' + x + date.innerHTML;
+        </script>
+    </div>
+</div>

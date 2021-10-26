@@ -1,0 +1,77 @@
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="card text-center">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title " style="font-weight: bold;">Active Users</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                            <th style="font-weight: bold;">
+                                                Sl.No
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Name
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Email
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                View
+                                            </th>
+                                            <th style="font-weight: bold;">
+                                                Action
+                                            </th>
+
+                                        </thead>
+                                        
+                                        <tbody>
+                                            {{#each userdata}}
+                                            <tr>
+                                                <td>
+                                                    {{add @index '1'}}
+                                                </td>
+                                                <td>
+                                                    {{this.Username}}
+                                                </td>
+                                                <td>
+
+                                                    {{this.Email}}
+                                                </td>
+
+                                                <td>
+                                                    <a class="btn btn-primary btn-sm" href="">Orders</a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-danger btn-sm"
+                                                        href="/admin/change-userstats?id={{this._id}}&origin=active">Block</a>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{>admin-footer}}
+        <script>
+            const x = new Date().getFullYear();
+            let date = document.getElementById('date');
+            date.innerHTML = '&copy; ' + x + date.innerHTML;
+        </script>
+    </div>
+</div>

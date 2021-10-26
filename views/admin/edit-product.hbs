@@ -1,0 +1,801 @@
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title text-center" style="font-weight: bold">Edit Product</h4>
+                            {{!-- <p class="card-category">Please add your product here</p> --}}
+                        </div>
+                        <div class="card-body text-left">
+
+                            <form method="POST" action="/admin/edit-product/{{product._id}}"
+                                enctype="multipart/form-data">
+
+                                <div class="form-row my-1">
+
+                                    <div class="col-md-4 my-1">
+                                        <label style="font-weight: bold;">Product Name</label>
+                                        <input name="Product_Name" type="text" class="form-control"
+                                            value="{{product.Product_Name}}">
+                                    </div>
+
+                                    <div class="col-md-2 my-1">
+                                        <label style="font-weight: bold;">Date / Time</label>
+                                        <input name="Date" type="datetime-local" class="form-control"
+                                            value="{{product.Date}}">
+
+                                    </div>
+
+                                    <div class="col-md-3 my-1">
+                                        <label style="font-weight:bold;">Main Category</label>
+                                        <select name="Main_Category" class="custom-select mr-sm-2">
+                                            <option selected>{{product.Main_Category}}</option>
+                                            <option>Dummy</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 my-1">
+                                        <label style="font-weight:bold;">Sub Category</label>
+                                        <select name="Sub_Category" class="custom-select mr-sm-2">
+                                            <option selected>{{product.Sub_Category}}</option>
+                                            <option>Dummy</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-row my-1">
+                                    <div class="col-md-12"></div>
+                                </div>
+
+                                <div class="form-row my-1">
+
+                                    <div class="col-md-3 my-1">
+                                        <label style="font-weight:bold;">Product Brand</label>
+                                        <select name="Product_Brand" class="custom-select mr-sm-2">
+                                            <option selected>{{product.Product_Brand}}</option>
+                                            <option>Dummy</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 my-1">
+                                        <label style="font-weight:bold;">Car Brand</label>
+                                        <select name="Car_Brand" class="custom-select mr-sm-2">
+                                            <option selected>{{product.Car_Brand}}</option>
+                                            <option>Dummy</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 my-1">
+                                        <label style="font-weight:bold;">Car Model</label>
+                                        <select name="Car_Model" class="custom-select mr-sm-2">
+                                            <option selected>{{product.Car_Model}}</option>
+                                            <option>Dummy</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 my-1">
+                                        <label style="font-weight:bold;">Price (₹)</label>
+                                        <input name="Price" type="number" class="form-control"
+                                            value="{{product.Price}}">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-row my-1">
+                                    <div class="col-md-12"></div>
+                                </div>
+
+                                <div class="form-row my-1">
+
+                                    <div class="col-md-5 my-1">
+                                        <label style="font-weight:bold;">Description</label>
+                                        <textarea name="Description" class="form-control"
+                                            rows="9">{{product.Description}}</textarea>
+                                    </div>
+
+                                    <div class="col-md-1 my-1"></div>
+
+                                    <div class="col-md-6 my-1">
+                                        <label style="font-weight:bold;">Add Images</label>
+                                        <div class="row">
+
+                                            <div class="col-md-6 my-1">
+                                                <div class="row">
+
+                                                    <img style="width:50px;height:auto" id="imgview1"
+                                                        src="/product-images/{{product._id}}_1.jpg" alt="">
+                                                </div>
+
+                                                <div class="row">
+                                                    
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file1">Add Image</label>
+                                                        <div id="errMsg1"></div>
+
+                                                    <input style="display:none" name="Img1" type="file"
+                                                        class="my-2 form-control-file" id="file1"
+                                                        onchange="return fileValidation1()">
+
+                                                </div>
+
+
+
+                                            </div>
+
+                                            <div class="col-md-6 my-1">
+                                                <div class="row">
+
+                                                    <img style="width:50px;height:auto" id="imgview2"
+                                                        src="/product-images/{{product._id}}_2.jpg" alt="">
+                                                </div>
+
+                                                <div class="row">
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file2">Add Image</label>
+                                                        <div id="errMsg2"></div>
+                                                    <input style="display:none" name="Img2" type="file"
+                                                        class="my-2 form-control-file" id="file2"
+                                                        onchange="return fileValidation2()">
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-md-6 my-1">
+                                                <div class="row">
+
+                                                    <img style="width:50px;height:auto" id="imgview3"
+                                                        src="/product-images/{{product._id}}_3.jpg" alt="">
+                                                </div>
+
+                                                <div class="row">
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file3">Add Image</label>
+                                                        <div id="errMsg3"></div>
+                                                    <input style="display:none" name="Img3" type="file"
+                                                        class="my-2 form-control-file" id="file3"
+                                                        onchange="return fileValidation3()">
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-md-6 my-1">
+
+                                                <div class="row">
+
+                                                    <img style="width:50px;height:auto" id="imgview4"
+                                                        src="/product-images/{{product._id}}_4.jpg" alt="">
+                                                </div>
+
+                                                <div class="row">
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file4">Add Image</label>
+                                                        <div id="errMsg4"></div>
+                                                    <input style="display:none" name="Img4" type="file"
+                                                        class="my-2 form-control-file" id="file4"
+                                                        onchange="return fileValidation4()">
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Modal for cropping-->
+
+                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+
+                                                <h4 class="modal-title" style="font-weight: bold;"
+                                                    id="exampleModalLongTitle">Crop Image
+                                                </h4>
+
+                                                <button onclick="buttonDisplay()" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div id="image-box" style="display:none;"></div>
+                                            </div>
+
+                                            <div class="modal-footer">
+
+                                                <button onclick="buttonDisplay()" type="button"
+                                                    class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                                <button id="crop-btn" data-dismiss="modal" type="button"
+                                                    class="btn btn-primary">Crop</button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-row my-1">
+
+                                    <div class="col-12 my-1 text-center">
+
+                                        <center>
+
+                                            <button type="submit" id="confirm-btn" class="btn btn-primary">Update Product</button>
+
+                                        </center>
+
+                                    </div>
+
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-1"></div>
+
+            </div>
+
+        </div>
+        {{>admin-footer}}
+        <script>
+            const x = new Date().getFullYear();
+            let date = document.getElementById('date');
+            date.innerHTML = '&copy; ' + x + date.innerHTML;
+        </script>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+
+<script>
+
+    function buttonDisplay() {
+        document.getElementById('confirm-btn').style.display = 'block';
+    }
+
+
+    function fileValidation1() {
+
+        const imagebox = document.getElementById('image-box')
+        const crop_btn = document.getElementById('crop-btn')
+        var fileInput = document.getElementById('file1');
+
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            document.getElementById('exampleModalCenter').style.display='none'
+            document.getElementById('errMsg1').innerHTML='<p style="color:red;">Unsupported file type</p>'
+            fileInput.value = '';
+            return false;
+
+        } else {
+            
+            //Image preview
+            document.getElementById('errMsg1').innerHTML=''
+            const img_data = fileInput.files[0]
+            const url = URL.createObjectURL(img_data)
+            imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
+            const image = document.getElementById('image')
+            document.getElementById('image-box').style.display = 'block'
+            document.getElementById('crop-btn').style.display = 'block'
+            document.getElementById('confirm-btn').style.display = 'none'
+
+            const cropper = new Cropper(image, {
+
+                autoCropArea: 1,
+                viewMode: 1,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                aspectRatio: 157 / 155,
+                //preview: '.preview',
+                minCropBoxWidth: 180,
+                minCropBoxHeight: 240,
+
+            })
+
+            crop_btn.addEventListener('click', () => {
+
+                cropper.getCroppedCanvas().toBlob((blob) => {
+
+                    let fileInputElement = document.getElementById('file1');
+                    let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+                    let container = new DataTransfer();
+
+                    container.items.add(file);
+                    const img = container.files[0]
+                    var url = URL.createObjectURL(img)
+                    fileInputElement.files = container.files;
+                    document.getElementById('imgview1').src = url
+                    document.getElementById('image-box').style.display = 'none'
+                    document.getElementById('crop-btn').style.display = 'none'
+                    document.getElementById('confirm-btn').style.display = 'block'
+
+                });
+
+            });
+
+        }
+
+    }
+
+
+    function fileValidation2() {
+
+        const imagebox = document.getElementById('image-box')
+        const crop_btn = document.getElementById('crop-btn')
+        var fileInput = document.getElementById('file2');
+
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+
+            document.getElementById('errMsg2').innerHTML='<p style="color:red;">Unsupported file type</p>'
+            fileInput.value = '';
+            return false;
+
+        } else {
+
+            //Image preview
+             document.getElementById('errMsg2').innerHTML=''
+            const img_data = fileInput.files[0]
+            const url = URL.createObjectURL(img_data)
+            imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
+            const image = document.getElementById('image')
+            document.getElementById('image-box').style.display = 'block'
+            document.getElementById('crop-btn').style.display = 'block'
+            document.getElementById('confirm-btn').style.display = 'none'
+
+            const cropper = new Cropper(image, {
+
+                autoCropArea: 1,
+                viewMode: 1,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                aspectRatio: 157 / 155,
+                //preview: '.preview',
+                minCropBoxWidth: 180,
+                minCropBoxHeight: 240,
+
+            })
+
+            crop_btn.addEventListener('click', () => {
+
+                cropper.getCroppedCanvas().toBlob((blob) => {
+
+                    let fileInputElement = document.getElementById('file2');
+                    let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+                    let container = new DataTransfer();
+
+                    container.items.add(file);
+                    const img = container.files[0]
+                    var url = URL.createObjectURL(img)
+                    fileInputElement.files = container.files;
+                    document.getElementById('imgview2').src = url
+                    document.getElementById('image-box').style.display = 'none'
+                    document.getElementById('crop-btn').style.display = 'none'
+                    document.getElementById('confirm-btn').style.display = 'block'
+
+                });
+
+            });
+
+        }
+
+    }
+
+    function fileValidation3() {
+
+        const imagebox = document.getElementById('image-box')
+        const crop_btn = document.getElementById('crop-btn')
+        var fileInput = document.getElementById('file3');
+
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+
+            document.getElementById('errMsg3').innerHTML='<p style="color:red;">Unsupported file type</p>'
+            fileInput.value = '';
+            return false;
+
+        } else {
+
+            //Image preview
+             document.getElementById('errMsg3').innerHTML=''
+            const img_data = fileInput.files[0]
+            const url = URL.createObjectURL(img_data)
+            imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
+            const image = document.getElementById('image')
+            document.getElementById('image-box').style.display = 'block'
+            document.getElementById('crop-btn').style.display = 'block'
+            document.getElementById('confirm-btn').style.display = 'none'
+
+            const cropper = new Cropper(image, {
+
+                autoCropArea: 1,
+                viewMode: 1,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                aspectRatio: 157 / 155,
+                //preview: '.preview',
+                minCropBoxWidth: 180,
+                minCropBoxHeight: 240,
+
+            })
+
+            crop_btn.addEventListener('click', () => {
+
+                cropper.getCroppedCanvas().toBlob((blob) => {
+
+                    let fileInputElement = document.getElementById('file3');
+                    let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+                    let container = new DataTransfer();
+
+                    container.items.add(file);
+                    const img = container.files[0]
+                    var url = URL.createObjectURL(img)
+                    fileInputElement.files = container.files;
+                    document.getElementById('imgview3').src = url
+                    document.getElementById('image-box').style.display = 'none'
+                    document.getElementById('crop-btn').style.display = 'none'
+                    document.getElementById('confirm-btn').style.display = 'block'
+
+                });
+
+            });
+
+        }
+
+    }
+
+    function fileValidation4() {
+
+        const imagebox = document.getElementById('image-box')
+        const crop_btn = document.getElementById('crop-btn')
+        var fileInput = document.getElementById('file4');
+
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+
+            document.getElementById('errMsg4').innerHTML='<p style="color:red;">Unsupported file type</p>'
+            fileInput.value = '';
+            return false;
+
+        } else {
+
+            //Image preview
+             document.getElementById('errMsg4').innerHTML=''
+            const img_data = fileInput.files[0]
+            const url = URL.createObjectURL(img_data)
+            imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
+            const image = document.getElementById('image')
+            document.getElementById('image-box').style.display = 'block'
+            document.getElementById('crop-btn').style.display = 'block'
+            document.getElementById('confirm-btn').style.display = 'none'
+
+            const cropper = new Cropper(image, {
+
+                autoCropArea: 1,
+                viewMode: 1,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                aspectRatio: 157 / 155,
+                //preview: '.preview',
+                minCropBoxWidth: 180,
+                minCropBoxHeight: 240,
+
+            })
+
+            crop_btn.addEventListener('click', () => {
+
+                cropper.getCroppedCanvas().toBlob((blob) => {
+
+                    let fileInputElement = document.getElementById('file4');
+                    let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+                    let container = new DataTransfer();
+
+                    container.items.add(file);
+                    const img = container.files[0]
+                    var url = URL.createObjectURL(img)
+                    fileInputElement.files = container.files;
+                    document.getElementById('imgview4').src = url
+                    document.getElementById('image-box').style.display = 'none'
+                    document.getElementById('crop-btn').style.display = 'none'
+                    document.getElementById('confirm-btn').style.display = 'block'
+
+                });
+
+            });
+
+        }
+
+    }
+
+</script>
+
+{{!--
+<script>
+
+    //File upload validation
+    function fileValidation1() {
+        var fileInput =
+            document.getElementById('file1');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else {
+
+            // Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview1').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    }
+
+    function fileValidation2() {
+        var fileInput =
+            document.getElementById('file2');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else {
+
+            // Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview2').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    }
+
+    function fileValidation3() {
+        var fileInput =
+            document.getElementById('file3');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else {
+
+            // Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview3').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    }
+
+    function fileValidation4() {
+        var fileInput =
+            document.getElementById('file4');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else {
+
+            // Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview4').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    }
+
+
+    //input field validation
+    $(document).ready(function () {
+        $('#addProd').validate({
+            rules: {
+
+                Product_Name: {
+                    required: true,
+                    minlenght: 3
+                },
+
+                Main_Category: {
+
+                },
+
+                Sub_Category: {
+
+                },
+
+                Product_Brand: {
+
+                },
+
+                Car_Brand: {
+
+                },
+
+                Car_Model: {
+
+                },
+
+                Price: {
+
+                },
+
+                Description: {
+
+                },
+
+                Img1: {
+
+                },
+
+                Img2: {
+
+                },
+
+                Img3: {
+
+                },
+
+                Img4: {
+
+                }
+
+
+            },
+            messages: {
+
+                Product_Name: {
+
+                },
+
+                Main_Category: {
+
+                },
+
+                Sub_Category: {
+
+                },
+
+                Product_Brand: {
+
+                },
+
+                Car_Brand: {
+
+                },
+
+                Car_Model: {
+
+                },
+
+                Price: {
+
+                },
+
+                Description: {
+
+                },
+
+                Img1: {
+
+                },
+
+                Img2: {
+
+                },
+
+                Img3: {
+
+                },
+
+                Img4: {
+
+                }
+
+            }
+        })
+    })
+
+</script> --}}
+
+<style>
+    @media (min-width: 768px) and (max-width:1200px) {
+        .col-md-2 {
+            flex: 0 0 16.666667%;
+            max-width: 17.666667%;
+        }
+
+        ,
+        .col-md-10 {
+            flex: 0 0 83.333333%;
+            max-width: 83.333333%;
+        }
+    }
+</style>

@@ -1,0 +1,241 @@
+{{>userheader}}
+
+<section id="page-title" class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <h3>Profile</h3>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<section>
+    <div class="container rounded bg-white mt-5 mb-5">
+        <form action="/updateprofile" method="post" enctype="multipart/form-data">
+            <div class="row">
+
+
+
+
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+
+                                <h4 class="modal-title" style="font-weight: bold;" id="exampleModalLongTitle">Crop
+                                    Image</h4>
+
+                            </div>
+
+                            <div class="modal-body">
+                                <div id="image-box" style="width: 300px; height: 300px; display: none;"> </div>
+                            </div>
+
+                            <div class="modal-footer" style="display: flex; justify-content: right;">
+
+                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+
+                                <button id="crop-btn" data-dismiss="modal" type="button"
+                                    class="btn btn-sm btn-info">Crop</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+                {{!-- <div class="col-12">
+                    <div id="image-box" style="width: 300px; height: 300px; display: none;"> </div>
+
+
+                    <button style="display: none;" class="btn btn-primary mt-4" type="button" id="crop-btn"
+                        data-dismiss="modal">Crop</button>
+                </div> --}}
+
+                <div class="col-md-3 border-right">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                        <img class="rounded-circle mt-5" id="imgview1" width="150px"
+                            src="/user-images/{{userData._id}}_dp.jpg">
+                        <span class="font-weight-bold">{{userData.Username}}</span>
+                        <span class="text-black-50">{{userData.Email}}</span><span> </span>
+                    </div>
+                    <div id="errMess1"></div>
+                    <center>
+                        <label for="file1" class="btn btn-sm btn-primary" data-toggle="modal"
+                            data-target="#exampleModalCenter">Change photo</label>
+                        <input style="display:none" type="file" name="Dp" id="file1" class="form-control"
+                            onchange="return fileValidation1()" hidden>
+                    </center>
+
+                </div>
+                <div class="col-md-7 border-right">
+                    <div class="p-3 py-5">
+
+                        <div class="row mt-2">
+                            <div class="col-md-6"><label class="labels"></label><input type="text" name="name"
+                                    placeholder="enter name" class="form-control" value="{{userData.name}}"></div>
+                            <div class="col-md-6"><label class="labels">Surname</label><input type="text" name="surname"
+                                    placeholder="enter surname" class="form-control" value="{{userData.surname}}"></div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text"
+                                    name="number" placeholder="enter mobile number" class="form-control"
+                                    value="{{userData.number}}"></div>
+                            <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text"
+                                    name="address1" placeholder="enter address" class="form-control"
+                                    value="{{userData.address1}}"></div>
+                            <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text"
+                                    name="address2" class="form-control" placeholder="enter another address"
+                                    value="{{userData.address2}}"></div>
+                            <div class="col-md-12"><label class="labels">Postcode</label><input type="text"
+                                    name="pincode" class="form-control" placeholder="enter zip code"
+                                    value="{{userData.pincode}}"></div>
+                            <div class="col-md-12"><label class="labels">State</label><input type="text" name="state"
+                                    class="form-control" placeholder="enter state" value="{{userData.state}}"></div>
+                            <div class="col-md-12"><label class="labels">Area</label><input type="text" name="area"
+                                    class="form-control" placeholder="enter area" value="{{userData.area}}"></div>
+                            <div class="col-md-12"><label class="labels">Email ID</label><input type="text" name="email"
+                                    class="form-control" placeholder="enter email id" value="{{userData.email}}"></div>
+
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6"><label class="labels">Country</label><input type="text" name="country"
+                                    class="form-control" placeholder="country" value="{{userData.country}}"></div>
+
+                        </div>
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" id="confirm-btn"
+                                type="submit">Save Profile</button></div>
+                    </div>
+
+
+
+
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+    </div>
+    </div>
+</section>
+
+{{>userfooter}}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+
+<script>
+    function fileValidation1() {
+        const imagebox = document.getElementById('image-box')
+        const crop_btn = document.getElementById('crop-btn')
+        var fileInput = document.getElementById('file1');
+
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+            document.getElementById('errMess1').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
+            fileInput.value = '';
+            return false;
+        } else {
+            //Image preview
+            document.getElementById('errMess1').innerHTML = ''
+            const img_data = fileInput.files[0]
+            const url = URL.createObjectURL(img_data)
+            imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
+            const image = document.getElementById('image')
+            document.getElementById('image-box').style.display = 'block'
+            document.getElementById('crop-btn').style.display = 'block'
+            document.getElementById('confirm-btn').style.display = 'none'
+
+            const cropper = new Cropper(image, {
+                autoCropArea: 1,
+                viewMode: 1,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                aspectRatio: 16 / 19,
+                // preview: '.preview',
+                minCropBoxWidth: 180,
+                minCropBoxHeight: 240,
+            })
+            crop_btn.addEventListener('click', () => {
+                cropper.getCroppedCanvas().toBlob((blob) => {
+                    let fileInputElement = document.getElementById('file1');
+                    let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+                    let container = new DataTransfer();
+
+                    container.items.add(file);
+                    console.log(container.files[0])
+                    const img = container.files[0]
+                    var url = URL.createObjectURL(img)
+                    fileInputElement.files = container.files;
+                    document.getElementById('imgview1').src = url
+                    document.getElementById('image-box').style.display = 'none'
+                    document.getElementById('crop-btn').style.display = 'none'
+                    document.getElementById('confirm-btn').style.display = 'block'
+                });
+            });
+        }
+    }
+</script>
+<style>
+    body {
+        background: rgb(217, 221, 243)
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #BA68C8
+    }
+
+    .profile-button {
+        background: #345B63;
+        box-shadow: none;
+        border: none
+    }
+
+    .profile-button:hover {
+        background: #682773
+    }
+
+    .profile-button:focus {
+        background: #682773;
+        box-shadow: none
+    }
+
+    .profile-button:active {
+        background: #682773;
+        box-shadow: none
+    }
+
+    .back:hover {
+        color: #682773;
+        cursor: pointer
+    }
+
+    .labels {
+        font-size: 11px
+    }
+
+    .add-experience:hover {
+        background: #c3bac5;
+        color: #fff;
+        cursor: pointer;
+        border: solid 1px #c3bac5
+    }
+</style>

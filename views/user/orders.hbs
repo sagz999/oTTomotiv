@@ -1,0 +1,141 @@
+{{>userheader}}
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center pb-5 mb-3">
+            <div class="col-md-7 heading-section ftco-animate fadeInUp ftco-animated">
+                <h2 style="color: red;">Your Orders : </h2><hr>
+            </div>
+        </div>
+        <div class="row">
+            {{#each ProdsInOrder}}
+            <div class="col-md-4 ftco-animate fadeInUp ftco-animated">
+                <div class="block-7">
+                    <div class="img">
+                       <img src="/product-images/{{this.product._id}}_1.jpg" alt="" height="150px">
+                    </div>
+                    
+                    <div class="text-center">
+                        <span class="price"><sup>₹</sup> <span class="number">{{this.price}}</span>   
+                        <ul class="pricing-text mb-5">
+                            
+                            <li>Product Name : {{this.product.Product_Name}}</li>
+                            <li>Quantity : {{this.quantity}}</li>
+                             <li>Total Price : {{this.total}}</li> 
+                            {{!-- <li>Destination : {{../Order.Address.Town_City}}</li>
+                            <li>Mobile : {{../Order.Phone.Phone}}</li>
+                             <li>Date : {{../Order.Date}}</li> --}}
+                             <li>Payment method : {{../Order.Pay_Method}}</li>
+                             <li>Payment status : {{../Order.Payment_Stats}}</li>
+                             <li>Product Status : {{this.status}}</li>
+
+                             
+
+
+                        </ul>
+                        <a href="/view-product?id={{this.product._id}}" class="btn btn-primary d-block px-2 py-3">View Product</a>
+                    </div>
+                   
+                </div>
+            </div>
+             {{/each}}
+        </div>
+    </div>
+</section>
+
+{{>userfooter}}
+
+<style>
+
+ .block-7 {
+    border-radius: 4px;
+    margin-bottom: 30px;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    -webkit-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.05);
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+@media (max-width: 991.98px) {
+    .block-7 {
+        margin-top: 30px;
+    }
+}
+.block-7 .img {
+    height: 250px;
+}
+.block-7 .heading-2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+.block-7 .price {
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+.block-7 .price sup {
+    font-size: 18px;
+    color: #b3b3b3;
+}
+.block-7 .price .number {
+    font-size: 25px;
+    font-weight: 600;
+    color: #000000;
+}
+.block-7 .excerpt {
+    margin-bottom: 0px;
+    color: #ff0000;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.block-7 .label2 {
+    text-transform: uppercase;
+}
+.block-7 .pricing-text,
+.block-7 .pricing-text li {
+    padding: 0;
+    margin: 0;
+}
+.block-7 .pricing-text li {
+    list-style: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: #000000;
+}
+.block-7 .pricing-text li:nth-child(odd) {
+    background: rgba(0, 0, 0, 0.05);
+}
+.block-7 .pricing-text li span.fa {
+    color: #207dff;
+}
+.block-7 .btn-primary {
+    color: #fff;
+    text-transform: uppercase;
+    font-style: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    width: 60%;
+    margin: 0 auto;
+}
+.block-7 .btn-primary:hover,
+.block-7 .btn-primary:focus {
+    background: #bd0000 !important;
+    color: #fff;
+}
+.block-7:hover,
+.block-7:focus {
+    -webkit-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.11);
+    -moz-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.11);
+    box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.11);
+}
+
+</style>

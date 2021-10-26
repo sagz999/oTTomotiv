@@ -1,0 +1,23 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-body">
+            <p>OTP</p>
+            <h6>Verification</h6>
+
+            {{#if err}}
+				<p style="color: red;">{{err}}</p>
+			{{/if}}
+            <div class="sign-form">
+                <form class="mb-0" action="/otpverify" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="Otp" class="form-control" id="Otp" placeholder="Enter your OTP">
+                        <input type="hidden" name="Mob" value="{{mobile}}">
+                        <input type="hidden" name="Pnum" value="{{Pnum}}">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

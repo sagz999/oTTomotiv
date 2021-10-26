@@ -1,0 +1,40 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-body">
+            <p>Welcome</p>
+            <h6>Login</h6>
+
+            {{#if err}}
+				<p style="color: red;">{{err}}</p>
+			{{/if}}
+
+            {{#if msg}}
+				<p style="color:green;">{{msg}}</p>
+			{{/if}}
+
+            <div class="sign-form">
+                <form class="mb-0" action="/login" method="POST">
+                    <div class="form-group">
+                        <input type="email" name="Email" class="form-control" id="username" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="Password" class="form-control" id="pwd" placeholder="Password">
+                    </div>
+
+                    <div class="pull-left otp-login">
+                        <a href="/otprequest">Sign in with OTP</a>
+                    </div>
+                    
+                    <div class="pull-right lost-pass">
+                        <a href="/forgot-password">Forget Password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </form>
+                <div class="form-links text-center">
+                    <a href="/signup">Create New Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
