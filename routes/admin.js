@@ -80,9 +80,9 @@ router.post('/edit-product/:id', (req, res) => {
 
 router.get('/add-product', verifyLog, async (req, res) => {
 
-  let Categories = await productHelper.fetchCategories()
+  let CatsAndBrands = await productHelper.fetchCatsAndBrands()
 
-  res.render('admin/add-product', { title: 'Add products', isAdmin: true, Categories });
+  res.render('admin/add-product', { title: 'Add products', isAdmin: true, CatsAndBrands });
 
 });
 
@@ -212,11 +212,11 @@ router.post('/Change-orderStat/', (req, res) => {
 
 })
 
-router.get('/categories', (req, res) => {
+router.get('/category', verifyLog,(req, res) => {
 
   productHelper.fetchCategories().then((Categories) => {
 
-    res.render('admin/categories', { title: 'Add Category', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg, Categories })
+    res.render('admin/category', { title: 'Main Category', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg, Categories })
     req.session.addMsg = false
     req.session.delMsg = false
 
@@ -224,12 +224,12 @@ router.get('/categories', (req, res) => {
 
 })
 
-router.post('/add-cat', (req, res) => {
+router.post('/add-mainCat', (req, res) => {
 
-  productHelper.addCategory(req.body).then(() => {
+  productHelper.addMainCategory(req.body).then(() => {
 
-    req.session.addMsg = 'NEW CATEGORY ADDED'
-    res.redirect('/admin/categories')
+    req.session.addMsg = 'NEW MAIN CATEGORY ADDED'
+    res.redirect('/admin/category')
 
   })
 
@@ -237,15 +237,41 @@ router.post('/add-cat', (req, res) => {
 })
 
 
-router.get('/delete-category/', (req, res) => {
+
+router.post('/add-subCat',(req,res)=>{
+  productHelper.addSubCategory(req.body).then(()=>{
+    req.session.addMsg = 'NEW SUB CATEGORY ADDED'
+    res.redirect('/admin/category')
+  })
+})
+
+
+
+router.get('/delete-category/',verifyLog, (req, res) => {
   productHelper.deleteCategory(req.query.id).then(() => {
-    req.session.delMsg = 'CATEGORY DELETED'
-    res.redirect('/admin/categories')
+    req.session.delMsg = 'MAIN-CATEGORY DELETED'
+    res.redirect('/admin/category')
   })
 })
 
-router.get('/add-vehicle', (req, res) => {
-  res.render('admin/add-vehicle', { title: 'Add vehicle', isAdmin: true })
+router.get('/delete-subCategory/',verifyLog, (req, res) => {
+
+  productHelper.deleteSubCategory(req.query.id,req.query.index,req.query.name).then(() => {
+    req.session.delMsg = 'SUB-CATEGORY DELETED'
+    res.redirect('/admin/category')
+  })
+})
+
+
+
+
+router.get('/car-brands', (req, res) => {
+  productHelper.fetchCarBrands().then((carBrands) => {
+    res.render('admin/car-brands', { title: 'Car Brands', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg, carBrands })
+    req.session.addMsg = false
+    req.session.delMsg = false
+  })
+
 })
 
 router.post('/add-carBrand', (req, res) => {
@@ -255,10 +281,40 @@ router.post('/add-carBrand', (req, res) => {
     let img1 = req.files.Img1
     img1.mv('./public/brand-logos/' + id + '_1.jpg')
 
-    // req.session.addMsg = 'NEW CAR BRAND ADDED'
-    // res.redirect('/admin/add-vehicle')
+    req.session.addMsg = 'NEW CAR BRAND ADDED'
+    res.redirect('/admin/car-brands')
 
   })
+})
+
+router.get('/delete-carBrand/', (req, res) => {
+  productHelper.deleteCategory(req.query.id).then(() => {
+    req.session.delMsg = 'BRAND DELETED'
+    res.redirect('/admin/car-brands')
+  })
+})
+
+router.get('/car-models', (req, res) => {
+  productHelper.fetchCarBrands().then((CarBrands) => {
+    console.log(CarBrands)
+    res.render('admin/car-models', { title: 'Car Models', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg, CarBrands })
+    req.session.addMsg = false
+    req.session.delMsg = false
+  })
+})
+
+router.post('/add-carModel', (req, res) => {
+  productHelper.addCarModel(req.body).then((Id) => {
+
+    console.log(Id)
+
+  })
+})
+
+router.get('/product-brands', (req, res) => {
+  res.render('admin/prod-brands', { title: 'Product Brands', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg })
+  req.session.addMsg = false
+  req.session.delMsg = false
 })
 
 module.exports = router;

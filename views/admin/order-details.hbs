@@ -242,11 +242,7 @@
             </div>
         </div>
         {{>admin-footer}}
-        <script>
-            const x = new Date().getFullYear();
-            let date = document.getElementById('date');
-            date.innerHTML = '&copy; ' + x + date.innerHTML;
-        </script>
+       
     </div>
 </div>
 
@@ -258,7 +254,7 @@
 
 
         let statusUpdate = document.getElementById(prodId).value
-        console.log('The status is', statusUpdate)
+       
         $.ajax({
 
             url: '/admin/Change-orderStat?orderId=' + orderId + '&prodId=' + prodId,

@@ -5,4 +5,5 @@ module.exports={
     ORDER_COLLECTION:'order',
     CATEGORY_COLLECTION:'category',
     BRAND_COLLECTION:'brand'
+    
 }

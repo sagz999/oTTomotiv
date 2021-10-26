@@ -1,0 +1,127 @@
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="card ">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title text-center" style="font-weight: bold">MAIN-CATEGORY MANAGEMENT</h4>
+                        </div>
+                        {{#if Msg}}
+                        <div>
+                            <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
+                        </div>
+                        {{/if}}
+                        {{#if Err}}
+                        <div>
+                            <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
+                        </div>
+                        {{/if}}
+                        <div class="card-body text-left">
+
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+
+                                    <div class="d-flex justify-content-center">
+                                        <form action="/admin/add-mainCat" style="display: flex;" method="post">
+
+                                            <input name="Main_Cat" class="form-control" type="text"
+                                                placeholder="Add new main category">
+                                            <button type="submit" id="confirm-btn" class="btn btn-primary btn-sm"><i
+                                                    class="material-icons">add_to_photos</i></button>
+
+                                        </form>
+                                    </div>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Sl.No</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Sub-Category</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {{#each Categories}}
+                                            <tr>
+
+                                                <td>{{add @index '1'}}</td>
+                                                <td>{{this.Main_Cat}}</td>
+
+                                                <td>
+                                                    <ol>
+                                                        <form class="d-flex justify-content-center"
+                                                            action="/admin/add-subCat" style="display: flex;"
+                                                            method="post">
+                                                            <input name="mainCat_Id" class="form-control" type="hidden"
+                                                                value="{{this._id}}">
+                                                            <input name="Sub_Cat" class="form-control" type="text"
+                                                                placeholder="Add new sub category">
+                                                            <button type="submit" id="confirm-btn"
+                                                                class="btn btn-primary btn-sm"><i
+                                                                    class="material-icons">add_to_photos</i></button>
+
+                                                        </form>
+
+                                                        {{#each this.Sub_Cat}}
+                                                        <li>{{this}}</li><span><button type="button" rel="tooltip"
+                                                                title="Remove Sub-Category"
+                                                                class="btn btn-white btn-link btn-sm"
+                                                                onclick="return confirm('Do you want to delete product - {{this}} ?')">
+                                                                <a href="/admin/delete-subCategory?id={{../this._id}}&index={{@index}}&name={{this}}">
+                                                                    <i class="material-icons">delete</i>
+                                                                </a>
+                                                            </button></span>
+                                                        {{/each}}
+                                                    </ol>
+                                                </td>
+
+                                                <td>
+                                                    <button type="button" rel="tooltip" title="Remove Category"
+                                                        class="btn btn-white btn-link btn-sm"
+                                                        onclick="return confirm('Do you want to delete product - {{this.Main_Cat}} ?')">
+                                                        <a href="/admin/delete-category?id={{this._id}}">
+                                                            <i class="material-icons">delete</i>
+                                                        </a>
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+
+                                            {{/each}}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-1"></div>
+
+            </div>
+
+        </div>
+
+
+
+        {{>admin-footer}}
+
+    </div>
+</div>
+
+<style>
+    .table thead tr th {
+        font-weight: bold;
+    }
+</style>

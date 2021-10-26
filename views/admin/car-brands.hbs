@@ -13,6 +13,17 @@
 
                         </div>
                         <div class="card-body">
+                            {{#if Msg}}
+                            <div>
+                                <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
+                            </div>
+                            {{/if}}
+
+                            {{#if Err}}
+                            <div>
+                                <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
+                            </div>
+                            {{/if}}
 
                             <form method="POST" action="/admin/add-carBrand" enctype="multipart/form-data"
                                 id="addCarBrand">
@@ -142,25 +153,25 @@
 
                                 </thead>
                                 <tbody>
-                                    {{#each brand }}
+                                    {{#each carBrands }}
                                     <tr>
                                         <td>
                                             {{add @index '1'}}
                                         </td>
                                         <td>
-                                            {{this.Product_Name}}
+                                            {{this.Car_Brand}}
                                         </td>
                                         <td>
-                                            <img style="width:50px;height:50px" src="/product-images/{{this._id}}_1.jpg"
+                                            <img style="width:50px;height:50px" src="/brand-logos/{{this._id}}_1.jpg"
                                                 alt="">
                                         </td>
 
-                                        <td style="display: flex;">
+                                        <td>
 
                                             <button type="button" rel="tooltip" title="Remove Car Brand"
                                                 class="btn btn-white btn-link btn-sm"
-                                                onclick="return confirm('Do you want to delete product - {{this.SubCat}} ?')">
-                                                <a href="/admin/delete-category?id={{this._id}}">
+                                                onclick="return confirm('Do you want to delete product - {{this.Car_Brand}} ?')">
+                                                <a href="/admin/delete-carBrand?id={{this._id}}">
                                                     <i class="material-icons">delete</i>
                                                 </a>
                                             </button>
@@ -185,12 +196,7 @@
 
 
         {{>admin-footer}}
-        <script>
-            const x = new Date().getFullYear();
-            let date = document.getElementById('date');
-            date.innerHTML = '&copy; ' + x + date.innerHTML;
-        </script>
-
+        
     </div>
 </div>
 
