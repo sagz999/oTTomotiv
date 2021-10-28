@@ -153,16 +153,16 @@
 
                                 </thead>
                                 <tbody>
-                                    {{#each carBrands }}
+                                    {{#each prodBrands }}
                                     <tr>
                                         <td>
                                             {{add @index '1'}}
                                         </td>
                                         <td>
-                                            {{this.Car_Brand}}
+                                            {{this.Prod_Brand}}
                                         </td>
                                         <td>
-                                            <img style="width:50px;height:50px" src="/brand-logos/{{this._id}}_1.jpg"
+                                            <img style="width:50px;height:50px" src="/product-brand-logos/{{this._id}}PBL.jpg"
                                                 alt="">
                                         </td>
 
@@ -170,8 +170,8 @@
 
                                             <button type="button" rel="tooltip" title="Remove Car Brand"
                                                 class="btn btn-white btn-link btn-sm"
-                                                onclick="return confirm('Do you want to delete product - {{this.Car_Brand}} ?')">
-                                                <a href="/admin/delete-carBrand?id={{this._id}}">
+                                                onclick="return confirm('Do you want to delete product - {{this.Prod_Brand}} ?')">
+                                                <a href="/admin/delete-prodBrand?id={{this._id}}">
                                                     <i class="material-icons">delete</i>
                                                 </a>
                                             </button>

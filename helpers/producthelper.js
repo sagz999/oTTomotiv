@@ -113,15 +113,9 @@ module.exports = {
         })
     },
 
-    deleteSubCategory: (Id, Index, Name) => {
+    deleteSubCategory: (Id, Name) => {
         return new Promise((resolve, reject) => {
 
-            console.log('id:', Id)
-            console.log('index:', Index)
-            console.log('name:', Name)
-
-            let Sub_Cat = `Sub_Cat.${Index}`
-            
             db.get().collection(collection.CATEGORY_COLLECTION).updateOne({ _id: objectId(Id) },
 
                 {
@@ -135,26 +129,91 @@ module.exports = {
         })
     },
 
-    addCarBrand: (newCarBrand) => {
+    addProdBrand: (newProdBrand) => {
+
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.CATEGORY_BRAND_COLLECTION).insertOne(newCarBrand).then((data) => {
+
+            db.get().collection(collection.PROD_BRAND_COLLECTION).insertOne(newProdBrand).then((data) => {
                 resolve(data.insertedId)
             })
+
+        })
+    },
+    fetchProdBrands: () => {
+        return new Promise(async (resolve, reject) => {
+            let prodBrands = await db.get().collection(collection.PROD_BRAND_COLLECTION).find().toArray()
+            resolve(prodBrands)
+        })
+    },
+
+    deleteProdBrand: (Id) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PROD_BRAND_COLLECTION).deleteOne({ _id: objectId(Id) }).then(() => {
+                resolve()
+            })
+        })
+    },
+
+    addCarBrand: (newCarBrand) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.CAR_BRAND_COLLECTION).insertOne(newCarBrand).then((data) => {
+                resolve(data.insertedId)
+            })
+
         })
     },
 
     fetchCarBrands: () => {
+
         return new Promise(async (resolve, reject) => {
-            let carBrands = await db.get().collection(collection.CATEGORY_BRAND_COLLECTION).find({ Car_Brand: { $exists: true } }).toArray()
+
+            let carBrands = await db.get().collection(collection.CAR_BRAND_COLLECTION).find().toArray()
             resolve(carBrands)
+
         })
+
+    },
+    deleteCarBrand: (Id) => {
+
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.CAR_BRAND_COLLECTION).deleteOne({ _id: objectId(Id) }).then(() => {
+                resolve()
+            })
+        })
+
     },
 
-    addCarModel: (newCarModel) => {
+    addCarModel: (carData) => {
+
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.CATEGORY_BRAND_COLLECTION).insertOne(newCarModel).then((result) => {
-                resolve(result.insertedId)
-            })
+
+            db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(carData.carBrand_Id) },
+                {
+                    $push: { Car_Model: carData.Car_Model }
+
+                }).then(() => {
+                    resolve()
+                })
+
+        })
+
+    },
+
+    deleteCarModel: (Id,Name) => {
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(Id) },
+
+                {
+                    $pull: {
+                        Car_Model: Name
+                    }
+
+                }).then(() => {
+                    resolve()
+                })
         })
     }
 

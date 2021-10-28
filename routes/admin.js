@@ -80,9 +80,7 @@ router.post('/edit-product/:id', (req, res) => {
 
 router.get('/add-product', verifyLog, async (req, res) => {
 
-  let CatsAndBrands = await productHelper.fetchCatsAndBrands()
-
-  res.render('admin/add-product', { title: 'Add products', isAdmin: true, CatsAndBrands });
+  res.render('admin/add-product', { title: 'Add products', isAdmin: true });
 
 });
 
@@ -154,19 +152,19 @@ router.get('/order-details/', verifyLog, async (req, res) => {
 })
 
 
-router.get('/active-users', (req, res) => {
+router.get('/active-users',verifyLog, (req, res) => {
   userHelper.fetchActiveUser().then((userdata) => {
     res.render('admin/active-users', { title: 'Active users', userdata, isAdmin: true })
   })
 })
 
-router.get('/blocked-users', (req, res) => {
+router.get('/blocked-users',verifyLog, (req, res) => {
   userHelper.fetchBlockedUser().then((userdata) => {
     res.render('admin/blocked-users', { title: 'Blocked users', userdata, isAdmin: true })
   })
 })
 
-router.get('/change-userstats/', (req, res) => {
+router.get('/change-userstats/',verifyLog, (req, res) => {
   userHelper.changeUserStats(req.query.id).then(() => {
 
     switch (req.query.origin) {
@@ -212,7 +210,7 @@ router.post('/Change-orderStat/', (req, res) => {
 
 })
 
-router.get('/category', verifyLog,(req, res) => {
+router.get('/category', verifyLog, (req, res) => {
 
   productHelper.fetchCategories().then((Categories) => {
 
@@ -238,8 +236,8 @@ router.post('/add-mainCat', (req, res) => {
 
 
 
-router.post('/add-subCat',(req,res)=>{
-  productHelper.addSubCategory(req.body).then(()=>{
+router.post('/add-subCat', (req, res) => {
+  productHelper.addSubCategory(req.body).then(() => {
     req.session.addMsg = 'NEW SUB CATEGORY ADDED'
     res.redirect('/admin/category')
   })
@@ -247,31 +245,29 @@ router.post('/add-subCat',(req,res)=>{
 
 
 
-router.get('/delete-category/',verifyLog, (req, res) => {
+router.get('/delete-category/', verifyLog, (req, res) => {
   productHelper.deleteCategory(req.query.id).then(() => {
     req.session.delMsg = 'MAIN-CATEGORY DELETED'
     res.redirect('/admin/category')
   })
 })
 
-router.get('/delete-subCategory/',verifyLog, (req, res) => {
+router.get('/delete-subCategory/', verifyLog, (req, res) => {
 
-  productHelper.deleteSubCategory(req.query.id,req.query.index,req.query.name).then(() => {
+  productHelper.deleteSubCategory(req.query.id, req.query.name).then(() => {
     req.session.delMsg = 'SUB-CATEGORY DELETED'
     res.redirect('/admin/category')
   })
 })
 
+router.get('/car-brands',verifyLog, (req, res) => {
 
-
-
-router.get('/car-brands', (req, res) => {
-  productHelper.fetchCarBrands().then((carBrands) => {
-    res.render('admin/car-brands', { title: 'Car Brands', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg, carBrands })
+  productHelper.fetchCarBrands().then((carBrands)=>{
+    res.render('admin/car-brands', { title: 'Car Brands', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg ,carBrands})
     req.session.addMsg = false
     req.session.delMsg = false
   })
-
+  
 })
 
 router.post('/add-carBrand', (req, res) => {
@@ -279,7 +275,8 @@ router.post('/add-carBrand', (req, res) => {
   productHelper.addCarBrand(req.body).then((id) => {
 
     let img1 = req.files.Img1
-    img1.mv('./public/brand-logos/' + id + '_1.jpg')
+
+    img1.mv('./public/car-brand-logos/' + id + 'CBL.jpg')
 
     req.session.addMsg = 'NEW CAR BRAND ADDED'
     res.redirect('/admin/car-brands')
@@ -287,34 +284,61 @@ router.post('/add-carBrand', (req, res) => {
   })
 })
 
-router.get('/delete-carBrand/', (req, res) => {
-  productHelper.deleteCategory(req.query.id).then(() => {
+router.get('/delete-carBrand/',verifyLog, (req, res) => {
+  productHelper.deleteCarBrand(req.query.id).then(() => {
     req.session.delMsg = 'BRAND DELETED'
     res.redirect('/admin/car-brands')
   })
 })
 
-router.get('/car-models', (req, res) => {
-  productHelper.fetchCarBrands().then((CarBrands) => {
-    console.log(CarBrands)
-    res.render('admin/car-models', { title: 'Car Models', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg, CarBrands })
+router.post('/add-carModel', (req, res) => {
+
+  productHelper.addCarModel(req.body).then(() => {
+    // let id=req.body.carBrand_Id
+    // let img=req.files.Img2
+    // img.mv('./public/car-model-images/' + id + 'CMI.jpg')
+
+    req.session.addMsg = 'NEW CAR MODEL ADDED'
+    res.redirect('/admin/car-brands')
+
+  })
+})
+
+router.get('/delete-carModel/',(req,res)=>{
+  productHelper.deleteCarModel(req.query.id,req.query.name).then(()=>{
+    req.session.delMsg = 'CAR-MODEL DELETED'
+    res.redirect('/admin/car-brands')
+
+  })
+})
+
+router.get('/product-brands',verifyLog, (req, res) => {
+  productHelper.fetchProdBrands().then((prodBrands) => {
+    res.render('admin/prod-brands', { title: 'Product Brands', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg,prodBrands })
     req.session.addMsg = false
     req.session.delMsg = false
   })
+
 })
 
-router.post('/add-carModel', (req, res) => {
-  productHelper.addCarModel(req.body).then((Id) => {
+router.post('/add-prodBrand', (req, res) => {
 
-    console.log(Id)
+  productHelper.addProdBrand(req.body).then((id) => {
+    let img = req.files.Img1
+    img.mv('./public/product-brand-logos/' + id + 'PBL.jpg')
+    req.session.addMsg = 'NEW PRODUCT BRAND ADDED'
+    res.redirect('/admin/product-brands')
+  })
+
+})
+
+router.get('/delete-prodBrand/',verifyLog,(req,res)=>{
+  productHelper.deleteProdBrand(req.query.id).then(()=>{
+    req.session.delMsg = 'PRODUCT BRAND DELETED'
+    res.redirect('/admin/product-brands')
 
   })
 })
 
-router.get('/product-brands', (req, res) => {
-  res.render('admin/prod-brands', { title: 'Product Brands', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg })
-  req.session.addMsg = false
-  req.session.delMsg = false
-})
 
 module.exports = router;

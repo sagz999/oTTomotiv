@@ -576,6 +576,13 @@ module.exports = {
         })
     },
 
+    fetchAllUserOrders:(userId)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.ORDER_COLLECTION).find({UserId:objectId(userId)}).toArray().then((allOrders)=>{
+                resolve(allOrders)
+            })
+        })
+    },
 
     getSpecificOrder: (orderId) => {
         return new Promise(async (resolve, reject) => {

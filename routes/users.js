@@ -310,7 +310,7 @@ router.get('/view-product/', cartCounter, async (req, res) => {
     await productHelper.getRelproducts(product).then((relProduct) => {
 
       res.render('user/product-singleView', { title: product.Product_Name, isUser: true, user: req.session.user, product, relProduct, cartCount: req.session.cartCount });
-      
+
     })
 
   })
@@ -423,7 +423,11 @@ router.post('/verify-payment', (req, res) => {
 
 router.get('/all-orders', verifyLog, cartCounter, (req, res) => {
 
-  res.render('user/all-orders', { title: 'All-Orders', isUser: true, user: req.session.user, cartCount: req.session.cartCount })
+  userHelper.fetchAllUserOrders(req.session.user._id).then((allOrders) => {
+    
+    res.render('user/all-orders', { title: 'All-Orders', isUser: true, user: req.session.user, cartCount: req.session.cartCount,allOrders })
+
+  })
 
 })
 
@@ -435,18 +439,18 @@ router.get('/profile', verifyLog, cartCounter, (req, res) => {
 })
 
 
-router.post('/updateprofile',(req,res)=>{
+router.post('/updateprofile', (req, res) => {
 
-  
+
 
   // userhelper.userProfileData(req.body).then(()=>{
-    let id=(req.session.user._id)
+  let id = (req.session.user._id)
 
-    let Img =req.files.Dp
+  let Img = req.files.Dp
 
-    Img.mv('./public/user-images/' + id + '_dp.jpg')
+  Img.mv('./public/user-images/' + id + '_dp.jpg')
   // })
-  
+
 })
 
 module.exports = router;
