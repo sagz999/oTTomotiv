@@ -146,8 +146,18 @@ router.get('/orders', verifyLog, (req, res) => {
 router.get('/order-details/', verifyLog, async (req, res) => {
 
   let order = await userHelper.getSpecificOrder(req.query.id)
-  let prodsInOrder = await userHelper.getProdsInOrder(req.query.id)
-  res.render('admin/order-details', { title: 'Order details', order, prodsInOrder, isAdmin: true })
+
+  if(order.Mode==='buynow'){
+
+    res.render('admin/order-details', { title: 'Order details', order, isAdmin: true })
+
+  }else{
+
+    let prodsInOrder = await userHelper.getProdsInOrder(req.query.id)
+    res.render('admin/order-details', { title: 'Order details', order, prodsInOrder, isAdmin: true })
+    
+  }
+  
 
 })
 
@@ -201,11 +211,26 @@ router.post('/Change-orderStat/', (req, res) => {
     req.body.status
   ).then(() => {
 
-    res.json()
+    res.json({status:true})
 
   }).catch((error) => {
     console.log("error is:", error);
 
+  })
+
+})
+
+router.post('/Change-buyNowOrderStat', (req, res) => {
+
+  userHelper.changebuyNowOrderStat(
+    req.body.orderId,
+    req.body.status
+  ).then(() => {
+
+    res.json({status:true})
+
+  }).catch((error) => {
+    console.log("error is:", error);
   })
 
 })

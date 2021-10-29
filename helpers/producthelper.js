@@ -39,6 +39,7 @@ module.exports = {
     },
 
     fetchProduct: (prodId) => {
+        
         return new Promise((resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(prodId) }).then((product) => {
                 resolve(product)

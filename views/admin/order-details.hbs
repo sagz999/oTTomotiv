@@ -80,6 +80,7 @@
 
                                         </thead>
                                         <tbody>
+                                            {{#if prodsInOrder}}
                                             {{#each prodsInOrder}}
                                             <tr>
                                                 <td>
@@ -102,42 +103,12 @@
 
                                                 <td>
 
-
-                                                    {{!-- <div class="dropdown">
-                                                        <button class="btn btn-sm btn-secondary dropdown-toggle"
-                                                            type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="false">
-                                                            {{this.status}}
-                                                        </button>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <a class="dropdown-item"
-                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Cancelled">Cancelled</a>
-                                                            <a class="dropdown-item"
-                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Delivered">Delivered</a>
-                                                            <a class="dropdown-item"
-                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Pending">Pending</a>
-                                                            <a class="dropdown-item"
-                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Placed">Placed</a>
-                                                            <a class="dropdown-item"
-                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Returned">Returned</a>
-                                                            <a class="dropdown-item"
-                                                                href="/admin/Change-orderStat?orderId={{this._id}}&prodId={{this.product._id}}&status=Shipped">Shipped</a>
-                                                        </div>
-                                                    </div> --}}
-
                                                     {{#eq this.status 'Cancelled'}}
                                                     <select style="background-color:#3C4858;color:#8b92a9;border:none"
                                                         class="custom-select tm-select-accounts" name="status"
-                                                        id="{{this.product._id}}"
-                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+                                                        id="{{this.product._id}}">
 
-                                                        <option selected value="Cancelled">Cancelled</option>
-                                                        <option value="Delivered">Delivered</option>
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="Placed">Placed</option>
-                                                        <option value="Returned">Returned</option>
-                                                        <option value="Shipped">Shipped</option>
-
+                                                        <option selected value="Cancelled" disabled>Cancelled</option>  
 
                                                     </select>
                                                     {{/eq}}
@@ -145,16 +116,9 @@
                                                     {{#eq this.status 'Delivered'}}
                                                     <select style="background-color:#3C4858;color:#8b92a9;border:none"
                                                         class="custom-select tm-select-accounts" name="status"
-                                                        id="{{this.product._id}}"
-                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
+                                                        id="{{this.product._id}}"> 
 
-                                                        <option value="Cancelled">Cancelled</option>
-                                                        <option selected value="Delivered">Delivered</option>
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="Placed">Placed</option>
-                                                        <option value="Returned">Returned</option>
-                                                        <option value="Shipped">Shipped</option>
-
+                                                        <option selected value="Delivered" disabled>Delivered</option>   
 
                                                     </select>
                                                     {{/eq}}
@@ -169,7 +133,6 @@
                                                         <option value="Delivered">Delivered</option>
                                                         <option selected value="Pending">Pending</option>
                                                         <option value="Placed">Placed</option>
-                                                        <option value="Returned">Returned</option>
                                                         <option value="Shipped">Shipped</option>
 
 
@@ -186,26 +149,7 @@
                                                         <option value="Delivered">Delivered</option>
                                                         <option value="Pending">Pending</option>
                                                         <option selected value="Placed">Placed</option>
-                                                        <option value="Returned">Returned</option>
                                                         <option value="Shipped">Shipped</option>
-
-
-                                                    </select>
-                                                    {{/eq}}
-
-                                                    {{#eq this.status 'Returned'}}
-                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
-                                                        class="custom-select tm-select-accounts" name="status"
-                                                        id="{{this.product._id}}"
-                                                        onchange="orderStatus('{{this._id}}','{{this.product._id}}')">
-
-                                                        <option value="Cancelled">Cancelled</option>
-                                                        <option value="Delivered">Delivered</option>
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="Placed">Placed</option>
-                                                        <option selected value="Returned">Returned</option>
-                                                        <option value="Shipped">Shipped</option>
-
 
                                                     </select>
                                                     {{/eq}}
@@ -220,7 +164,98 @@
                                                         <option value="Delivered">Delivered</option>
                                                         <option value="Pending">Pending</option>
                                                         <option value="Placed">Placed</option>
-                                                        <option value="Returned">Returned</option>
+                                                        <option selected value="Shipped">Shipped</option>
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                </td>
+
+                                            </tr>
+                                            {{/each}}
+
+                                            {{else}}
+
+                                            <tr>
+                                                <td>
+                                                    1
+                                                </td>
+                                                <td>
+                                                    <img style="width:50px;height:50px"
+                                                        src="/product-images/{{order.ProdId}}_1.jpg" alt="">
+                                                </td>
+                                                <td>
+
+                                                    {{order.Product_Name}}
+                                                </td>
+                                                <td>
+                                                    {{order.Price}}
+                                                </td>
+                                                <td>
+                                                    1
+                                                </td>
+
+                                                <td>
+
+                                                    {{#eq order.Status 'Cancelled'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="status" >
+
+                                                        <option selected value="Cancelled" disabled>Cancelled</option>
+                                                        
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq order.Status 'Delivered'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="status">
+
+                                                        <option selected value="Delivered" disabled>Delivered</option>
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq order.Status 'Pending'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="status" onchange="orderStatus1('{{order._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option selected value="Pending">Pending</option>
+                                                        <option value="Placed">Placed</option>
+                                                        <option value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq order.Status 'Placed'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="status" onchange="orderStatus1('{{order._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option selected value="Placed">Placed</option>
+                                                        <option value="Shipped">Shipped</option>
+
+
+                                                    </select>
+                                                    {{/eq}}
+
+                                                    {{#eq order.Status 'Shipped'}}
+                                                    <select style="background-color:#3C4858;color:#8b92a9;border:none"
+                                                        class="custom-select tm-select-accounts" name="status"
+                                                        id="status" onchange="orderStatus1('{{order._id}}')">
+
+                                                        <option value="Cancelled">Cancelled</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Placed">Placed</option>
                                                         <option selected value="Shipped">Shipped</option>
 
 
@@ -230,7 +265,7 @@
                                                 </td>
 
                                             </tr>
-                                            {{/each}}
+                                            {{/if}}
 
                                         </tbody>
                                     </table>
@@ -242,19 +277,19 @@
             </div>
         </div>
         {{>admin-footer}}
-       
+
     </div>
 </div>
 
 
 <script>
 
-    function orderStatus(orderId, prodId) {
+    function orderStatus(orderId,prodId) {
 
 
 
         let statusUpdate = document.getElementById(prodId).value
-       
+
         $.ajax({
 
             url: '/admin/Change-orderStat?orderId=' + orderId + '&prodId=' + prodId,
@@ -263,8 +298,35 @@
                 status: statusUpdate
             },
 
-            method: 'post'
+            method: 'post',
+            success:()=>{
+                location.reload()
+            }
 
+        })
+
+    }
+
+    function orderStatus1(orderId) {
+        
+
+        let statusUpdate = document.getElementById('status').value
+
+        $.ajax({
+
+            url: '/admin/Change-buyNowOrderStat',
+
+            data: {
+                orderId:orderId,
+                status: statusUpdate
+            },
+
+            method: 'post',
+            success:()=>{
+                location.reload()
+            }
+
+  
         })
 
     }

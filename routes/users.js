@@ -349,11 +349,22 @@ router.get('/remove-item/', verifyLog, (req, res) => {
 })
 
 router.get('/checkout', verifyLog, cartCounter, async (req, res) => {
-  let ctotal = await userHelper.getTotalAmount(req.session.user._id)
-  res.render('user/checkout', { title: 'Checkout', isUser: true, ctotal, user: req.session.user, cartCount: req.session.cartCount })
+
+  if (req.session.buynow) {
+    let price = req.session.prod.Price
+    res.render('user/buyNowCheckout', { title: 'Checkout', isUser: true, price, user: req.session.user, cartCount: req.session.cartCount })
+
+  } else {
+
+    let ctotal = await userHelper.getTotalAmount(req.session.user._id)
+    res.render('user/cartCheckout', { title: 'Checkout', isUser: true, ctotal, user: req.session.user, cartCount: req.session.cartCount })
+
+  }
+
 })
 
-router.post('/place-order', async (req, res) => {
+router.post('/cartPlaceOrder', async (req, res) => {
+
   let products = await userHelper.getCartProductList(req.session.user._id)
   let totalPrice = await userHelper.getTotalAmount(req.session.user._id)
 
@@ -376,14 +387,61 @@ router.post('/place-order', async (req, res) => {
     }
 
   })
+
+
+
 })
+
+
+router.post('/buyNowPlaceOrder', async (req, res) => {
+
+  let product = req.session.prod
+
+  userHelper.buyNowPlaceOrder(req.body, product).then((orderId) => {
+
+    req.session.prod = false
+    req.session.buynow = false
+
+    if (req.body['Pay_Method'] == 'COD') {
+
+      res.json({ codSuccess: true })
+
+    } else if (req.body['Pay_Method'] == "Online") {
+
+      userHelper.generateRazorpay(orderId, product.Price).then((result) => {
+        res.json(result)
+      })
+
+    } else {
+
+      console.log("error");
+
+    }
+
+  })
+
+
+
+})
+
 
 router.get('/order-success', verifyLog, (req, res) => {
 
-  userHelper.emptyCart(req.session.user._id).then(() => {
+  if (req.session.buynow) {
 
     res.render('user/order-success', { title: 'Order Placed', isUser: true, user: req.session.user, cartCount: 0 })
-  })
+    req.session.buynow = false
+    req.session.prod = false
+
+  } else {
+
+    userHelper.emptyCart(req.session.user._id).then(() => {
+
+      res.render('user/order-success', { title: 'Order Placed', isUser: true, user: req.session.user, cartCount: 0 })
+    })
+
+  }
+
 })
 
 
@@ -424,17 +482,35 @@ router.post('/verify-payment', (req, res) => {
 router.get('/all-orders', verifyLog, cartCounter, (req, res) => {
 
   userHelper.fetchAllUserOrders(req.session.user._id).then((allOrders) => {
-    
-    res.render('user/all-orders', { title: 'All-Orders', isUser: true, user: req.session.user, cartCount: req.session.cartCount,allOrders })
+
+    res.render('user/all-orders', { title: 'All-Orders', isUser: true, user: req.session.user, cartCount: req.session.cartCount, allOrders })
 
   })
 
 })
 
 
+router.get('/view-prodsInOrder/', verifyLog, cartCounter, async (req, res) => {
+
+  let Order = await userHelper.getSpecificOrder(req.query.orderId)
+
+  if (Order.Mode === 'buynow') {
+
+    res.render('user/products-in-order', { title: 'Order Details', isUser: true, user: req.session.user, cartCount: req.session.cartCount, Order })
+
+  } else {
+
+    let prodsInOrder = await userHelper.getProdsInOrder(req.query.orderId)
+
+    res.render('user/products-in-order', { title: 'Ordered products', isUser: true, user: req.session.user, cartCount: req.session.cartCount, prodsInOrder, Order })
+
+  }
+
+})
+
 router.get('/profile', verifyLog, cartCounter, (req, res) => {
 
-  res.render('user/profile', { title: 'Profile', isUser: true, cartCount: req.session.cartCount, userData: req.session.user })
+  res.render('user/profile', { title: 'Profile', isUser: true, cartCount: req.session.cartCount, user: req.session.user })
 
 })
 
@@ -451,6 +527,51 @@ router.post('/updateprofile', (req, res) => {
   Img.mv('./public/user-images/' + id + '_dp.jpg')
   // })
 
+})
+
+router.get('/prodBuyNow/', (req, res) => {
+  productHelper.fetchProduct(req.query.prodId).then((product) => {
+    req.session.buynow = true
+    req.session.prod = product
+    res.redirect('/checkout')
+
+  })
+})
+
+router.post('/cancelProdInOrder', (req, res) => {
+
+  userHelper.changeOrderStats(
+
+    req.body.orderId,
+    req.body.prodId,
+    req.body.status
+
+  ).then(() => {
+
+    res.json({status:true})
+
+  })
+
+})
+
+router.post('/cancelBuyNowOrder', (req, res) => {
+
+  userHelper.changebuyNowOrderStat(
+    req.body.orderId,
+    req.body.status
+  ).then(() => {
+
+    res.json({status:true})
+
+  })
+
+})
+
+
+router.post('/addNewAddress',(req,res)=>{
+  userHelper.addNewAddress(req.body,req.session.user._id).then(()=>{
+    res.redirect('/profile')
+  })
 })
 
 module.exports = router;

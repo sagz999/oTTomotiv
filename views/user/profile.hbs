@@ -1,3 +1,31 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+        var readURL = function (input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('.avatar').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+
+        $(".file-upload").on('change', function () {
+            readURL(this);
+        });
+    });
+</script>
+
 {{>userheader}}
 
 <section id="page-title" class="page-title">
@@ -14,39 +42,161 @@
 
 </section>
 
-<section>
-    <div class="container rounded bg-white mt-5 mb-5">
-        <form action="/updateprofile" method="post" enctype="multipart/form-data">
-            <div class="row">
 
+<section style="padding:10px">
+    <div class="container bootstrap snippet">
 
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Details</a></li>
+            <li><a data-toggle="tab" href="#messages"> Address</a></li>
+        </ul>
 
+        <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                <br>
+                <form class="form" action="/profileEditSubmit" method="post" id="profile" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group text-center">
+                                <div class="row">
+                                    <img src="/products/{{data.id}}_dp.jpg" class="avatar img-circle img-thumbnail"
+                                        alt="avatar" id="imgview1">
+                                </div>
+                                <div class="row">
+                                    <buttlabelon class="btn btn-sm btn-danger" for="file1">Change DP</label>
 
-                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                        <input style="display:none" type="file" name="userImage" class="form-control"
+                                            data-toggle="modal" data-target="#cropModal"
+                                            onchange="return fileValidation1()" id="file1">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <label for="first_name">
+                                            <h6>Name</h6>
+                                        </label>
+                                        <input type="text" class="form-control" name="first_name" id="firstName"
+                                            placeholder="first name" value="{{data.user}}"
+                                            title="enter your first name if any.">
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label for="email">
+                                            <h6>Email</h6>
+                                        </label>
+                                        <input type="email" class="form-control" name="email" id="email"
+                                            placeholder="you@email.com" value="{{data.email}}"
+                                            title="enter your email.">
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <label for="mobile">
+                                            <h6>Mobile</h6>
+                                        </label>
+                                        <input type="text" class="form-control" name="mobile" id="mobile"
+                                            placeholder="enter mobile number" value="{{data.contact}}"
+                                            title="enter your mobile number if any.">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <br>
+                                        <button class="btn btn-success" type="submit">Update</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal fade" id="cropModal" tabindex="-1" role="dialog "
                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-
                     <div class="modal-dialog modal-dialog-centered" role="document">
-
                         <div class="modal-content">
-
                             <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle"
+                                    style="color:black; font-weight: bolder;">Crop
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="color:black; font-weight: lighter;">
+                                <div style="width: auto; height: auto;" id="image-box"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <a type="button" class="btn btn-primary" onchange="return fileValidation1()"
+                                    id="crop-btn" data-dismiss="modal">Crop</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                <h4 class="modal-title" style="font-weight: bold;" id="exampleModalLongTitle">Crop
-                                    Image</h4>
 
+                <hr>
+            </div>
+
+            <!--/tab-pane-->
+
+
+            <div class="tab-pane" id="messages">
+
+                <br>
+
+                <div class="row">
+
+
+                    <div class="billing-address text-center">
+
+                        <h5 class="checkout-box-title">SAVED ADDRESS</h5><hr>
+
+                        <div class="row checkout-billing-adress-box">
+
+                            <div class="col-md-4">
+                                <dl>
+                                    <dt>1.Coffee</dt>
+                                    <dd>Black hot drink</dd>
+                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
+                                            style="color: #007eff;">
+                                            Use Address</span></dt><br>
+
+                                </dl>
                             </div>
 
-                            <div class="modal-body">
-                                <div id="image-box" style="width: 300px; height: 300px; display: none;"> </div>
+                            <div class="col-md-4">
+                                <dl>
+                                    <dt>1.Coffee</dt>
+                                    <dd>Black hot drink</dd>
+                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
+                                            style="color: #007eff;">
+                                            Use Address</span></dt><br>
+
+                                </dl>
                             </div>
 
-                            <div class="modal-footer" style="display: flex; justify-content: right;">
+                            <div class="col-md-4">
+                                <dl>
+                                    <dt>1.Coffee</dt>
+                                    <dd>Black hot drink</dd>
+                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
+                                            style="color: #007eff;">
+                                            Use Address</span></dt><br>
 
-                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
-
-                                <button id="crop-btn" data-dismiss="modal" type="button"
-                                    class="btn btn-sm btn-info">Crop</button>
-
+                                </dl>
                             </div>
 
                         </div>
@@ -54,106 +204,153 @@
                     </div>
 
                 </div>
+                <hr><h5 class="checkout-box-title text-center">ADD ADDRESS</h5><hr>
+                <div class="row">
 
+                    <form class="form" action="/addNewAddress" method="post" id="addAddress">
+                        <div class="form-group">
 
-
-
-                {{!-- <div class="col-12">
-                    <div id="image-box" style="width: 300px; height: 300px; display: none;"> </div>
-
-
-                    <button style="display: none;" class="btn btn-primary mt-4" type="button" id="crop-btn"
-                        data-dismiss="modal">Crop</button>
-                </div> --}}
-
-                <div class="col-md-3 border-right">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" id="imgview1" width="150px"
-                            src="/user-images/{{userData._id}}_dp.jpg">
-                        <span class="font-weight-bold">{{userData.Username}}</span>
-                        <span class="text-black-50">{{userData.Email}}</span><span> </span>
-                    </div>
-                    <div id="errMess1"></div>
-                    <center>
-                        <label for="file1" class="btn btn-sm btn-primary" data-toggle="modal"
-                            data-target="#exampleModalCenter">Change photo</label>
-                        <input style="display:none" type="file" name="Dp" id="file1" class="form-control"
-                            onchange="return fileValidation1()" hidden>
-                    </center>
-
-                </div>
-                <div class="col-md-7 border-right">
-                    <div class="p-3 py-5">
-
-                        <div class="row mt-2">
-                            <div class="col-md-6"><label class="labels"></label><input type="text" name="name"
-                                    placeholder="enter name" class="form-control" value="{{userData.name}}"></div>
-                            <div class="col-md-6"><label class="labels">Surname</label><input type="text" name="surname"
-                                    placeholder="enter surname" class="form-control" value="{{userData.surname}}"></div>
+                            <div class="col-xs-3">
+                                <label for="first_name">
+                                    <h6>First Name</h6>
+                                </label>
+                                <input type="text" class="form-control" name="firstName" id="First_Name"
+                                    placeholder="first name" title="enter your first name if any.">
+                            </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text"
-                                    name="number" placeholder="enter mobile number" class="form-control"
-                                    value="{{userData.number}}"></div>
-                            <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text"
-                                    name="address1" placeholder="enter address" class="form-control"
-                                    value="{{userData.address1}}"></div>
-                            <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text"
-                                    name="address2" class="form-control" placeholder="enter another address"
-                                    value="{{userData.address2}}"></div>
-                            <div class="col-md-12"><label class="labels">Postcode</label><input type="text"
-                                    name="pincode" class="form-control" placeholder="enter zip code"
-                                    value="{{userData.pincode}}"></div>
-                            <div class="col-md-12"><label class="labels">State</label><input type="text" name="state"
-                                    class="form-control" placeholder="enter state" value="{{userData.state}}"></div>
-                            <div class="col-md-12"><label class="labels">Area</label><input type="text" name="area"
-                                    class="form-control" placeholder="enter area" value="{{userData.area}}"></div>
-                            <div class="col-md-12"><label class="labels">Email ID</label><input type="text" name="email"
-                                    class="form-control" placeholder="enter email id" value="{{userData.email}}"></div>
+                        <div class="form-group">
 
+                            <div class="col-xs-3">
+                                <label for="last_name">
+                                    <h6>Last Name</h6>
+                                </label>
+                                <input type="text" class="form-control" name="Last_Name" id="last_name"
+                                    placeholder="last name" title="enter your last name if any.">
+                            </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6"><label class="labels">Country</label><input type="text" name="country"
-                                    class="form-control" placeholder="country" value="{{userData.country}}"></div>
 
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="last_name">
+                                    <h6>Company / House name</h6>
+                                </label>
+                                <input type="text" class="form-control" name="Company_Name" id="last_name"
+                                    placeholder="last name" title="enter your last name if any.">
+                            </div>
                         </div>
-                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" id="confirm-btn"
-                                type="submit">Save Profile</button></div>
-                    </div>
 
+                        <div class="form-group">
 
+                            <div class="col-xs-6">
+                                <label for="phone">
+                                    <h6>Address line 1</h6>
+                                </label>
+                                <input type="text" class="form-control" name="Street_Address" id="Address line 1"
+                                    placeholder="Address line 2" title="enter your phone number if any.">
+                            </div>
+                        </div>
 
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="mobile">
+                                    <h6>Address line 2</h6>
+                                </label>
+                                <input type="text" class="form-control" name="Extra_Details" id="Address line 2"
+                                    placeholder="Address line 2" title="enter your mobile number if any.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="email">
+                                    <h6>Town / City</h6>
+                                </label>
+                                <input type="text" class="form-control" name="Town_City" id="city" placeholder="city"
+                                    title="enter your email.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="email">
+                                    <h6>Country / State</h6>
+                                </label>
+                                <input type="text" class="form-control" name="Country_State" id="state" placeholder="state"
+                                    title="enter a location">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-xs-6">
+                                <label for="password">
+                                    <h6>PIN code</h6>
+                                </label>
+                                <input type="tele" class="form-control" name="Post_Code" id="pincode"
+                                    placeholder="pincode" title="enter your password.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-xs-3">
+                                <label for="password">
+                                    <h6>Phone</h6>
+                                </label>
+                                <input type="tele" class="form-control" name="Phone" id="contact"
+                                    placeholder="contact" title="enter your password.">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-xs-3">
+                                <label for="password">
+                                    <h6>Alternate Phone</h6>
+                                </label>
+                                <input type="tele" class="form-control" name="Alt_Phone" id="contact"
+                                    placeholder="contact" title="enter your password.">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-xs-12 text-center">
+                                <br><br>
+                                <button class="btn btn-success" type="submit">Submit</button>
+
+                            </div>
+                        </div>
+                    </form>
 
 
                 </div>
 
             </div>
-        </form>
-    </div>
-    </div>
-    </div>
-</section>
+            <!--/tab-content-->
 
+
+            <!--/col-9-->
+
+        </div>
+</section>
 {{>userfooter}}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+
 
 <script>
+
     function fileValidation1() {
         const imagebox = document.getElementById('image-box')
         const crop_btn = document.getElementById('crop-btn')
         var fileInput = document.getElementById('file1');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg)$/i;
+        var allowedExtensions = /(\.jpg || \.jpeg || \.png)$/i
         if (!allowedExtensions.exec(filePath)) {
-            document.getElementById('errMess1').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
+            alert('Please upload file having extensions .jpeg only.');
             fileInput.value = '';
             return false;
         } else {
             //Image preview
-            document.getElementById('errMess1').innerHTML = ''
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
             imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
@@ -165,13 +362,13 @@
             const cropper = new Cropper(image, {
                 autoCropArea: 1,
                 viewMode: 1,
-                scalable: false,
-                zoomable: false,
-                movable: false,
-                aspectRatio: 16 / 19,
+                scalable: true,
+                zoomable: true,
+                movable: true,
+                aspectRatio: 16 / 9,
                 // preview: '.preview',
-                minCropBoxWidth: 180,
-                minCropBoxHeight: 240,
+                minCropBoxWidth: 500,
+                minCropBoxHeight: 250,
             })
             crop_btn.addEventListener('click', () => {
                 cropper.getCroppedCanvas().toBlob((blob) => {
@@ -193,49 +390,16 @@
         }
     }
 </script>
+
 <style>
-    body {
-        background: rgb(217, 221, 243)
+    h6 {
+        margin: 23px 0 0;
     }
 
-    .form-control:focus {
-        box-shadow: none;
-        border-color: #BA68C8
+    input {
+        padding: none;
     }
-
-    .profile-button {
-        background: #345B63;
-        box-shadow: none;
-        border: none
-    }
-
-    .profile-button:hover {
-        background: #682773
-    }
-
-    .profile-button:focus {
-        background: #682773;
-        box-shadow: none
-    }
-
-    .profile-button:active {
-        background: #682773;
-        box-shadow: none
-    }
-
-    .back:hover {
-        color: #682773;
-        cursor: pointer
-    }
-
-    .labels {
-        font-size: 11px
-    }
-
-    .add-experience:hover {
-        background: #c3bac5;
-        color: #fff;
-        cursor: pointer;
-        border: solid 1px #c3bac5
+    dl{
+        margin:0;
     }
 </style>

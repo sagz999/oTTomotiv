@@ -1,0 +1,308 @@
+{{>userheader}}
+
+<section id="page-title" class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <h3>Ordered Products</h3>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<section>
+    <div class="container">
+
+        <div class="row">
+
+            {{#if prodsInOrder}}
+            {{#each prodsInOrder}}
+            <div class="col-md-4" style="margin-top: 5% ;">
+
+                <div class="card text-center" style="width: 18rem; border-color: black;">
+                    <a class="alink" href="/view-product?id={{this.product._id}}">
+                        <img class="card-img-top" src="/product-images/{{this.product._id}}_1.jpg" alt="Card image cap"
+                            width="150 " height="150">
+                    </a>
+
+                    <div class="card-body">
+                        <a class="alink" href="/view-product?id={{this.product._id}}">
+                            <h6 class="card-title" style="margin-bottom:5px">{{this.product.Product_Name}}</h6>
+                        </a>
+                        <p style="font-size: small;margin-bottom: 0">Placed On:{{../Order.Date}}</p>
+                        <p style="font-size: small;margin-bottom:5px">Time:{{../Order.Time}}</p>
+                        <h6 class="card-subtitle mb-2 text-muted" style="margin-bottom:3px">Unit Price:
+                            &#x20B9;{{this.product.Price}}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Quantity:{{this.quantity}}</h6>
+                        <h5 class="bold">
+                            <span class="mt-5" style="color: firebrick;">Total:&#x20B9;{{this.total}}</span>
+                            <span class="small text-muted"> via
+                                ({{../Order.Pay_Method}})</span>
+                        </h5>
+
+                        <h6 class="bold">
+                            <span class="mt-5 text-muted">Status:</span>
+                            <span class="mt-5" style="color: green;">{{this.status}}</span>
+                        </h6>
+                        {{#eq this.status 'Cancelled'}}
+
+                        {{else}}
+
+                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModalCenter1">
+                            Cancel order
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Do you want to cancel this
+                                            order?</h5>
+                                    </div>
+                                    <div class="modal-body" style="color: black;">
+                                        Order once cancelled cannot be reverted back
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-info btn-sm"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="changeUserOrderStat('{{this._id}}','{{this.product._id}}')">Save changes</button>
+                                        {{!-- <a class="btn btn-danger btn-sm"
+                                            href="/cancelProdInOrder?orderId={{this._id}}&prodId={{this.product._id}}&status=Cancelled">Cancel
+                                            order</a> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/eq}}
+
+                    </div>
+                </div>
+
+            </div>
+            {{/each}}
+
+            {{else}}
+
+            <div class="col-md-4" style="margin-top: 5% ;">
+
+                <div class="card text-center" style="width: 18rem;">
+                    <a class="alink" href="/view-product?id={{Order.ProdId}}">
+                        <img class="card-img-top" src="/product-images/{{Order.ProdId}}_1.jpg" alt="Card image cap"
+                            width="150 " height="150">
+                    </a>
+
+                    <div class="card-body">
+
+                        <a class="alink" href="/view-product?id={{Order.ProdId}}">
+                            <h6 class="card-title" style="margin-bottom:5px">{{Order.Product_Name}}</h6>
+                        </a>
+                        <p style="font-size: small;margin-bottom: 0">Placed On:{{Order.Date}}</p>
+                        <p style="font-size: small;margin-bottom:5px">Time:{{Order.Time}}</p>
+                        <h5 class="bold">
+                            <span class="mt-5" style="color: firebrick;">Price:&#x20B9;{{Order.Price}}</span>
+                            <span class="small text-muted"> via
+                                ({{Order.Pay_Method}})</span>
+                        </h5>
+
+                        <h6 class="bold">
+                            <span class="mt-5 text-muted">Status:</span>
+                            <span class="mt-5" style="color: green;">{{Order.Status}}</span>
+                        </h6>
+
+                        {{#eq Order.Status 'Cancelled'}}
+
+                        {{else}}
+                        <!-- Button trigger modal -->
+                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModalCenter">
+                            Cancel order
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Do you want to cancel this
+                                            order?</h5>
+                                    </div>
+                                    <div class="modal-body" style="color: black;">
+                                        Order once cancelled cannot be reverted back
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-info btn-sm"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="changeUserOrderStat1('{{Order._id}}')">Cancel order</button>
+                                        {{!-- <a class="btn btn-danger btn-sm"
+                                            href="/cancelBuyNowOrder?orderId={{Order._id}}&status=Cancelled">Cancel
+                                            order</a> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/eq}}
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            {{/if}}
+        </div>
+    </div>
+</section>
+{{>userfooter}}
+
+
+
+<script>
+
+function changeUserOrderStat(orderId,prodId){
+    console.log('function1 called')
+    $.ajax({
+        url:'/cancelProdInOrder',
+        data:{
+            orderId:orderId,
+            prodId:prodId,
+            status:'Cancelled'
+        },
+        method:'post',
+        success:()=>{
+            location.reload()
+        }
+    })
+}
+
+
+function changeUserOrderStat1(orderId){
+    console.log('function2 called')
+    $.ajax({
+        url:'/cancelBuyNowOrder',
+        data:{
+            orderId:orderId,
+            status:'Cancelled'
+        },
+        method:'post',
+         success:()=>{
+            location.reload()
+        }
+    })
+}
+
+
+</script>
+
+<style>
+    .alink {
+        display: block !important;
+    }
+
+    .block-7 {
+        border-radius: 4px;
+        margin-bottom: 30px;
+        padding: 0;
+        overflow: hidden;
+        background: #fff;
+        -webkit-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.05);
+        -moz-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.05);
+        -moz-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        -webkit-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+    }
+
+    @media (max-width: 991.98px) {
+        .block-7 {
+            margin-top: 30px;
+        }
+    }
+
+    .block-7 .heading-2 {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    .block-7 .price {
+        margin: 0;
+        padding: 0;
+        display: block;
+    }
+
+    .block-7 .price sup {
+        font-size: 18px;
+        color: #b3b3b3;
+    }
+
+    .block-7 .price .number {
+        font-size: 25px;
+        font-weight: 600;
+        color: #000000;
+    }
+
+    .block-7 .excerpt {
+        margin-bottom: 0px;
+        color: #ff0000;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .block-7 .label2 {
+        text-transform: uppercase;
+    }
+
+    .block-7 .pricing-text,
+    .block-7 .pricing-text li {
+        padding: 0;
+        margin: 0;
+    }
+
+    .block-7 .pricing-text li {
+        list-style: none;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        color: #000000;
+    }
+
+    .block-7 .pricing-text li:nth-child(odd) {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .block-7 .pricing-text li span.fa {
+        color: #207dff;
+    }
+
+    .block-7 .btn-primary {
+        color: #fff;
+        text-transform: uppercase;
+        font-style: 16px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        width: 60%;
+        margin: 0 auto;
+    }
+
+    .block-7 .btn-primary:hover,
+    .block-7 .btn-primary:focus {
+        background: #bd0000 !important;
+        color: #fff;
+    }
+
+    .block-7:hover,
+    .block-7:focus {
+        -webkit-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.11);
+        -moz-box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.11);
+        box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.11);
+    }
+</style>

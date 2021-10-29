@@ -142,9 +142,9 @@
                         <div class="yob-content">
                             <ul>
                                 <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹
-                                        {{ctotal}}</span></li>
+                                        {{price}}</span></li>
                                 <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
-                                <li class="order-total clearfix">Order Total <span>₹ {{ctotal}}</span></li>
+                                <li class="order-total clearfix">Order Total <span>₹ {{price}}</span></li>
                             </ul>
                         </div>
                     </div>
@@ -184,7 +184,7 @@
     $('#checkout-form').submit((e) => {
         e.preventDefault()
         $.ajax({
-            url: '/place-order',
+            url: '/buyNowPlaceOrder',
             method: 'post',
             data: $('#checkout-form').serialize(),
             success: (response) => {

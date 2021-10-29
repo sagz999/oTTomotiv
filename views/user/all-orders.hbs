@@ -15,123 +15,63 @@
 </section>
 
 <section>
+    <div class="container">
+        <div class="row">
+            <div class="containing-table table-responsive">
+                <div class="centre-align">
+                    
+                    <table class="table table-bordered table-hover">
 
-    <div style="background-color: rgb(243, 250, 247);" class="table-responsive">
-        <table class="table " cellspacing="0" id="Search" style=" border-style: solid;3 px ;">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Date</th>
+                        <thead style="background-color: black">
+                            <tr>
+                                <th>No</th>
+                                <th>Date</th>
 
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Payment Method</th>
-                    <th>Total Amount</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each allOrders}}
-                <tr>
-                    <td scope="row">{{add @index '1'}}</td>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Payment Method</th>
+                                <th>Total Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                    <td>{{this.Date}}</td>
+                            {{#each allOrders}}
 
-                    <td>{{this.Name}}</td>
-                    <td>{{this.Address.Company_Name}} <br>
-                        {{this.Address.Street_Address}} <br>
-                        {{this.Address.Extra_Details}} <br>
-                        {{this.Address.Town_City}} <br>
-                        {{this.Address.Country_State}} <br>
-                        {{this.Address.Post_Code}}<br>
-                        {{this.Phone.Phone}}<br>
-                        {{this.Phone.Alt_Phone}}
-                    </td>
-                    <td>{{this.Pay_Method}}</td>
-                    <td>{{this.Total_Amount}}</td>
+                            <tr>
 
-                    <td>
-                        <a href="/view_order_products/{{this._id}}" class="btn btn-primary">View
-                            Products</a><br><br>
-                            
-                        <a href="/UserOrderInvoice/{{this._id}}" class="btn btn-success">Order Invoice</a>
+                                <td scope="row">{{add @index '1'}}</td>
 
+                                <td>{{this.Date}}</td>
+                                <td>{{this.Name}}</td>
+                                <td>{{this.Address.Company_Name}} <br>
+                                    {{this.Address.Street_Address}} <br>
+                                    {{this.Address.Extra_Details}} <br>
+                                    {{this.Address.Town_City}} <br>
+                                    {{this.Address.Country_State}} <br>
+                                    {{this.Address.Post_Code}}<br>
+                                    {{this.Phone.Phone}}<br>
+                                    {{this.Phone.Alt_Phone}}
+                                </td>
+                                <td>{{this.Pay_Method}}</td>
+                                <td>{{this.Total_Amount}}</td>
+                                <td>
+                                    <a href="/view-prodsInOrder?orderId={{this._id}}" class="btn btn-info btn-sm">View
+                                        Products</a>
+                                </td>
 
-                    </td>
-                </tr>
-                {{/each}}
+                            </tr>
 
-            </tbody>
-        </table>
+                            {{/each}}
 
-
-    </div>
-
-    {{!-- <div class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead class=" text-primary text-center">
-                                <th style="font-weight: bold;">
-                                    Sl.No
-                                </th>
-                                <th style="font-weight: bold;">
-                                    Date
-                                </th>
-
-                                <th style="font-weight: bold;">
-                                    Pay Method
-                                </th>
-
-                                <th style="font-weight: bold;">
-                                    Total Amount (₹)
-                                </th>
-
-
-                                <th style="font-weight: bold;">
-                                    Action
-                                </th>
-
-                            </thead>
-                            <tbody>
-                                {{#each allOrders}}
-                                <tr>
-                                    <td>
-                                        {{add @index '1'}}
-                                    </td>
-                                    <td>
-
-                                        {{this.Date}}
-                                    </td>
-
-                                    <td>
-                                        {{this.Pay_Method}}
-                                    </td>
-
-                                    <td>
-                                        {{this.Total_Amount}}
-                                    </td>
-
-                                    <td>
-                                        <a class="btn btn-danger btn-sm" href="/order-details?id={{this._id}}">View
-                                            order</a>
-                                    </td>
-                                </tr>
-                                {{/each}}
-
-                            </tbody>
-                        </table>
-                    </div>
-
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-md-2"></div>
+
             </div>
         </div>
-    </div> --}}
+    </div>
+
 </section>
 
 {{>userfooter}}
@@ -157,3 +97,21 @@
     });
 
 </script>
+
+<style>
+    th {
+        color: #fff !important;
+        text-align: center!important;
+    }
+
+    td {
+        vertical-align: middle!important;
+        color: black
+        
+    }
+    .centre-align{
+        text-align: center!important;
+        
+        
+    }
+</style>
