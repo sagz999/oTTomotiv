@@ -1,0 +1,112 @@
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+
+            <div class="row">
+                <div class="col-md-1 col-sm-1 col-1"></div>
+                <div class="col-md-10 col-sm-10 col-10">
+                    <div class="card ">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title text-center" style="font-weight: bold">COUPON MANAGEMENT</h4>
+                        </div>
+                        {{#if Msg}}
+                        <div>
+                            <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
+                        </div>
+                        {{/if}}
+                        {{#if Err}}
+                        <div>
+                            <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
+                        </div>
+                        {{/if}}
+                        <div class="card-body text-left">
+
+                            <div class="row">
+                                <div class="col">
+
+                                    <div class="d-flex ml-3">
+                                        
+                                        <form action="/admin/add-coupon" style="display: flex;" method="post">
+                                            <input name="Coupon_Code" class="form-control" type="text"
+                                                placeholder="Coupon-code">
+                                            <input style="margin-left:10px" name="Coupon_Percentage"
+                                                class="form-control" type="number" placeholder="Percentage">
+                                            <button style="margin-left:20px" type="submit" id="confirm-btn"
+                                                class="btn btn-primary btn-sm"><i
+                                                    class="material-icons">add_to_photos</i>  Add new-coupon</button>
+
+                                        </form>
+                                    </div>
+
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" scope="col">Sl.No</th>
+                                                <th class="text-center" scope="col">Coupon Code</th>
+                                                <th class="text-center" scope="col">Percentage</th>
+                                                <th class="text-center" scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {{#each coupons}}
+                                            <tr>
+
+                                                <td class="text-center">{{add @index '1'}}</td>
+
+                                                <td class="text-center">
+                                                    {{this.Coupon_Code}}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    {{this.Coupon_Percentage}}
+                                                </td>
+                                                <td class="text-center">
+
+                                                     <button type="button" rel="tooltip" title="Remove"
+                                                        class="btn btn-white btn-link btn-sm"
+                                                        onclick="return confirm('Do you want to delete coupon - {{this.Coupon_Percentage}} ?')">
+                                                        <a href="/admin/delete-coupon?couponId={{this._id}}">
+                                                            <i class="material-icons">delete</i>
+                                                        </a>
+                                                    </button>
+
+                                                </td>
+
+                                            </tr>
+
+                                            {{/each}}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-1 col-sm-1 col-1"></div>
+
+            </div>
+
+        </div>
+
+
+
+        {{>admin-footer}}
+
+    </div>
+</div>
+
+<style>
+    .table thead tr th {
+        font-weight: bold;
+
+    }
+</style>

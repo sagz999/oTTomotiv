@@ -44,6 +44,16 @@
 
 
 <section style="padding:10px">
+    {{#if Err}}
+    <div>
+        <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
+    </div>
+    {{/if}}
+    {{#if Msg}}
+    <div>
+        <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
+    </div>
+    {{/if}}
     <div class="container bootstrap snippet">
 
         <ul class="nav nav-tabs">
@@ -54,20 +64,23 @@
         <div class="tab-content">
             <div class="tab-pane active" id="home">
                 <br>
-                <form class="form" action="/profileEditSubmit" method="post" id="profile" enctype="multipart/form-data">
+                <form class="form" action="/update-profile" method="post" id="profile" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group text-center">
                                 <div class="row">
-                                    <img src="/products/{{data.id}}_dp.jpg" class="avatar img-circle img-thumbnail"
-                                        alt="avatar" id="imgview1">
+                                    <img style="width: 210px;height:210px" src="/user-images/{{user._id}}_dp.jpg"
+                                        class="avatar img-circle img-thumbnail" alt="avatar" id="imgview1">
                                 </div>
                                 <div class="row">
-                                    <buttlabelon class="btn btn-sm btn-danger" for="file1">Change DP</label>
+                                    <label style="margin-top: 8px;" class="btn btn-sm btn-danger" for="file1">Change
+                                        DP</label>
 
-                                        <input style="display:none" type="file" name="userImage" class="form-control"
-                                            data-toggle="modal" data-target="#cropModal"
-                                            onchange="return fileValidation1()" id="file1">
+                                    <input style="display:none" type="file" name="userImage" class="form-control"
+                                        data-toggle="modal" data-target="#exampleModalCenter"
+                                        onchange="return fileValidation1()" id="file1">
+                                    <br>
+                                    <div id="errMsg1"></div>
                                 </div>
 
                             </div>
@@ -81,16 +94,16 @@
                                         <label for="first_name">
                                             <h6>Name</h6>
                                         </label>
-                                        <input type="text" class="form-control" name="first_name" id="firstName"
-                                            placeholder="first name" value="{{data.user}}"
+                                        <input type="text" class="form-control" name="Username" id="firstName"
+                                            placeholder="first name" value="{{user.Username}}"
                                             title="enter your first name if any.">
                                     </div>
                                     <div class="col-xs-6">
                                         <label for="email">
                                             <h6>Email</h6>
                                         </label>
-                                        <input type="email" class="form-control" name="email" id="email"
-                                            placeholder="you@email.com" value="{{data.email}}"
+                                        <input type="email" class="form-control" name="Email" id="email"
+                                            placeholder="you@email.com" value="{{user.Email}}"
                                             title="enter your email.">
                                     </div>
 
@@ -103,8 +116,8 @@
                                         <label for="mobile">
                                             <h6>Mobile</h6>
                                         </label>
-                                        <input type="text" class="form-control" name="mobile" id="mobile"
-                                            placeholder="enter mobile number" value="{{data.contact}}"
+                                        <input type="text" class="form-control" name="Pnum" id="mobile"
+                                            placeholder="enter mobile number" value="{{user.Pnum}}"
                                             title="enter your mobile number if any.">
                                     </div>
                                 </div>
@@ -114,40 +127,53 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <br>
-                                        <button class="btn btn-success" type="submit">Update</button>
+                                        <button class="btn btn-success" id="confirm-btn" type="submit">Update</button>
 
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
-                <div class="modal fade" id="cropModal" tabindex="-1" role="dialog "
-                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle"
-                                    style="color:black; font-weight: bolder;">Crop
-                                </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+
+                    <!-- Modal for cropping-->
+
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+
+                                    <h4 class="modal-title" style="font-weight: bold;" id="exampleModalLongTitle">Crop
+                                        Image
+                                    </h4>
+
+                                </div>
+
+                                <div class="modal-body">
+                                    <div id="image-box" style="display:none;"></div>
+                                </div>
+
+                                <div class="modal-footer">
+
+                                    <button onclick="buttonDisplay()" type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Close</button>
+
+                                    <button id="crop-btn" data-dismiss="modal" type="button"
+                                        class="btn btn-primary">Crop</button>
+
+                                </div>
+
                             </div>
-                            <div class="modal-body" style="color:black; font-weight: lighter;">
-                                <div style="width: auto; height: auto;" id="image-box"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a type="button" class="btn btn-primary" onchange="return fileValidation1()"
-                                    id="crop-btn" data-dismiss="modal">Crop</a>
-                            </div>
+
                         </div>
+
                     </div>
-                </div>
 
+                </form>
 
-                <hr>
             </div>
 
             <!--/tab-pane-->
@@ -161,66 +187,58 @@
 
 
                     <div class="billing-address text-center">
-
-                        <h5 class="checkout-box-title">SAVED ADDRESS</h5><hr>
+                        {{#if address}}
+                        <h5 class="checkout-box-title">SAVED ADDRESS</h5>
+                        <hr>
+                        {{/if}}
 
                         <div class="row checkout-billing-adress-box">
-
-                            <div class="col-md-4">
-                                <dl>
-                                    <dt>1.Coffee</dt>
-                                    <dd>Black hot drink</dd>
-                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
-                                            style="color: #007eff;">
-                                            Use Address</span></dt><br>
-
-                                </dl>
-                            </div>
-
-                            <div class="col-md-4">
-                                <dl>
-                                    <dt>1.Coffee</dt>
-                                    <dd>Black hot drink</dd>
-                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
-                                            style="color: #007eff;">
-                                            Use Address</span></dt><br>
-
-                                </dl>
-                            </div>
-
-                            <div class="col-md-4">
-                                <dl>
-                                    <dt>1.Coffee</dt>
-                                    <dd>Black hot drink</dd>
-                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
-                                            style="color: #007eff;">
-                                            Use Address</span></dt><br>
+                            {{#each address.Address}}
+                            <div class="col-md-2">
+                                <dl class='text-left'>
+                                    <dt style="margin-bottom:10px;color:black">{{this.First_Name}} {{this.Last_Name}}
+                                    </dt>
+                                    <dd>"{{this.Company_Name}}"</dd>
+                                    <dd>{{this.Street_Address}}, {{this.Extra_Details}},</dd>
+                                    <dd>{{this.Town_City}}, {{this.Country_State}},</dd>
+                                    <dd>PIN: {{this.Post_Code}},</dd>
+                                    <dd>Ph: {{this.Phone}},</dd>
+                                    <dd>Alt-Ph: {{this.Alt_Phone}}</dd>
+                                    <dt style="margin-top:10px;margin-left:10px"><a
+                                            href="/edit-address?id={{this.addressId}}">
+                                            <i class="material-icons">edit</i>
+                                        </a><span>
+                                            <a href="/delete-address?id={{this.addressId}}">
+                                                <i class="material-icons">delete</i>
+                                            </a></span></dt><br>
 
                                 </dl>
                             </div>
-
+                            {{/each}}
                         </div>
 
                     </div>
 
                 </div>
-                <hr><h5 class="checkout-box-title text-center">ADD ADDRESS</h5><hr>
+                <hr>
+                <h5 class="checkout-box-title text-center">ADD ADDRESS</h5>
+                <hr>
                 <div class="row">
 
                     <form class="form" action="/addNewAddress" method="post" id="addAddress">
                         <div class="form-group">
 
-                            <div class="col-xs-3">
+                            <div class="col-md-3">
                                 <label for="first_name">
                                     <h6>First Name</h6>
                                 </label>
-                                <input type="text" class="form-control" name="firstName" id="First_Name"
+                                <input type="text" class="form-control" name="First_Name" id="firstName"
                                     placeholder="first name" title="enter your first name if any.">
                             </div>
                         </div>
                         <div class="form-group">
 
-                            <div class="col-xs-3">
+                            <div class="col-md-3">
                                 <label for="last_name">
                                     <h6>Last Name</h6>
                                 </label>
@@ -231,7 +249,7 @@
 
                         <div class="form-group">
 
-                            <div class="col-xs-6">
+                            <div class="col-md-6">
                                 <label for="last_name">
                                     <h6>Company / House name</h6>
                                 </label>
@@ -242,7 +260,7 @@
 
                         <div class="form-group">
 
-                            <div class="col-xs-6">
+                            <div class="col-md-6">
                                 <label for="phone">
                                     <h6>Address line 1</h6>
                                 </label>
@@ -252,7 +270,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-xs-6">
+                            <div class="col-md-6">
                                 <label for="mobile">
                                     <h6>Address line 2</h6>
                                 </label>
@@ -262,7 +280,7 @@
                         </div>
                         <div class="form-group">
 
-                            <div class="col-xs-6">
+                            <div class="col-md-6">
                                 <label for="email">
                                     <h6>Town / City</h6>
                                 </label>
@@ -272,17 +290,17 @@
                         </div>
                         <div class="form-group">
 
-                            <div class="col-xs-6">
+                            <div class="col-md-6">
                                 <label for="email">
                                     <h6>Country / State</h6>
                                 </label>
-                                <input type="text" class="form-control" name="Country_State" id="state" placeholder="state"
-                                    title="enter a location">
+                                <input type="text" class="form-control" name="Country_State" id="state"
+                                    placeholder="state" title="enter a location">
                             </div>
                         </div>
                         <div class="form-group">
 
-                            <div class="col-xs-6">
+                            <div class="col-md-6">
                                 <label for="password">
                                     <h6>PIN code</h6>
                                 </label>
@@ -292,18 +310,18 @@
                         </div>
                         <div class="form-group">
 
-                            <div class="col-xs-3">
+                            <div class="col-md-3">
                                 <label for="password">
                                     <h6>Phone</h6>
                                 </label>
-                                <input type="tele" class="form-control" name="Phone" id="contact"
-                                    placeholder="contact" title="enter your password.">
+                                <input type="tele" class="form-control" name="Phone" id="contact" placeholder="contact"
+                                    title="enter your password.">
                             </div>
                         </div>
 
                         <div class="form-group">
 
-                            <div class="col-xs-3">
+                            <div class="col-md-3">
                                 <label for="password">
                                     <h6>Alternate Phone</h6>
                                 </label>
@@ -313,7 +331,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-xs-12 text-center">
+                            <div class="col-md-12 text-center">
                                 <br><br>
                                 <button class="btn btn-success" type="submit">Submit</button>
 
@@ -335,22 +353,35 @@
 {{>userfooter}}
 
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
 
 <script>
 
+    function buttonDisplay() {
+        document.getElementById('confirm-btn').style.display = 'block';
+    }
+
+
     function fileValidation1() {
+
         const imagebox = document.getElementById('image-box')
         const crop_btn = document.getElementById('crop-btn')
         var fileInput = document.getElementById('file1');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg || \.jpeg || \.png)$/i
+        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+
         if (!allowedExtensions.exec(filePath)) {
-            alert('Please upload file having extensions .jpeg only.');
+            document.getElementById('exampleModalCenter').style.display = 'none'
+            document.getElementById('errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
             fileInput.value = '';
             return false;
+
         } else {
+
             //Image preview
+            document.getElementById('errMsg1').innerHTML = ''
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
             imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
@@ -360,24 +391,28 @@
             document.getElementById('confirm-btn').style.display = 'none'
 
             const cropper = new Cropper(image, {
+
                 autoCropArea: 1,
                 viewMode: 1,
-                scalable: true,
-                zoomable: true,
-                movable: true,
-                aspectRatio: 16 / 9,
-                // preview: '.preview',
-                minCropBoxWidth: 500,
-                minCropBoxHeight: 250,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                aspectRatio: 157 / 155,
+                //preview: '.preview',
+                minCropBoxWidth: 180,
+                minCropBoxHeight: 240,
+
             })
+
             crop_btn.addEventListener('click', () => {
+
                 cropper.getCroppedCanvas().toBlob((blob) => {
+
                     let fileInputElement = document.getElementById('file1');
                     let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
                     let container = new DataTransfer();
 
                     container.items.add(file);
-                    console.log(container.files[0])
                     const img = container.files[0]
                     var url = URL.createObjectURL(img)
                     fileInputElement.files = container.files;
@@ -385,9 +420,13 @@
                     document.getElementById('image-box').style.display = 'none'
                     document.getElementById('crop-btn').style.display = 'none'
                     document.getElementById('confirm-btn').style.display = 'block'
+
                 });
+
             });
+
         }
+
     }
 </script>
 
@@ -399,7 +438,12 @@
     input {
         padding: none;
     }
-    dl{
-        margin:0;
+
+    dl {
+        margin: 0;
+    }
+
+    dd {
+        margin: 0;
     }
 </style>

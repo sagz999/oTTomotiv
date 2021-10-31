@@ -1,0 +1,170 @@
+{{>userheader}}
+
+<section id="page-title" class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <h3>EDIT-ADDRESS</h3>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="bodysection">
+    <div class="container">
+
+        <div class="row">
+
+            <form class="form" action="/edit-address" method="post" id="addAddress">
+                <input type="hidden" name="addressId" value="{{address.addressId}}">
+
+                <div class="form-group">
+
+                    <div class="col-xs-3">
+                        <label for="first_name">
+                            <h6>First Name</h6>
+                        </label>
+                        <input type="text" class="form-control" name="First_Name" id="firstName"
+                            value="{{address.First_Name}}" placeholder="first name" title="enter your first name">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-xs-3">
+                        <label for="last_name">
+                            <h6>Last Name</h6>
+                        </label>
+                        <input type="text" class="form-control" name="Last_Name" id="last_name"
+                            value="{{address.Last_Name}}" placeholder="last name" title="enter your last name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <div class="col-xs-6">
+                        <label for="last_name">
+                            <h6>Company / House name</h6>
+                        </label>
+                        <input type="text" class="form-control" name="Company_Name" id="last_name"
+                            value="{{address.Company_Name}}" placeholder="company/house name"
+                            title="enter your company/house name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <div class="col-xs-6">
+                        <label for="phone">
+                            <h6>Address line 1</h6>
+                        </label>
+                        <input type="text" class="form-control" name="Street_Address" id="Address line 1"
+                            value="{{address.Street_Address}}" placeholder="street address"
+                            title="enter your address line 1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="mobile">
+                            <h6>Address line 2</h6>
+                        </label>
+                        <input type="text" class="form-control" name="Extra_Details" id="Address line 2"
+                            value="{{address.Extra_Details}}" placeholder="Address line 2"
+                            title="enter your address line 2">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-xs-6">
+                        <label for="email">
+                            <h6>Town / City</h6>
+                        </label>
+                        <input type="text" class="form-control" name="Town_City" id="city" value="{{address.Town_City}}"
+                            placeholder="town/city" title="enter your town/city name">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-xs-6">
+                        <label for="email">
+                            <h6>Country / State</h6>
+                        </label>
+                        <input type="text" class="form-control" name="Country_State" id="state"
+                            value="{{address.Country_State}}" placeholder="country/state"
+                            title="enter your country/state">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-xs-6">
+                        <label for="password">
+                            <h6>PIN code</h6>
+                        </label>
+                        <input type="tele" class="form-control" name="Post_Code" id="pincode"
+                            value="{{address.Post_Code}}" placeholder="pincode" title="enter your postcode.">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-xs-3">
+                        <label for="password">
+                            <h6>Phone</h6>
+                        </label>
+                        <input type="tele" class="form-control" name="Phone" id="contact" value="{{address.Phone}}"
+                            placeholder="phone" title="enter your phone number">
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <div class="col-xs-3">
+                        <label for="password">
+                            <h6>Alternate Phone</h6>
+                        </label>
+                        <input type="tele" class="form-control" name="Alt_Phone" id="contact"
+                            value="{{address.Alt_Phone}}" placeholder="alternate phone"
+                            title="enter your alternate phone number if any">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12 text-center">
+                        <br><br>
+                        <button class="btn btn-success" type="submit">Update</button>
+
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</section>
+{{>userfooter}}
+
+<style>
+    .bodysection {
+        padding-top: 0 !important;
+        padding-bottom: 16px !important
+    }
+
+    h6 {
+        margin: 23px 0 0;
+    }
+
+    input {
+        padding: none;
+    }
+
+    dl {
+        margin: 0;
+    }
+
+    dd {
+        margin: 0;
+    }
+</style>

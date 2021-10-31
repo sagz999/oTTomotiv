@@ -365,5 +365,32 @@ router.get('/delete-prodBrand/',verifyLog,(req,res)=>{
   })
 })
 
+router.get('/coupons',verifyLog,(req,res)=>{
+
+userHelper.fetchCoupons().then((coupons)=>{
+
+  res.render('admin/coupons',{title:'Coupon management',isAdmin:true,Msg: req.session.coupAddMsg, Err: req.session.coupDelMsg,coupons})
+  req.session.coupAddMsg=false
+  req.session.coupDelMsg=false
+
+})
+
+})
+
+router.post('/add-coupon',(req,res)=>{
+  userHelper.addnewCoupon(req.body).then(()=>{
+    req.session.coupAddMsg='NEW COUPON ADDED'
+    res.redirect('/admin/coupons')
+  })
+})
+
+router.get('/delete-coupon/',verifyLog,(req,res)=>{
+  userHelper.deleteCoupon(req.query.couponId).then(()=>{
+    req.session.coupDelMsg='COUPON DELETED'
+    res.redirect('/admin/coupons')
+  })
+})
+
+
 
 module.exports = router;

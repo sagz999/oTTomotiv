@@ -39,9 +39,10 @@ module.exports = {
     },
 
     fetchProduct: (prodId) => {
-        
+
         return new Promise((resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(prodId) }).then((product) => {
+
                 resolve(product)
             })
         })
@@ -202,7 +203,7 @@ module.exports = {
 
     },
 
-    deleteCarModel: (Id,Name) => {
+    deleteCarModel: (Id, Name) => {
         return new Promise((resolve, reject) => {
 
             db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(Id) },
@@ -215,6 +216,26 @@ module.exports = {
                 }).then(() => {
                     resolve()
                 })
+        })
+    },
+
+    buyNowStockUpdate: (prodId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) }, { $inc: { Stock: -1 } }).then(() => {
+                resolve()
+            })
+        })
+    },
+
+    cartStockUpdate: (product) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(product.item) },
+                {
+                    $inc: { Stock: -product.quantity }
+                }).then(() => {
+                    resolve()
+                })
+
         })
     }
 

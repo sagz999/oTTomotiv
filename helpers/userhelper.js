@@ -6,6 +6,8 @@ var objectId = require('mongodb').ObjectId
 const crypto = require('crypto')
 
 const Razorpay = require('razorpay')
+const { resolve } = require('path')
+const { v4: uuidv4 } = require('uuid');
 
 var instance = new Razorpay({
     key_id: 'rzp_test_BR5CAu00Vuru3P',
@@ -142,14 +144,14 @@ module.exports = {
         })
     },
 
-    // fetchUserDetails:(userId)=>{
-    //     return new Promise((resolve,reject)=>{
-    //         db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)}).then((userData)=>{
-    //             resolve(userData)
-    //         })
-    //     })
+    fetchUserDetails: (userId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) }).then((userData) => {
+                resolve(userData)
+            })
+        })
 
-    // },
+    },
 
     fetchActiveUser: () => {
         return new Promise(async (resolve, reject) => {
@@ -454,17 +456,21 @@ module.exports = {
                 Name: order.First_Name + ' ' + order.Last_Name,
 
                 Address: {
+                    First_Name: order.First_Name,
+                    Last_Name: order.Last_Name,
                     Company_Name: order.Company_Name,
                     Street_Address: order.Street_Address,
                     Extra_Details: order.Extra_Details,
                     Town_City: order.Town_City,
                     Country_State: order.Country_State,
                     Post_Code: order.Post_Code,
+                    Phone: order.Phone,
+                    Alt_Phone: order.Alt_Phone
                 },
 
                 Phone: {
                     Phone: order.Phone,
-                    Alt_Phone: order.Alt_Phone,
+                    Alt_Phone: order.Alt_Phone
                 },
 
                 Coupon_Code: order.Coupon_Code,
@@ -673,9 +679,11 @@ module.exports = {
         })
     },
 
-    changeOrderStats: (orderId, prodId, statusUpdate) => {
+    changeOrderStats: (orderId, prodId, statusUpdate, quantity) => {
 
         return new Promise((resolve, reject) => {
+
+            quantity = parseInt(quantity)
 
             db.get().collection(collection.ORDER_COLLECTION)
                 .updateOne({ _id: objectId(orderId), Products: { $elemMatch: { item: objectId(prodId) } } },
@@ -686,7 +694,14 @@ module.exports = {
 
                     }).then(() => {
 
-                        resolve()
+                        db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) },
+                            {
+                                $inc: { Stock: quantity }
+                            }).then(() => {
+                                resolve()
+                            })
+
+
 
                     })
 
@@ -694,7 +709,8 @@ module.exports = {
 
     },
 
-    changebuyNowOrderStat: (orderId, statusUpdate) => {
+
+    changebuyNowOrderStat: (orderId, statusUpdate, prodId) => {
 
 
         return new Promise((resolve, reject) => {
@@ -703,12 +719,25 @@ module.exports = {
                 .updateOne({ _id: objectId(orderId) },
                     {
                         $set: {
+
                             Status: statusUpdate
+
                         }
 
                     }).then(() => {
 
-                        resolve()
+                        db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) },
+                            {
+
+                                $inc: { Stock: 1 }
+
+                            }).then(() => {
+
+                                resolve()
+
+                            })
+
+
 
                     })
 
@@ -716,17 +745,32 @@ module.exports = {
 
     },
 
-    addNewAddress: (addressData, userId) => {
+    addNewAddress: (address, userId) => {
+
+        let addressData = {
+            addressId: uuidv4(),
+            First_Name: address.First_Name,
+            Last_Name: address.Last_Name,
+            Company_Name: address.Company_Name,
+            Street_Address: address.Street_Address,
+            Extra_Details: address.Extra_Details,
+            Town_City: address.Town_City,
+            Country_State: address.Country_State,
+            Post_Code: address.Post_Code,
+            Phone: address.Phone,
+            Alt_Phone: address.Alt_Phone
+        }
+
         return new Promise(async (resolve, reject) => {
 
-            
-
-            let getAddress = await db.get().collection(collection.ADDRESS_COLLECTION).findOne({ user: objectId(userId)})
-            
 
 
-            if(getAddress) {
-                
+            let getAddress = await db.get().collection(collection.ADDRESS_COLLECTION).findOne({ user: objectId(userId) })
+
+
+
+            if (getAddress) {
+
                 db.get().collection(collection.ADDRESS_COLLECTION).updateOne({ user: objectId(userId) },
                     {
                         $push: {
@@ -737,7 +781,7 @@ module.exports = {
                     })
 
             } else {
-                
+
                 let addressObj = {
 
                     user: objectId(userId),
@@ -753,6 +797,168 @@ module.exports = {
 
 
         })
+    },
+
+
+    fetchUserAddress: (userId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ADDRESS_COLLECTION).findOne({ user: objectId(userId) }).then((address) => {
+
+                let addArray = address.Address
+
+                if (addArray.length > 0) {
+                    resolve(address)
+                } else {
+                    resolve(false)
+                }
+
+
+            })
+        })
+    },
+
+    deleteAddress: (userId, addId) => {
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.ADDRESS_COLLECTION).updateOne({ user: objectId(userId) },
+
+                {
+                    $pull: {
+                        Address: { addressId: addId }
+                    }
+
+                },
+                {
+                    multi: true
+                }).then((result) => {
+                    console.log(result)
+                    resolve()
+                })
+        })
+
+    },
+
+    fetchAddressToEdit: (userId, addId) => {
+
+        return new Promise(async (resolve, reject) => {
+
+            let addresssData = await db.get().collection(collection.ADDRESS_COLLECTION).aggregate([
+                {
+                    $match: { user: objectId(userId) }
+                },
+                {
+                    $unwind: "$Address"
+                },
+                {
+                    $match: { "Address.addressId": addId }
+                }
+            ]).toArray()
+
+            resolve(addresssData[0].Address)
+
+
+        })
+    },
+
+    editAddress: (userId, addressData, addId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ADDRESS_COLLECTION).updateOne({ user: objectId(userId), Address: { $elemMatch: { addressId: addId } } },
+                {
+                    $set: {
+                        'Address.$.First_Name': addressData.First_Name,
+                        'Address.$.Last_Name': addressData.Last_Name,
+                        'Address.$.Company_Name': addressData.Company_Name,
+                        'Address.$.Street_Address': addressData.Street_Address,
+                        'Address.$.Extra_Details': addressData.Extra_Details,
+                        'Address.$.Town_City': addressData.Town_City,
+                        'Address.$.Country_State': addressData.Country_State,
+                        'Address.$.Post_Code': addressData.Post_Code,
+                        'Address.$.Phone': addressData.Phone,
+                        'Address.$.Alt_Phone': addressData.Alt_Phone
+                    }
+                }).then(() => {
+                    resolve()
+                })
+        })
+    },
+
+    updateUserProfile: (userId, profileData) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(userId) },
+                {
+                    $set: {
+                        Username: profileData.Username,
+                        Email: profileData.Email,
+                        Pnum: profileData.Pnum
+                    }
+
+                }).then(() => {
+                    resolve(userId)
+                })
+        })
+    },
+
+    fetchCoupons: () => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).find().toArray().then((coupons) => {
+                resolve(coupons)
+            })
+        })
+    },
+
+    addnewCoupon: (newCoupon) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).insertOne(newCoupon).then(() => {
+                resolve()
+            })
+        })
+    },
+
+    deleteCoupon: (couponId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).deleteOne({ _id: objectId(couponId) }).then(() => {
+                resolve()
+            })
+        })
+    },
+
+    checkCouponCode: (couponCode, price, userId) => {
+
+
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).findOne({ Coupon_Code: couponCode }).then((coupon) => {
+
+                if (coupon) {
+
+                    db.get().collection(collection.ORDER_COLLECTION).findOne({ UserId: objectId(userId), Coupon_Code: couponCode }).then((Couponstat) => {
+                        
+                        if (Couponstat) {
+
+                            let Usedcoupon = {}
+                            Usedcoupon.usedCoupon = true
+                            resolve(Usedcoupon)
+
+                        } else {
+                            let couponSuccess = {}
+                            couponSuccess.discountPrice = (price * coupon.Coupon_Percentage) / 100
+                            couponSuccess.finalPrice = price - ((price * coupon.Coupon_Percentage) / 100)
+                            resolve(couponSuccess)
+
+                        }
+                    })
+
+                } else {
+
+                    let invalidCoupon = {}
+                    invalidCoupon.InvalidCoupon = true
+                    resolve(invalidCoupon)
+
+
+                }
+            })
+        })
     }
+
+
 
 }

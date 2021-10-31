@@ -39,28 +39,6 @@
                                 </dl>
                             </div>
 
-                            <div class="col-md-4">
-                                <dl>
-                                    <dt>1.Coffee</dt>
-                                    <dd>Black hot drink</dd>
-                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
-                                            style="color: #007eff;">
-                                            Use Address</span></dt><br>
-
-                                </dl>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <dl>
-                                    <dt>1.Coffee</dt>
-                                    <dd>Black hot drink</dd>
-                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
-                                            style="color: #007eff;">
-                                            Use Address</span></dt><br>
-
-                                </dl>
-                            </div>
-
                         </div>
 
                     </div>
@@ -70,7 +48,7 @@
             <div class="row">
                 <div class="col-md-8 col-sm-12 col-xs-12">
                     <div class="billing-address">
-                        <h5 class="checkout-box-title">NEW ADDRESS</h5>
+                        <h5 class="checkout-box-title">ADDRESS</h5>
                         <div class="checkout-billing-adress-box">
 
                             <div class="billing-address-input clearfix">
@@ -132,8 +110,10 @@
                         <div class="pcb-content">
                             <p>Enter your coupon code if you have one</p>
                             <div class="pcb-cuppon-input clearfix">
-                                <input type="text" placeholder="Coupon code" name="Coupon_Code">
-                                <button class="checkout-page-button hvr-bs">Apply</button>
+                                <div id="errorDiv"></div>
+                                <input type="text" id="couponCode" placeholder="Coupon code" name="coupon">
+                                <button type"button" onclick="checkCoupon('{{price}}')"
+                                    class="checkout-page-button hvr-bs">Apply</button>
                             </div>
                         </div>
                     </div>
@@ -143,8 +123,11 @@
                             <ul>
                                 <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹
                                         {{price}}</span></li>
+                                <li class="clearfix">Discount<span>₹<span id="totaldiscount"></span></span></li>
                                 <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
-                                <li class="order-total clearfix">Order Total <span>₹ {{price}}</span></li>
+                                <li class="order-total clearfix">Order Total <span>₹ <span
+                                            id="totalPrice">{{price}}</span></span></li>
+                                <input type="hidden" name="totalfinalPrice" id="totalfinalPrice" value="{{price}}">
                             </ul>
                         </div>
                     </div>
@@ -252,6 +235,48 @@
                 }
             }
 
+        })
+
+    }
+
+</script>
+
+<script>
+
+    function checkCoupon(price) {
+       
+        let couponCode = document.getElementById('couponCode').value
+
+        $.ajax({
+
+            url: '/checkCoupon?couponCode=' + couponCode + '&price=' + price,
+
+            method: 'get',
+
+            success: (response) => {
+                if (response.usedCoupon) {
+
+                    document.getElementById('totaldiscount').innerHTML = 0
+                    document.getElementById('totalPrice').innerHTML = price
+                    document.getElementById('totalfinalPrice').value = price
+                    document.getElementById('errorDiv').innerHTML = '<span style="color:red">Coupon already used!</span>'
+
+                } else if (response.InvalidCoupon) {
+
+                    document.getElementById('totaldiscount').innerHTML = 0
+                    document.getElementById('totalPrice').innerHTML = price
+                    document.getElementById('totalfinalPrice').value = price
+                    document.getElementById('errorDiv').innerHTML = '<span style="color:red">Invalid coupon!</span>'
+
+                } else {
+
+                    document.getElementById('errorDiv').innerHTML = ' '
+                    document.getElementById('totaldiscount').innerHTML = response.discountPrice
+                    document.getElementById('totalPrice').innerHTML = parseInt(response.finalPrice)
+                    document.getElementById('totalfinalPrice').value = parseInt(response.finalPrice)
+
+                }
+            }
         })
 
     }

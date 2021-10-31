@@ -370,6 +370,10 @@ router.post('/cartPlaceOrder', async (req, res) => {
 
   userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {
 
+    products.map((data)=>{
+      productHelper.cartStockUpdate(data)
+    })
+
     if (req.body['Pay_Method'] == 'COD') {
 
       res.json({ codSuccess: true })
@@ -385,6 +389,8 @@ router.post('/cartPlaceOrder', async (req, res) => {
       console.log("error");
 
     }
+
+    
 
   })
 
@@ -417,6 +423,8 @@ router.post('/buyNowPlaceOrder', async (req, res) => {
       console.log("error");
 
     }
+
+    productHelper.buyNowStockUpdate(product._id)
 
   })
 
@@ -464,7 +472,6 @@ router.post('/verify-payment', (req, res) => {
 
     userHelper.changePaymentStatus(req.body['order[receipt]']).then(() => {
 
-      console.log('Payment success')
       res.json({ status: true })
 
     })
@@ -501,6 +508,7 @@ router.get('/view-prodsInOrder/', verifyLog, cartCounter, async (req, res) => {
   } else {
 
     let prodsInOrder = await userHelper.getProdsInOrder(req.query.orderId)
+    
 
     res.render('user/products-in-order', { title: 'Ordered products', isUser: true, user: req.session.user, cartCount: req.session.cartCount, prodsInOrder, Order })
 
@@ -510,26 +518,46 @@ router.get('/view-prodsInOrder/', verifyLog, cartCounter, async (req, res) => {
 
 router.get('/profile', verifyLog, cartCounter, (req, res) => {
 
-  res.render('user/profile', { title: 'Profile', isUser: true, cartCount: req.session.cartCount, user: req.session.user })
+  userHelper.fetchUserDetails(req.session.user._id).then((userData) => {
+
+    userHelper.fetchUserAddress(userData._id).then((address) => {
+
+      res.render('user/profile', { title: 'Profile', isUser: true, cartCount: req.session.cartCount, user: userData, address, Err: req.session.errMsg, Msg: req.session.succMsg })
+      req.session.errMsg = false
+      req.session.succMsg = false
+
+    })
+
+  })
 
 })
 
 
-router.post('/updateprofile', (req, res) => {
 
 
+router.post('/update-profile', (req, res) => {
 
-  // userhelper.userProfileData(req.body).then(()=>{
-  let id = (req.session.user._id)
+  userHelper.updateUserProfile(req.session.user._id, req.body).then((id) => {
 
-  let Img = req.files.Dp
+    if (req.files) {
+      let Img = req.files.userImage
+      Img.mv('./public/user-images/' + id + '_dp.jpg')
+      req.session.succMsg ="PROFILE UPDATED"
+      res.redirect('/profile')
 
-  Img.mv('./public/user-images/' + id + '_dp.jpg')
-  // })
+    } else {
+      req.session.succMsg ="PROFILE UPDATED"
+      res.redirect('/profile')
+
+    }
+
+
+  })
+
 
 })
 
-router.get('/prodBuyNow/', (req, res) => {
+router.get('/prodBuyNow/', verifyLog, cartCounter, (req, res) => {
   productHelper.fetchProduct(req.query.prodId).then((product) => {
     req.session.buynow = true
     req.session.prod = product
@@ -538,39 +566,88 @@ router.get('/prodBuyNow/', (req, res) => {
   })
 })
 
-router.post('/cancelProdInOrder', (req, res) => {
 
+router.post('/cancelProdInOrder', (req, res) => {
+  console.log('Quantity:',req.body.quantity);
   userHelper.changeOrderStats(
 
     req.body.orderId,
     req.body.prodId,
-    req.body.status
+    req.body.status,
+    req.body.quantity
 
   ).then(() => {
 
-    res.json({status:true})
+    res.json({ status: true })
 
   })
 
 })
 
+
 router.post('/cancelBuyNowOrder', (req, res) => {
+  
 
   userHelper.changebuyNowOrderStat(
     req.body.orderId,
-    req.body.status
+    req.body.status,
+    req.body.prodId
   ).then(() => {
 
-    res.json({status:true})
+    res.json({ status: true })
 
   })
 
 })
 
 
-router.post('/addNewAddress',(req,res)=>{
-  userHelper.addNewAddress(req.body,req.session.user._id).then(()=>{
+router.post('/addNewAddress', (req, res) => {
+  userHelper.addNewAddress(req.body, req.session.user._id).then(() => {
+    req.session.succMsg = 'ADDED NEW ADDRESS'
     res.redirect('/profile')
+  })
+})
+
+router.get('/delete-address/', verifyLog, (req, res) => {
+  userHelper.deleteAddress(req.session.user._id, req.query.id).then(() => {
+    req.session.errMsg = 'ADDRESS DELETED'
+    res.redirect('/profile')
+  })
+})
+
+router.get('/edit-address/', verifyLog, cartCounter, (req, res) => {
+
+  userHelper.fetchAddressToEdit(req.session.user._id, req.query.id).then((address) => {
+
+    res.render('user/edit-address', { title: 'Edit-Address', isUser: true, user: req.session.user, cartCount: req.session.cartCount, address })
+
+  })
+
+
+
+})
+
+router.post('/edit-address', (req, res) => {
+  userHelper.editAddress(req.session.user._id, req.body, req.body.addressId).then(() => {
+    req.session.succMsg = 'ADDRESS UPDATED'
+    res.redirect('/profile')
+  })
+})
+
+router.get('/get-orderInvoice/', verifyLog, cartCounter,(req,res)=>{
+  userHelper.getSpecificOrder(req.query.orderId).then((order)=>{
+    res.render('user/order-invoice',{title:'Product Invoice',isUser:true, user: req.session.user, cartCount: req.session.cartCount,order})
+  })
+})
+
+router.get('/checkCoupon/',verifyLog,(req,res)=>{
+  userHelper.checkCouponCode(req.query.couponCode, req.query.price, req.session.user._id).then((response)=>{
+
+    if(response){
+      
+      res.json(response)
+    }
+   
   })
 })
 
