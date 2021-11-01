@@ -55,6 +55,7 @@ app.use('/', usersRouter);
 app.use('/admin',adminRouter );
 
 handlebars.registerHelper("hello",function(context,options,price){
+  console.log(context,options,price)
     for(key in context){
       if(options.toString()=== context[key].item.toString()){
         var inp =true

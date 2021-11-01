@@ -53,7 +53,11 @@ router.get('/delete-product/:id', verifyLog, (req, res) => {
 router.get('/edit-product/', verifyLog, async (req, res) => {
 
   let product = await productHelper.fetchProduct(req.query.id)
-  res.render('admin/edit-product', { title: 'Edit products', isAdmin: true, product });
+  let category=await productHelper.fetchCategories()
+  let carBrand= await productHelper.fetchCarBrands()
+  let prodBrand= await productHelper.fetchProdBrands()
+
+  res.render('admin/edit-product', { title: 'Edit products', isAdmin: true, product,category,carBrand,prodBrand });
 
 
 });
@@ -80,7 +84,11 @@ router.post('/edit-product/:id', (req, res) => {
 
 router.get('/add-product', verifyLog, async (req, res) => {
 
-  res.render('admin/add-product', { title: 'Add products', isAdmin: true });
+  let category=await productHelper.fetchCategories()
+  let carBrand= await productHelper.fetchCarBrands()
+  let prodBrand= await productHelper.fetchProdBrands()
+
+  res.render('admin/add-product', { title: 'Add products', isAdmin: true,category,carBrand,prodBrand });
 
 });
 

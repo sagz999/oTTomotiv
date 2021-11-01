@@ -23,24 +23,33 @@
                                         <input name="Product_Name" type="text" class="form-control">
                                     </div>
 
-                                    <div class="col-md-2 my-1"></div>
+                                    <div class="col-md-2 my-1">
+
+                                        <label style="font-weight: bold;">Stock</label>
+                                        <input name="Stock" type="number" class="form-control">
+
+                                    </div>
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Main Category</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none" name="Main_Category" class="custom-select mr-sm-2">
+                                        <select style="background:#202940;color:#8b92a9;border:none"
+                                            name="Main_Category" class="custom-select mr-sm-2">
                                             <option selected disabled>Choose...</option>
-                                            {{#each CatsAndBrands.MainCat}}
-                                            <option>{{this.MainCat}}</option>
+                                            {{#each category}}
+                                            <option>{{this.Main_Cat}}</option>
                                             {{/each}}
                                         </select>
                                     </div>
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Sub Category</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none" name="Sub_Category" class="custom-select mr-sm-2">
+                                        <select style="background:#202940;color:#8b92a9;border:none" name="Sub_Category"
+                                            class="custom-select mr-sm-2">
                                             <option selected disabled>Choose...</option>
-                                            {{#each CatsAndBrands.SubCat}}
-                                            <option>{{this.SubCat}}</option>
+                                            {{#each category}}
+                                            {{#each this.Sub_Cat}}
+                                            <option>{{this}}</option>
+                                            {{/each}}
                                             {{/each}}
                                         </select>
                                     </div>
@@ -55,27 +64,38 @@
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Product Brand</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none" name="Product_Brand" class="custom-select mr-sm-2">
-                                            <option selected>Choose...</option>
-                                            <option>Dummy</option>
+                                        <select style="background:#202940;color:#8b92a9;border:none"
+                                            name="Product_Brand" class="custom-select mr-sm-2">
+                                            <option selected disabled>Choose...</option>
+                                            {{#each prodBrand}}
+                                            <option>{{this.Prod_Brand}}</option>
+                                            {{/each}}
 
                                         </select>
                                     </div>
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Car Brand</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none" name="Car_Brand" class="custom-select mr-sm-2">
-                                            <option selected>Choose...</option>
-                                            <option>Dummy</option>
+                                        <select style="background:#202940;color:#8b92a9;border:none" name="Car_Brand"
+                                            class="custom-select mr-sm-2">
+                                            <option selected disabled>Choose...</option>
+                                            {{#each carBrand}}
+                                            <option>{{this.Car_Brand}}</option>
+                                            {{/each}}
 
                                         </select>
                                     </div>
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Car Model</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none" name="Car_Model" class="custom-select mr-sm-2">
-                                            <option selected>Choose...</option>
-                                            <option>Dummy</option>
+                                        <select style="background:#202940;color:#8b92a9;border:none" name="Car_Model"
+                                            class="custom-select mr-sm-2">
+                                            <option selected disabled>Choose...</option>
+                                            {{#each carBrand}}
+                                            {{#each this.Car_Model}}
+                                            <option>{{this}}</option>
+                                            {{/each}}
+                                            {{/each}}
 
                                         </select>
                                     </div>
@@ -275,7 +295,7 @@
 
 
         {{>admin-footer}}
-        
+
 
     </div>
 </div>

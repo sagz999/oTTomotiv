@@ -479,7 +479,7 @@ module.exports = {
                 ProdId: product._id,
                 Product_Name: product.Product_Name,
                 Price: product.Price,
-                Total_Amount: product.Price,
+                Total_Amount: product.totalfinalPrice,
                 Payment_Stats: payStatus,
                 Date: new Date().toLocaleString('en-US').slice(0, 10),
                 Time: new Date().toLocaleString('en-US').slice(12, 23),
@@ -830,8 +830,8 @@ module.exports = {
                 },
                 {
                     multi: true
-                }).then((result) => {
-                    console.log(result)
+                }).then(() => {
+                    
                     resolve()
                 })
         })

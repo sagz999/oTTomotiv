@@ -26,17 +26,17 @@
                                     </div>
 
                                     <div class="col-md-2 my-1">
-                                        <label style="font-weight: bold;">Date / Time</label>
-                                        <input name="Date" type="datetime-local" class="form-control"
-                                            value="{{product.Date}}">
-
+                                        <label style="font-weight: bold;">Stock</label>
+                                        <input name="Stock" value="{{product.Stock}}" type="number" class="form-control">
                                     </div>
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Main Category</label>
                                         <select name="Main_Category" class="custom-select mr-sm-2">
                                             <option selected>{{product.Main_Category}}</option>
-                                            <option>Dummy</option>
+                                            {{#each category}}
+                                            <option>{{this.Main_Cat}}</option>
+                                            {{/each}}
                                         </select>
                                     </div>
 
@@ -44,7 +44,11 @@
                                         <label style="font-weight:bold;">Sub Category</label>
                                         <select name="Sub_Category" class="custom-select mr-sm-2">
                                             <option selected>{{product.Sub_Category}}</option>
-                                            <option>Dummy</option>
+                                            {{#each category}}
+                                            {{#each this.Sub_Cat}}
+                                            <option>{{this}}</option>
+                                            {{/each}}
+                                            {{/each}}
                                         </select>
                                     </div>
 
@@ -60,7 +64,9 @@
                                         <label style="font-weight:bold;">Product Brand</label>
                                         <select name="Product_Brand" class="custom-select mr-sm-2">
                                             <option selected>{{product.Product_Brand}}</option>
-                                            <option>Dummy</option>
+                                            {{#each prodBrand}}
+                                            <option>{{this.Prod_Brand}}</option>
+                                            {{/each}}
 
                                         </select>
                                     </div>
@@ -69,7 +75,9 @@
                                         <label style="font-weight:bold;">Car Brand</label>
                                         <select name="Car_Brand" class="custom-select mr-sm-2">
                                             <option selected>{{product.Car_Brand}}</option>
-                                            <option>Dummy</option>
+                                            {{#each carBrand}}
+                                            <option>{{this.Car_Brand}}</option>
+                                            {{/each}}
 
                                         </select>
                                     </div>
@@ -78,7 +86,11 @@
                                         <label style="font-weight:bold;">Car Model</label>
                                         <select name="Car_Model" class="custom-select mr-sm-2">
                                             <option selected>{{product.Car_Model}}</option>
-                                            <option>Dummy</option>
+                                            {{#each carBrand}}
+                                            {{#each this.Car_Model}}
+                                            <option>{{this}}</option>
+                                            {{/each}}
+                                            {{/each}}
 
                                         </select>
                                     </div>

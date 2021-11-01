@@ -307,9 +307,11 @@ router.get('/view-product/', cartCounter, async (req, res) => {
 
   await productHelper.fetchProduct(req.query.id).then(async (product) => {
 
-    await productHelper.getRelproducts(product).then((relProduct) => {
+    await productHelper.getRelproducts(product).then(async (relProduct) => {
 
-      res.render('user/product-singleView', { title: product.Product_Name, isUser: true, user: req.session.user, product, relProduct, cartCount: req.session.cartCount });
+      let cart = await userHelper.fetchCartProd(req.session.user._id)
+
+      res.render('user/product-singleView', { title: product.Product_Name, isUser: true, user: req.session.user, product, relProduct, cartCount: req.session.cartCount, cart });
 
     })
 
@@ -352,12 +354,14 @@ router.get('/checkout', verifyLog, cartCounter, async (req, res) => {
 
   if (req.session.buynow) {
     let price = req.session.prod.Price
-    res.render('user/buyNowCheckout', { title: 'Checkout', isUser: true, price, user: req.session.user, cartCount: req.session.cartCount })
+    let address = await userHelper.fetchUserAddress(req.session.user._id)
+    res.render('user/buyNowCheckout', { title: 'Checkout', isUser: true, price, user: req.session.user, cartCount: req.session.cartCount, address })
 
   } else {
 
     let ctotal = await userHelper.getTotalAmount(req.session.user._id)
-    res.render('user/cartCheckout', { title: 'Checkout', isUser: true, ctotal, user: req.session.user, cartCount: req.session.cartCount })
+    let address = await userHelper.fetchUserAddress(req.session.user._id)
+    res.render('user/cartCheckout', { title: 'Checkout', isUser: true, ctotal, user: req.session.user, cartCount: req.session.cartCount, address })
 
   }
 
@@ -366,11 +370,11 @@ router.get('/checkout', verifyLog, cartCounter, async (req, res) => {
 router.post('/cartPlaceOrder', async (req, res) => {
 
   let products = await userHelper.getCartProductList(req.session.user._id)
-  let totalPrice = await userHelper.getTotalAmount(req.session.user._id)
+  let totalPrice = req.body.totalfinalPrice
 
   userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {
 
-    products.map((data)=>{
+    products.map((data) => {
       productHelper.cartStockUpdate(data)
     })
 
@@ -390,7 +394,7 @@ router.post('/cartPlaceOrder', async (req, res) => {
 
     }
 
-    
+
 
   })
 
@@ -402,6 +406,11 @@ router.post('/cartPlaceOrder', async (req, res) => {
 router.post('/buyNowPlaceOrder', async (req, res) => {
 
   let product = req.session.prod
+  let price = req.body.totalfinalPrice
+
+  if (req.body.saveAddress == 'on') {
+    await userHelper.addNewAddress(req.body,req.session.user._id)
+  }
 
   userHelper.buyNowPlaceOrder(req.body, product).then((orderId) => {
 
@@ -414,7 +423,7 @@ router.post('/buyNowPlaceOrder', async (req, res) => {
 
     } else if (req.body['Pay_Method'] == "Online") {
 
-      userHelper.generateRazorpay(orderId, product.Price).then((result) => {
+      userHelper.generateRazorpay(orderId, price).then((result) => {
         res.json(result)
       })
 
@@ -508,7 +517,7 @@ router.get('/view-prodsInOrder/', verifyLog, cartCounter, async (req, res) => {
   } else {
 
     let prodsInOrder = await userHelper.getProdsInOrder(req.query.orderId)
-    
+
 
     res.render('user/products-in-order', { title: 'Ordered products', isUser: true, user: req.session.user, cartCount: req.session.cartCount, prodsInOrder, Order })
 
@@ -542,11 +551,11 @@ router.post('/update-profile', (req, res) => {
     if (req.files) {
       let Img = req.files.userImage
       Img.mv('./public/user-images/' + id + '_dp.jpg')
-      req.session.succMsg ="PROFILE UPDATED"
+      req.session.succMsg = "PROFILE UPDATED"
       res.redirect('/profile')
 
     } else {
-      req.session.succMsg ="PROFILE UPDATED"
+      req.session.succMsg = "PROFILE UPDATED"
       res.redirect('/profile')
 
     }
@@ -568,7 +577,7 @@ router.get('/prodBuyNow/', verifyLog, cartCounter, (req, res) => {
 
 
 router.post('/cancelProdInOrder', (req, res) => {
-  console.log('Quantity:',req.body.quantity);
+
   userHelper.changeOrderStats(
 
     req.body.orderId,
@@ -586,7 +595,7 @@ router.post('/cancelProdInOrder', (req, res) => {
 
 
 router.post('/cancelBuyNowOrder', (req, res) => {
-  
+
 
   userHelper.changebuyNowOrderStat(
     req.body.orderId,
@@ -634,22 +643,31 @@ router.post('/edit-address', (req, res) => {
   })
 })
 
-router.get('/get-orderInvoice/', verifyLog, cartCounter,(req,res)=>{
-  userHelper.getSpecificOrder(req.query.orderId).then((order)=>{
-    res.render('user/order-invoice',{title:'Product Invoice',isUser:true, user: req.session.user, cartCount: req.session.cartCount,order})
+router.get('/get-orderInvoice/', verifyLog, cartCounter, (req, res) => {
+  userHelper.getSpecificOrder(req.query.orderId).then((order) => {
+    res.render('user/order-invoice', { title: 'Product Invoice', isUser: true, user: req.session.user, cartCount: req.session.cartCount, order })
   })
 })
 
-router.get('/checkCoupon/',verifyLog,(req,res)=>{
-  userHelper.checkCouponCode(req.query.couponCode, req.query.price, req.session.user._id).then((response)=>{
+router.get('/checkCouponBuyNow/', verifyLog, (req, res) => {
+  userHelper.checkCouponCode(req.query.couponCode, req.query.price, req.session.user._id).then((response) => {
 
-    if(response){
-      
-      res.json(response)
-    }
-   
+    res.json(response)
+
   })
 })
+
+router.get('/checkCouponCart/', verifyLog, (req, res) => {
+
+  userHelper.checkCouponCode(req.query.couponCode, req.query.price, req.session.user._id).then((response) => {
+
+    res.json(response)
+
+  })
+
+})
+
+
 
 module.exports = router;
 

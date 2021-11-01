@@ -6,6 +6,7 @@ module.exports = {
     addProduct: (newProduct) => {
         return new Promise(async (resolve, reject) => {
 
+            newProduct.Stock=parseInt(newProduct.Stock)
             newProduct.Price = parseInt(newProduct.Price)
             newProduct.Date = new Date()
             await db.get().collection(collection.PRODUCT_COLLECTION).insertOne(newProduct).then((data) => {
@@ -61,7 +62,7 @@ module.exports = {
                         Car_Model: prodData.Car_Model,
                         Price: parseInt(prodData.Price),
                         Description: prodData.Description,
-                        Date: prodData.Date
+                        Stock: parseInt(prodData.Stock)
                     }
                 }).then(() => {
                     resolve()
@@ -237,6 +238,30 @@ module.exports = {
                 })
 
         })
+    },
+
+    fetchCategories:()=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.CATEGORY_COLLECTION).find().toArray().then((result)=>{
+                resolve(result)
+            })
+        })
+    },
+
+    fetchCarBrands:()=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.CAR_BRAND_COLLECTION).find().toArray().then((result)=>{
+                resolve(result)
+            })
+        })
+    },
+
+    fetchProdBrands:()=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.PROD_BRAND_COLLECTION).find().toArray().then((result)=>{
+                resolve(result)
+            })
+        }) 
     }
 
 

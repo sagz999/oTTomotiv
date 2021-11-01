@@ -28,16 +28,25 @@
 
                         <div class="row checkout-billing-adress-box">
 
-                            <div class="col-md-4">
-                                <dl>
-                                    <dt>1.Coffee</dt>
-                                    <dd>Black hot drink</dd>
+
+                            {{#each address.Address}}
+                            <div class="col-md-3">
+                                <dl class='text-left'>
+                                    <dt style="margin-bottom:10px;color:black">{{this.First_Name}} {{this.Last_Name}}
+                                    </dt>
+                                    <dd>"{{this.Company_Name}}"</dd>
+                                    <dd>{{this.Street_Address}}, {{this.Extra_Details}},</dd>
+                                    <dd>{{this.Town_City}}, {{this.Country_State}},</dd>
+                                    <dd>PIN: {{this.Post_Code}},</dd>
+                                    <dd>Ph: {{this.Phone}},</dd>
+                                    <dd>Alt-Ph: {{this.Alt_Phone}}</dd>
                                     <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
                                             style="color: #007eff;">
                                             Use Address</span></dt><br>
 
                                 </dl>
                             </div>
+                            {{/each}}
 
                         </div>
 
@@ -109,21 +118,41 @@
                         <h5 class="checkout-box-title">COUPON CODE</h5>
                         <div class="pcb-content">
                             <p>Enter your coupon code if you have one</p>
-                            <div class="pcb-cuppon-input clearfix">
+                            {{!-- <div class="pcb-cuppon-input clearfix">
                                 <input type="text" placeholder="Coupon code" name="Coupon_Code">
                                 <button class="checkout-page-button hvr-bs">Apply</button>
+                            </div> --}}
+
+                            <div class="pcb-cuppon-input clearfix">
+                                <div id="errorDiv"></div>
+                                <input type="text" id="couponCode" placeholder="Coupon code" name="Coupon_Code">
+                                <a  onclick="checkCoupon('{{ctotal}}')"
+                                    class="checkout-page-button hvr-bs btn btn-primary">Apply</a>
                             </div>
+
                         </div>
                     </div>
                     <div class="your-order-box">
                         <h5 class="checkout-box-title">YOUR ORDER</h5>
                         <div class="yob-content">
-                            <ul>
+
+                            {{!-- <ul>
                                 <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹
                                         {{ctotal}}</span></li>
                                 <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
                                 <li class="order-total clearfix">Order Total <span>₹ {{ctotal}}</span></li>
+                            </ul> --}}
+
+                            <ul>
+                                <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹
+                                        {{ctotal}}</span></li>
+                                <li class="clearfix">Discount<span>₹<span id="totaldiscount">0</span></span></li>
+                                <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
+                                <li class="order-total clearfix">Order Total <span>₹ <span
+                                            id="totalPrice">{{ctotal}}</span></span></li>
+                                <input type="hidden" name="totalfinalPrice" id="totalfinalPrice" value="{{ctotal}}">
                             </ul>
+
                         </div>
                     </div>
 
@@ -236,9 +265,69 @@
 
 </script>
 
+<script>
+
+    function checkCoupon(price) {
+
+        let couponCode = document.getElementById('couponCode').value
+
+        $.ajax({
+
+            url: '/checkCouponCart?couponCode=' + couponCode + '&price=' + price,
+
+            method: 'get',
+
+            success: (response) => {
+                if (response.usedCoupon) {
+
+                    document.getElementById('totaldiscount').innerHTML = 0
+                    document.getElementById('totalPrice').innerHTML = price
+                    document.getElementById('totalfinalPrice').value = price
+                    document.getElementById('errorDiv').innerHTML = '<span style="color:red">Coupon already used!</span>'
+
+                } else if (response.InvalidCoupon) {
+
+                    document.getElementById('totaldiscount').innerHTML = 0
+                    document.getElementById('totalPrice').innerHTML = price
+                    document.getElementById('totalfinalPrice').value = price
+                    document.getElementById('errorDiv').innerHTML = '<span style="color:red">Invalid coupon!</span>'
+
+                } else {
+
+                    document.getElementById('errorDiv').innerHTML = '<span style="color:yellowgreen">Coupon Applied!</span>'
+                    document.getElementById('totaldiscount').innerHTML = response.discountPrice
+                    document.getElementById('totalPrice').innerHTML = parseInt(response.finalPrice)
+                    document.getElementById('totalfinalPrice').value = parseInt(response.finalPrice)
+
+                }
+            }
+        })
+
+    }
+
+</script>
+
+
 
 <style>
-    
+    h6 {
+        margin: 23px 0 0;
+    }
+
+    input {
+        padding: none;
+    }
+
+    dl {
+        margin: 0;
+    }
+
+    dd {
+        margin: 0;
+    }
+</style>
+
+<style>
     dt {
         color: black;
     }
