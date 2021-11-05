@@ -5,10 +5,10 @@
 
 <head>
   {{#if isUser}}
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-    crossorigin="anonymous" defer></script>
   <meta name="author" content="zytheme" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="construction html5 template">
@@ -22,7 +22,7 @@
   <link
     href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i%7CRaleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i%7CUbuntu:300,300i,400,400i,500,500i,700,700i"
     rel='stylesheet' type='text/css'>
-    
+
   <link rel="stylesheet" type="text/css"
     href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
 
@@ -36,6 +36,8 @@
   {{/if}}
 
   {{#if isAdmin}}
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="../admin-assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../admin-assets/img/favicon.png">
@@ -53,7 +55,7 @@
   <link href="../admin-assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../admin-assets/demo/demo.css" rel="stylesheet" />
-  
+
 
 
 
@@ -68,7 +70,8 @@
     {{{body}}}
   </div>
 
-  <script src="javascripts/jquery-2.2.4.min.js"></script>
+  {{!--
+  <script src="javascripts/jquery-2.2.4.min.js"></script> --}}
   <script src="javascripts/plugins.js"></script>
   <script src="javascripts/functions.js"></script>
 </body>
@@ -81,10 +84,10 @@
 
   {{{body}}}
   <!--   Core JS Files   -->
- 
+
   <script src="../admin-assets/js/validation.js"></script>
 
-  <script src="../admin-assets/js/core/jquery.min.js"></script>
+  {{!-- <script src="../admin-assets/js/core/jquery.min.js"></script> --}}
   <script src="../admin-assets/js/core/popper.min.js"></script>
   <script src="../admin-assets/js/core/bootstrap-material-design.min.js"></script>
   <script src="https://unpkg.com/default-passive-events"></script>

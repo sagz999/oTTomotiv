@@ -64,7 +64,7 @@
         <div class="tab-content">
             <div class="tab-pane active" id="home">
                 <br>
-                <form class="form" action="/update-profile" method="post" id="profile" enctype="multipart/form-data">
+                <form class="form" action="/update-profile" method="post" id="profileForm" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group text-center">
@@ -116,7 +116,7 @@
                                         <label for="mobile">
                                             <h6>Mobile</h6>
                                         </label>
-                                        <input type="text" class="form-control" name="Pnum" id="mobile"
+                                        <input type="number" class="form-control" name="Pnum" id="mobile"
                                             placeholder="enter mobile number" value="{{user.Pnum}}"
                                             title="enter your mobile number if any.">
                                     </div>
@@ -233,7 +233,7 @@
                                     <h6>First Name</h6>
                                 </label>
                                 <input type="text" class="form-control" name="First_Name" id="firstName"
-                                    placeholder="first name" title="enter your first name if any.">
+                                    placeholder="first name">
                             </div>
                         </div>
                         <div class="form-group">
@@ -243,7 +243,7 @@
                                     <h6>Last Name</h6>
                                 </label>
                                 <input type="text" class="form-control" name="Last_Name" id="last_name"
-                                    placeholder="last name" title="enter your last name if any.">
+                                    placeholder="last name">
                             </div>
                         </div>
 
@@ -254,7 +254,7 @@
                                     <h6>Company / House name</h6>
                                 </label>
                                 <input type="text" class="form-control" name="Company_Name" id="last_name"
-                                    placeholder="last name" title="enter your last name if any.">
+                                    placeholder="last name">
                             </div>
                         </div>
 
@@ -265,7 +265,7 @@
                                     <h6>Address line 1</h6>
                                 </label>
                                 <input type="text" class="form-control" name="Street_Address" id="Address line 1"
-                                    placeholder="Address line 2" title="enter your phone number if any.">
+                                    placeholder="Address line 2">
                             </div>
                         </div>
 
@@ -275,7 +275,7 @@
                                     <h6>Address line 2</h6>
                                 </label>
                                 <input type="text" class="form-control" name="Extra_Details" id="Address line 2"
-                                    placeholder="Address line 2" title="enter your mobile number if any.">
+                                    placeholder="Address line 2">
                             </div>
                         </div>
                         <div class="form-group">
@@ -284,8 +284,7 @@
                                 <label for="email">
                                     <h6>Town / City</h6>
                                 </label>
-                                <input type="text" class="form-control" name="Town_City" id="city" placeholder="city"
-                                    title="enter your email.">
+                                <input type="text" class="form-control" name="Town_City" id="city" placeholder="city">
                             </div>
                         </div>
                         <div class="form-group">
@@ -295,7 +294,7 @@
                                     <h6>Country / State</h6>
                                 </label>
                                 <input type="text" class="form-control" name="Country_State" id="state"
-                                    placeholder="state" title="enter a location">
+                                    placeholder="state">
                             </div>
                         </div>
                         <div class="form-group">
@@ -304,8 +303,8 @@
                                 <label for="password">
                                     <h6>PIN code</h6>
                                 </label>
-                                <input type="tele" class="form-control" name="Post_Code" id="pincode"
-                                    placeholder="pincode" title="enter your password.">
+                                <input type="number" class="form-control" name="Post_Code" id="pincode"
+                                    placeholder="pincode">
                             </div>
                         </div>
                         <div class="form-group">
@@ -314,8 +313,8 @@
                                 <label for="password">
                                     <h6>Phone</h6>
                                 </label>
-                                <input type="tele" class="form-control" name="Phone" id="contact" placeholder="contact"
-                                    title="enter your password.">
+                                <input type="number" class="form-control" name="Phone" id="contact"
+                                    placeholder="contact">
                             </div>
                         </div>
 
@@ -325,8 +324,8 @@
                                 <label for="password">
                                     <h6>Alternate Phone</h6>
                                 </label>
-                                <input type="tele" class="form-control" name="Alt_Phone" id="contact"
-                                    placeholder="contact" title="enter your password.">
+                                <input type="number" class="form-control" name="Alt_Phone" id="contact"
+                                    placeholder="contact">
                             </div>
                         </div>
 
@@ -429,6 +428,160 @@
 
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+
+    $(document).ready(function () {
+
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
+        $('#addAddress').validate({
+
+            rules: {
+
+                First_Name: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3,
+                },
+
+                Last_Name: {
+                    required: true,
+                    alpha: true
+                },
+
+                Company_Name: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Street_Address: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Extra_Details: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Town_City: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Country_State: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Post_Code: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 6
+                },
+
+                Phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+
+                Alt_Phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10
+                }
+
+
+            },
+
+            messages: {
+
+                First_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+
+                Last_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+                Town_City: {
+                    alpha: "This field should be in alphabets"
+                },
+
+                Country_State: {
+                    alpha: "This field should be in alphabets"
+                }
+
+            }
+
+        })
+
+
+        $('#profileForm').validate({
+
+            rules: {
+
+                Username: {
+                    required: true,
+                    alpha:true,
+                    minlength: 5
+                },
+
+                Email: {
+                    required: true,
+                    minlength:5
+                },
+
+                Pnum: {
+                    required: true,
+                    minlength:10,
+                    maxlength:10
+                }
+
+            },
+
+            messages: {
+
+                 Username: {
+                    required: "Enter your username",
+                    alpha:"Name should be in alphabets",
+                    minlength: "Username must be atleast of 5 characters"
+                },
+
+                Email: {
+                    required: "Enter your email id",
+                    minlength:"Email id is too short"
+                },
+
+                Pnum: {
+                    required: "Enter your mobile number",
+                    minlength:"Mobile number must be of 10 digits",
+                    maxlength:"Mobile number must not exceed 10 digits"
+                }
+            }
+
+        })
+
+    })
+
+</script>
+
+<style>
+    .error {
+        color: red !important;
+        font-size: x-small !important;
+        margin-left: 10px
+    }
+</style>
 
 <style>
     h6 {

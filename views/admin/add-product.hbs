@@ -32,11 +32,11 @@
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Main Category</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none"
-                                            name="Main_Category" class="custom-select mr-sm-2">
+                                        <select onchange="fetchSubCat()" style="background:#202940;color:#8b92a9;border:none"
+                                            name="Main_Category" class="custom-select mr-sm-2" id="mainCatList">
                                             <option selected disabled>Choose...</option>
                                             {{#each category}}
-                                            <option>{{this.Main_Cat}}</option>
+                                            <option value="{{this._id}}">{{this.Main_Cat}}</option>
                                             {{/each}}
                                         </select>
                                     </div>
@@ -44,13 +44,13 @@
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Sub Category</label>
                                         <select style="background:#202940;color:#8b92a9;border:none" name="Sub_Category"
-                                            class="custom-select mr-sm-2">
+                                            class="custom-select mr-sm-2" id="subCatList">
                                             <option selected disabled>Choose...</option>
-                                            {{#each category}}
-                                            {{#each this.Sub_Cat}}
-                                            <option>{{this}}</option>
-                                            {{/each}}
-                                            {{/each}}
+                                            {{!-- {{#each category}}
+                                            {{#each this.Sub_Cat}} --}}
+                                            <option id="subcatList">{{this.Sub_Cat}}</option>
+                                            {{!-- {{/each}}
+                                            {{/each}} --}}
                                         </select>
                                     </div>
 
@@ -133,10 +133,10 @@
 
                                                 <div class="row">
 
-                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file1">Add Image</label>
+                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file1">Add Image</label> --}}
                                                     <div id="errMsg1"></div>
-                                                    <input style="display:none" name="Img1" type="file"
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter"  name="Img1" type="file"
                                                         class="my-2 form-control-file" id="file1"
                                                         onchange="return fileValidation1()">
 
@@ -155,10 +155,10 @@
 
                                                 <div class="row">
 
-                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file2">Add Image</label>
+                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file2">Add Image</label> --}}
                                                     <div id="errMsg2"></div>
-                                                    <input style="display:none" name="Img2" type="file"
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter" name="Img2" type="file"
                                                         class="my-2 form-control-file" id="file2"
                                                         onchange="return fileValidation2()">
 
@@ -179,10 +179,10 @@
 
                                                 <div class="row">
 
-                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file3">Add Image</label>
+                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file3">Add Image</label> --}}
                                                     <div id="errMsg3"></div>
-                                                    <input style="display:none" name="Img3" type="file"
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter"  name="Img3" type="file"
                                                         class="my-2 form-control-file" id="file3"
                                                         onchange="return fileValidation3()">
 
@@ -200,10 +200,10 @@
 
                                                 <div class="row">
 
-                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file4">Add Image</label>
+                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file4">Add Image</label> --}}
                                                     <div id="errMsg4"></div>
-                                                    <input style="display:none" name="Img4" type="file"
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter" name="Img4" type="file"
                                                         class="my-2 form-control-file" id="file4"
                                                         onchange="return fileValidation4()">
 
@@ -302,6 +302,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
 <script>
 
@@ -577,235 +578,101 @@
 
 </script>
 
-{{!--
+
+
 <script>
-
-    //File upload validation
-    function fileValidation1() {
-        var fileInput =
-            document.getElementById('file1');
-
-        var filePath = fileInput.value;
-
-        // Allowing file type
-        var allowedExtensions =
-            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-        if (!allowedExtensions.exec(filePath)) {
-            alert('Invalid file type');
-            fileInput.value = '';
-            return false;
-        }
-        else {
-
-            // Image preview
-            if (fileInput.files && fileInput.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('imagePreview1').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
-                };
-
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        }
-    }
-
-    function fileValidation2() {
-        var fileInput =
-            document.getElementById('file2');
-
-        var filePath = fileInput.value;
-
-        // Allowing file type
-        var allowedExtensions =
-            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-        if (!allowedExtensions.exec(filePath)) {
-            alert('Invalid file type');
-            fileInput.value = '';
-            return false;
-        }
-        else {
-
-            // Image preview
-            if (fileInput.files && fileInput.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('imagePreview2').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
-                };
-
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        }
-    }
-
-    function fileValidation3() {
-        var fileInput =
-            document.getElementById('file3');
-
-        var filePath = fileInput.value;
-
-        // Allowing file type
-        var allowedExtensions =
-            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-        if (!allowedExtensions.exec(filePath)) {
-            alert('Invalid file type');
-            fileInput.value = '';
-            return false;
-        }
-        else {
-
-            // Image preview
-            if (fileInput.files && fileInput.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('imagePreview3').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
-                };
-
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        }
-    }
-
-    function fileValidation4() {
-        var fileInput =
-            document.getElementById('file4');
-
-        var filePath = fileInput.value;
-
-        // Allowing file type
-        var allowedExtensions =
-            /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-        if (!allowedExtensions.exec(filePath)) {
-            alert('Invalid file type');
-            fileInput.value = '';
-            return false;
-        }
-        else {
-
-            // Image preview
-            if (fileInput.files && fileInput.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('imagePreview4').innerHTML = '<img style="width:50px;height:50px" src="' + e.target.result + '"/>';
-                };
-
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        }
-    }
-
 
     //input field validation
     $(document).ready(function () {
+
         $('#addProd').validate({
+
             rules: {
 
                 Product_Name: {
                     required: true,
-                    minlenght: 3
+                    minlength: 3
+                },
+                Stock:{
+                    required:true
                 },
 
                 Main_Category: {
-
+                    required: true
                 },
 
                 Sub_Category: {
-
+                    required: true
                 },
 
                 Product_Brand: {
-
+                    required: true
                 },
 
                 Car_Brand: {
-
+                    required: true
                 },
 
                 Car_Model: {
-
+                    required: true
                 },
 
                 Price: {
-
+                    required: true
                 },
 
                 Description: {
-
+                    required: true,
+                    minlength: 10
                 },
 
                 Img1: {
-
+                    required: true
                 },
 
                 Img2: {
-
+                    required: true
                 },
 
                 Img3: {
-
+                    required: true
                 },
 
                 Img4: {
-
+                    required: true
                 }
 
-
-            },
-            messages: {
-
-                Product_Name: {
-
-                },
-
-                Main_Category: {
-
-                },
-
-                Sub_Category: {
-
-                },
-
-                Product_Brand: {
-
-                },
-
-                Car_Brand: {
-
-                },
-
-                Car_Model: {
-
-                },
-
-                Price: {
-
-                },
-
-                Description: {
-
-                },
-
-                Img1: {
-
-                },
-
-                Img2: {
-
-                },
-
-                Img3: {
-
-                },
-
-                Img4: {
-
-                }
 
             }
         })
     })
 
-</script> --}}
+</script>
+
+<script>
+
+function fetchSubCat(){
+
+    let MainCatId=document.getElementById('mainCatList').value
+
+    $.ajax({
+
+        url:'/admin/fetchSubCat?catId='+MainCatId,
+        method:'get',
+        success:(subCatList)=>{
+            
+        }
+
+    })
+
+}
+
+</script>
+
+<style>
+    .error {
+        color: red !important;
+        font-size:small !important;
+       
+    }
+</style>

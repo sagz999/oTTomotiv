@@ -16,7 +16,7 @@
 
             <div class="sign-form">
 
-                <form class="mb-0" action="/otprequest" method="POST">
+                <form class="mb-0" action="/otprequest" method="POST" id="otp-request">
 
                     <div class="form-group">
 
@@ -244,7 +244,7 @@
 
                         </select>
 
-                        <input type="tel" name="Pnum" class="form-control" id="Pnum" placeholder="Mobile Number">
+                        <input type="number" name="Pnum" class="form-control" id="Pnum" placeholder="Mobile Number">
 
                     </div>
                     {{#if forgotPass}}
@@ -277,3 +277,52 @@
     </div>
 
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+
+    $(document).ready(function () {
+        
+
+
+        $('#otp-request').validate({
+
+            rules: {
+
+                countryCode: {
+                    required: true,
+                },
+
+                Pnum: {
+                    required: true,
+                    minlength:10,
+                    maxlength:10  
+                }
+
+            },
+
+            messages: {
+
+                Pnum: {
+                    required: "This field must not be blank",
+                    minlength:"Mobile number must be of 10 digits",
+                    maxlength:"Mobile number must not exceed 10 digits"  
+                }
+
+            }
+        })
+    })
+
+</script>
+
+<style>
+    .error {
+        color: red !important;
+        font-size: x-small !important;
+        margin-left: 10px
+    }
+</style>

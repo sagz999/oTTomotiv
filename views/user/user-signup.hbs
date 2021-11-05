@@ -7,12 +7,12 @@
             <p class='text-danger'>{{err}}</p>
             {{/if}}
             <div class="register-form">
-                <form class="mb-0" action="/signup" method="POST">
+                <form class="mb-0" action="/signup" method="POST" id="signup-form">
                     <div class="form-group">
                         <input type="text" name="Username" class="form-control" id="username" placeholder="Name">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="Email" class="form-control" id="email" placeholder="Email">
+                        <input type="email" name="Email" class="form-control" id="email" placeholder="Email">
                     </div>
                     <div class="form-group">
                         <div class="row">
@@ -247,7 +247,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <input type="tel" name="Pnum" class="form-control" id="Pnum"
+                                <input type="number" name="Pnum" class="form-control" id="Pnum"
                                     placeholder="Mobile Number">
                             </div>
                         </div>
@@ -258,12 +258,11 @@
                         <input type="password" name="Password" class="form-control" id="pwd" placeholder="Password">
                     </div>
                     <div class="form-group">
-                        <input type="password"  class="form-control" id="pwdc"
-                            placeholder="Confirm Password">
+                        <input type="password" name="Re_pass" class="form-control" id="pwdc" placeholder="Confirm Password">
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox">
+                            <input type="checkbox" name="TandC">
                             I Agree To
                             <a href="#">The Terms Of Use ?</a>
                         </label>
@@ -279,3 +278,96 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+
+    $(document).ready(function () {
+
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
+        $('#signup-form').validate({
+
+            rules: {
+
+                Username: {
+                    required: true,
+                    alpha:true,
+                    minlength: 5
+                },
+
+                Email: {
+                    required: true,
+                    minlength:5
+                },
+
+                countryCode: {
+                    required: true
+                },
+
+                Pnum: {
+                    required: true,
+                    minlength:10,
+                    maxlength:10
+                },
+
+                Password: {
+                    required: true,
+                    minlength:4
+                },
+
+                Re_pass: {
+                    required: true,
+                    equalTo:"#pwd"
+                }
+
+            },
+
+            messages: {
+
+                 Username: {
+                    required: "Enter your username",
+                    alpha:"Name should be in alphabets",
+                    minlength: "Username must be atleast of 5 characters"
+                },
+
+                Email: {
+                    required: "Enter your email id",
+                    minlength:"Email id is too short"
+                },
+
+                Pnum: {
+                    required: "Enter your mobile number",
+                    minlength:"Mobile number must be of 10 digits",
+                    maxlength:"Mobile number must not exceed 10 digits"
+                },
+
+                Password: {
+                    required: "Enter your password",
+                    minlength:"Password too short"
+                },
+
+                Re_pass: {
+                    required: "Re-enter your password",
+                    equalTo:"Password mismatch"
+                }
+            }
+
+        })
+
+    })
+
+</script>
+
+<style>
+    .error {
+        color: red !important;
+        font-size: x-small !important;
+        margin-left: 10px
+    }
+</style>

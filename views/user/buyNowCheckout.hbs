@@ -17,7 +17,7 @@
 <form id="checkout-form">
     <section style="margin-top: 30px;padding-top: 50px">
         <div class="container">
-            <input name="userId" value="{{user._id}}" type="text" hidden>
+            <input name="userId" value="{{user._id}}" type="hidden">
 
             <div class="row">
                 <div class="col-12" style="margin-bottom: 10px ;">
@@ -41,8 +41,7 @@
                                     <dd>Alt-Ph: {{this.Alt_Phone}}</dd>
                                     <dt><input name="choice"
                                             onclick="addressSelect('{{this.First_Name}}','{{this.Last_Name}}','{{this.Company_Name}}','{{this.Street_Address}}','{{this.Extra_Details}}','{{this.Town_City}}','{{this.Country_State}}','{{this.Post_Code}}','{{this.Phone}}','{{this.Alt_Phone}}')"
-                                            type="radio" id="useaddress" placeholder="Use"><span
-                                            style="color: #007eff;">
+                                            type="radio" id="useaddress"><span style="color: #007eff;">
                                             Use Address</span></dt><br>
 
                                 </dl>
@@ -74,17 +73,16 @@
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>ADDRESS *</label>
-                                <input id="Street_Address" type="text" placeholder="Street Address"
+                                <input id="Street_Address" type="text" placeholder="Address line-1"
                                     name="Street_Address">
-                                <input id="Extra_Details" type="text" placeholder="Fashin, suite, unite ect (optinal)"
-                                    name="Extra_Details">
+                                <input id="Extra_Details" type="text" placeholder="Address line-2" name="Extra_Details">
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>TOWN / CITY *</label>
                                 <input id="Town_City" type="text" name="Town_City">
                             </div>
                             <div class="billing-address-input clearfix">
-                                <label>COUNTRY / STATES</label>
+                                <label>COUNTRY / STATES *</label>
                                 <input id="Country_State" type="text" name="Country_State">
                             </div>
                             <div class="billing-address-input clearfix">
@@ -100,7 +98,7 @@
                                 <input id="Phone" type="text" name="Phone">
                             </div>
                             <div class="cbab-create-account">
-                                <input onchange="useRegPnum1()" id="useRegPnum" type="checkbox">
+                                <input onchange="useRegPnum1('{{ user.Pnum }}')" id="useRegPnum" type="checkbox">
                                 <label>Use registered phone number</label>
                             </div>
                             <div class="billing-address-input clearfix">
@@ -122,7 +120,7 @@
                             <div class="pcb-cuppon-input clearfix">
                                 <div id="errorDiv"></div>
                                 <input type="text" id="couponCode" placeholder="Coupon code" name="Coupon_Code">
-                                <a onclick="checkCoupon('{{price}}')"
+                                <a onclick="checkCoupon('{{product.Price}}')"
                                     class="checkout-page-button hvr-bs btn btn-primary">Apply</a>
                             </div>
                         </div>
@@ -132,12 +130,13 @@
                         <div class="yob-content">
                             <ul>
                                 <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹
-                                        {{price}}</span></li>
-                                <li class="clearfix">Discount<span>₹<span id="totaldiscount">0</span></span></li>
+                                        {{product.Price}}</span></li>
+                                <li class="clearfix">Discount<span>- ₹<span id="totaldiscount">0</span></span></li>
                                 <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
                                 <li class="order-total clearfix">Order Total <span>₹ <span
-                                            id="totalPrice">{{price}}</span></span></li>
-                                <input type="hidden" name="totalfinalPrice" id="totalfinalPrice" value="{{price}}">
+                                            id="totalPrice">{{product.Price}}</span></span></li>
+                                <input type="hidden" name="totalfinalPrice" id="totalfinalPrice"
+                                    value="{{product.Price}}">
                             </ul>
                         </div>
                     </div>
@@ -147,14 +146,16 @@
                         <div class="pcb-content">
                             <p>Select your payment method</p>
                             <div class="pcb-cuppon-input clearfix">
-                                <input type="radio" value="COD" name="Pay_Method">
+
                                 <label
                                     style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
+                                <input type="radio" value="COD" name="Pay_Method">
                             </div>
                             <div class="pcb-cuppon-input clearfix">
-                                <input type="radio" value="Online" name="Pay_Method">
+
                                 <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online
                                     Payment</label>
+                                <input type="radio" value="Online" name="Pay_Method">
 
                             </div>
 
@@ -170,30 +171,153 @@
 </form>
 {{>userfooter}}
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 
-    $('#checkout-form').submit((e) => {
-        e.preventDefault()
-        $.ajax({
-            url: '/buyNowPlaceOrder',
-            method: 'post',
-            data: $('#checkout-form').serialize(),
-            success: (response) => {
-                if (response.codSuccess) {
+    //input field validation
 
-                    location.href = '/order-success'
+    $(document).ready(function () {
 
-                } else {
-                    razorpayPayment(response)
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
+
+        $('#checkout-form').validate({
+
+            rules: {
+
+                First_Name: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3,
+                },
+
+                Last_Name: {
+                    required: true,
+                    alpha: true
+                },
+
+                Company_Name: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Street_Address: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Extra_Details: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Town_City: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Country_State: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Post_Code: {
+                    required: true,
+                    digits: true,
+                    minlength: 6,
+                    maxlength: 6
+                },
+
+                Phone: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+
+                Alt_Phone: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                Pay_Method:{
+                    required:true
                 }
 
 
+            },
+
+            messages: {
+
+                First_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+
+                Last_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+                Town_City: {
+                    alpha: "This field should be in alphabets"
+                },
+
+                Country_State: {
+                    alpha: "This field should be in alphabets"
+                },
+                Post_Code: {
+                    digits: "Post code should be of digits" 
+                },
+
+                Phone: {
+                    digits: "Mobile should be of digits"
+                },
+
+                Alt_Phone: {
+                    digits: "Mobile should be of digits"
+                },
+                
+                Pay_Method:{
+                    required:"Choose a payment method"
+                }
 
             }
         })
     })
+
+</script>
+
+<script>
+
+    {
+        {
+            !--$('#checkout-form').submit((e) => {
+                e.preventDefault()
+                $.ajax({
+                    url: '/buyNowPlaceOrder',
+                    method: 'post',
+                    data: $('#checkout-form').serialize(),
+                    success: (response) => {
+                        if (response.codSuccess) {
+
+                            location.href = '/order-success'
+
+                        } else {
+                            razorpayPayment(response)
+                        }
+
+
+
+                    }
+                })
+            }) --}
+    }
 
     function razorpayPayment(order) {
 
@@ -239,7 +363,7 @@
             method: 'post',
             success: (response) => {
                 if (response.status) {
-                    location.href = '/order-success'
+                    location.href = '/buyNowOrder-success'
                 } else {
                     alert('Payment Failed')
                 }
@@ -253,15 +377,15 @@
 
 <script>
 
-    function useRegPnum1() {
+    function useRegPnum1(Pnum) {
 
 
-        if(document.getElementById('useRegPnum').checked===true){
-            
-           document.getElementById('Phone').value={{user.Pnum}}
+        if (document.getElementById('useRegPnum').checked === true) {
 
-        }else{
-            document.getElementById('Phone').value=''
+            document.getElementById('Phone').value = Pnum
+
+        } else {
+            document.getElementById('Phone').value = ''
         }
 
     }
@@ -332,6 +456,12 @@
 </script>
 
 <style>
+    .error {
+        color: red !important;
+        font-size: x-small !important;
+        margin-left: 10px
+    }
+
     h6 {
         margin: 23px 0 0;
     }

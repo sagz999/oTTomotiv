@@ -270,7 +270,10 @@ router.post('/add-mainCat', (req, res) => {
 
 
 router.post('/add-subCat', (req, res) => {
-  productHelper.addSubCategory(req.body).then(() => {
+  productHelper.addSubCategory(req.body).then((id) => {
+
+    let img=req.files.Img1
+    img.mv('./public/sub-category-images/' + id + 'SCI.jpg')
     req.session.addMsg = 'NEW SUB CATEGORY ADDED'
     res.redirect('/admin/category')
   })
@@ -287,7 +290,7 @@ router.get('/delete-category/', verifyLog, (req, res) => {
 
 router.get('/delete-subCategory/', verifyLog, (req, res) => {
 
-  productHelper.deleteSubCategory(req.query.id, req.query.name).then(() => {
+  productHelper.deleteSubCategory(req.query.catId, req.query.subCatId).then(() => {
     req.session.delMsg = 'SUB-CATEGORY DELETED'
     res.redirect('/admin/category')
   })
@@ -326,10 +329,10 @@ router.get('/delete-carBrand/',verifyLog, (req, res) => {
 
 router.post('/add-carModel', (req, res) => {
 
-  productHelper.addCarModel(req.body).then(() => {
-    // let id=req.body.carBrand_Id
-    // let img=req.files.Img2
-    // img.mv('./public/car-model-images/' + id + 'CMI.jpg')
+  productHelper.addCarModel(req.body).then((id) => {
+   
+     let img=req.files.Img2
+     img.mv('./public/car-model-images/' + id + 'CMI.jpg')
 
     req.session.addMsg = 'NEW CAR MODEL ADDED'
     res.redirect('/admin/car-brands')
@@ -338,7 +341,7 @@ router.post('/add-carModel', (req, res) => {
 })
 
 router.get('/delete-carModel/',(req,res)=>{
-  productHelper.deleteCarModel(req.query.id,req.query.name).then(()=>{
+  productHelper.deleteCarModel(req.query.brandId,req.query.modelId).then(()=>{
     req.session.delMsg = 'CAR-MODEL DELETED'
     res.redirect('/admin/car-brands')
 
@@ -396,6 +399,12 @@ router.get('/delete-coupon/',verifyLog,(req,res)=>{
   userHelper.deleteCoupon(req.query.couponId).then(()=>{
     req.session.coupDelMsg='COUPON DELETED'
     res.redirect('/admin/coupons')
+  })
+})
+
+router.get('/fetchSubCat/',verifyLog,(req,res)=>{
+  productHelper.fetchSubCatList(req.query.catId).then((subCatList)=>{
+    res.json(subCatList)
   })
 })
 

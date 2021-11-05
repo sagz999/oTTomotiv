@@ -19,7 +19,7 @@
 
         <div class="row">
 
-            <form class="form" action="/edit-address" method="post" id="addAddress">
+            <form class="form" action="/edit-address" method="post" id="editAddress">
                 <input type="hidden" name="addressId" value="{{address.addressId}}">
 
                 <div class="form-group">
@@ -29,7 +29,7 @@
                             <h6>First Name</h6>
                         </label>
                         <input type="text" class="form-control" name="First_Name" id="firstName"
-                            value="{{address.First_Name}}" placeholder="first name" title="enter your first name">
+                            value="{{address.First_Name}}" placeholder="first name">
                     </div>
                 </div>
                 <div class="form-group">
@@ -39,7 +39,7 @@
                             <h6>Last Name</h6>
                         </label>
                         <input type="text" class="form-control" name="Last_Name" id="last_name"
-                            value="{{address.Last_Name}}" placeholder="last name" title="enter your last name">
+                            value="{{address.Last_Name}}" placeholder="last name">
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                         </label>
                         <input type="text" class="form-control" name="Company_Name" id="last_name"
                             value="{{address.Company_Name}}" placeholder="company/house name"
-                            title="enter your company/house name">
+                            >
                     </div>
                 </div>
 
@@ -63,7 +63,7 @@
                         </label>
                         <input type="text" class="form-control" name="Street_Address" id="Address line 1"
                             value="{{address.Street_Address}}" placeholder="street address"
-                            title="enter your address line 1">
+                            >
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                         </label>
                         <input type="text" class="form-control" name="Extra_Details" id="Address line 2"
                             value="{{address.Extra_Details}}" placeholder="Address line 2"
-                            title="enter your address line 2">
+                            >
                     </div>
                 </div>
                 <div class="form-group">
@@ -84,7 +84,7 @@
                             <h6>Town / City</h6>
                         </label>
                         <input type="text" class="form-control" name="Town_City" id="city" value="{{address.Town_City}}"
-                            placeholder="town/city" title="enter your town/city name">
+                            placeholder="town/city">
                     </div>
                 </div>
                 <div class="form-group">
@@ -95,7 +95,7 @@
                         </label>
                         <input type="text" class="form-control" name="Country_State" id="state"
                             value="{{address.Country_State}}" placeholder="country/state"
-                            title="enter your country/state">
+                          >
                     </div>
                 </div>
                 <div class="form-group">
@@ -104,8 +104,8 @@
                         <label for="password">
                             <h6>PIN code</h6>
                         </label>
-                        <input type="tele" class="form-control" name="Post_Code" id="pincode"
-                            value="{{address.Post_Code}}" placeholder="pincode" title="enter your postcode.">
+                        <input type="number" class="form-control" name="Post_Code" id="pincode"
+                            value="{{address.Post_Code}}" placeholder="pincode">
                     </div>
                 </div>
                 <div class="form-group">
@@ -114,8 +114,8 @@
                         <label for="password">
                             <h6>Phone</h6>
                         </label>
-                        <input type="tele" class="form-control" name="Phone" id="contact" value="{{address.Phone}}"
-                            placeholder="phone" title="enter your phone number">
+                        <input type="number" class="form-control" name="Phone" id="contact" value="{{address.Phone}}"
+                            placeholder="phone" >
                     </div>
                 </div>
 
@@ -125,9 +125,9 @@
                         <label for="password">
                             <h6>Alternate Phone</h6>
                         </label>
-                        <input type="tele" class="form-control" name="Alt_Phone" id="contact"
+                        <input type="number" class="form-control" name="Alt_Phone" id="contact"
                             value="{{address.Alt_Phone}}" placeholder="alternate phone"
-                            title="enter your alternate phone number if any">
+                            >
                     </div>
                 </div>
 
@@ -145,6 +145,116 @@
     </div>
 </section>
 {{>userfooter}}
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+
+    $(document).ready(function () {
+
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
+        $('#editAddress').validate({
+
+            rules: {
+
+                First_Name: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3,
+                },
+
+                Last_Name: {
+                    required: true,
+                    alpha: true
+                },
+
+                Company_Name: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Street_Address: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Extra_Details: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Town_City: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Country_State: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Post_Code: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 6
+                },
+
+                Phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+
+                Alt_Phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10
+                }
+
+
+            },
+
+            messages: {
+
+                First_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+
+                Last_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+                Town_City: {
+                    alpha: "This field should be in alphabets"
+                },
+
+                Country_State: {
+                    alpha: "This field should be in alphabets"
+                }
+               
+
+            }
+
+        })
+
+    })
+
+</script>
+
+<style>
+    .error {
+        color: red !important;
+        font-size: x-small !important;
+        margin-left: 10px
+    }
+</style>
+
 
 <style>
     .bodysection {

@@ -27,7 +27,8 @@
                                 <div class="col">
 
                                     <div class="d-flex ml-3">
-                                        <form action="/admin/add-carBrand" style="display: flex;" method="post" enctype="multipart/form-data">
+                                        <form action="/admin/add-carBrand" style="display: flex;" method="post"
+                                            enctype="multipart/form-data">
 
                                             <input name="Car_Brand" class="form-control" type="text"
                                                 placeholder="Add car brand">
@@ -72,10 +73,7 @@
                                                                 id="exampleModalLongTitle">Crop
                                                                 Image</h4>
 
-                                                            <button onclick="buttonDisplay()" type="button"
-                                                                class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+
 
                                                         </div>
 
@@ -108,7 +106,7 @@
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
                                                 <th class="text-center" scope="col">Brands</th>
-                                                <th class="text-center" scope="col">Brand Logo</th>
+
                                                 <th class="text-center" scope="col">Models</th>
                                             </tr>
                                         </thead>
@@ -119,37 +117,37 @@
 
                                                 <td class="text-center">{{add @index '1'}}</td>
 
-                                                <td class="text-center">
-                                                    <button type="button" rel="tooltip" title="Remove car-brand"
-                                                        class="btn btn-white btn-link btn-sm p-0 pb-1"
-                                                        onclick="return confirm('Do you want to delete - {{this.Car_Brand}} ?')">
-                                                        <a href="/admin/delete-carBrand?id={{this._id}}">
-                                                            <i class="material-icons">delete</i>
-                                                        </a>
-                                                    </button>
-                                                    {{this.Car_Brand}}
+                                                <td class="text-left">
+
+                                                    <span><button type="button" rel="tooltip" title="Remove car-brand"
+                                                            class="btn btn-white btn-link btn-sm p-0 pb-1"
+                                                            onclick="return confirm('Do you want to delete - {{this.Car_Brand}} ?')">
+                                                            <a href="/admin/delete-carBrand?id={{this._id}}">
+                                                                <i class="material-icons">delete</i>
+                                                            </a>
+                                                        </button></span>
+                                                    <span><img style="width:50px;height:50px"
+                                                            src="/car-brand-logos/{{this._id}}CBL.jpg" alt=""></span>
+                                                    <span>{{this.Car_Brand}}</span>
                                                 </td>
-                                                <td class="text-center">
-                                                    <img style="width:50px;height:50px" src="/car-brand-logos/{{this._id}}CBL.jpg"
-                                                alt="">
-                                                </td>
+
 
                                                 <td>
                                                     <ol>
                                                         <div class="d-flex ml-3">
                                                             <form action="/admin/add-carModel" style="display: flex;"
-                                                                method="post">
+                                                                method="post" enctype="multipart/form-data">
 
-                                                                <input name="carBrand_Id" class="form-control" type="hidden"
-                                                                value="{{this._id}}">
+                                                                <input name="carBrand_Id" class="form-control"
+                                                                    type="hidden" value="{{this._id}}">
 
                                                                 <input name="Car_Model" class="form-control" type="text"
                                                                     placeholder="Add car model">
 
-                                                                {{!-- <div class="mx-2">
+                                                                <div class="mx-2">
 
                                                                     <img src="" alt="" style="width: 50px; height:auto"
-                                                                        id="imgview2">
+                                                                        id="{{this._id}}imgview2">
 
                                                                 </div>
 
@@ -157,96 +155,48 @@
 
                                                                     <label data-toggle="modal"
                                                                         data-target="#exampleModalCenter"
-                                                                        class="btn btn-primary btn-sm" for="file2">Logo
+                                                                        class="btn btn-primary btn-sm" for="{{this._id}}file2">Logo
                                                                         Image</label>
 
 
 
                                                                     <input style="display:none" name="Img2" type="file"
-                                                                        class="my-2 form-control-file" id="file2"
-                                                                        onchange="return fileValidation2()">
-                                                                    <div id="errMsg2"></div>
+                                                                        class="my-2 form-control-file" id="{{this._id}}file2"
+                                                                        onchange="return fileValidation2('{{this._id}}')">
+                                                                    <div id="{{this._id}}errMsg2"></div>
 
-                                                                </div> --}}
+                                                                </div>
 
 
-                                                                <button type="submit" id="confirm-btn1"
+                                                                <button type="submit" id="confirm-btn"
                                                                     class="btn btn-primary btn-sm ml-2">
                                                                     <i class="material-icons">add_to_photos</i>
                                                                 </button>
-
-                                                                <!-- Modal for cropping-->
-
-                                                                {{!-- <div class="modal fade" id="exampleModalCenter"
-                                                                    tabindex="-1" role="dialog"
-                                                                    aria-labelledby="exampleModalCenterTitle"
-                                                                    aria-hidden="true">
-
-                                                                    <div class="modal-dialog modal-dialog-centered"
-                                                                        role="document">
-
-                                                                        <div class="modal-content">
-
-                                                                            <div class="modal-header">
-
-                                                                                <h4 class="modal-title"
-                                                                                    style="font-weight: bold;"
-                                                                                    id="exampleModalLongTitle">Crop
-                                                                                    Image</h4>
-
-                                                                                <button onclick="buttonDisplay1()"
-                                                                                    type="button" class="close"
-                                                                                    data-dismiss="modal"
-                                                                                    aria-label="Close">
-                                                                                    <span
-                                                                                        aria-hidden="true">&times;</span>
-                                                                                </button>
-
-                                                                            </div>
-
-                                                                            <div class="modal-body">
-                                                                                <div id="image-box"
-                                                                                    style="display:none;"></div>
-                                                                            </div>
-
-                                                                            <div class="modal-footer">
-
-                                                                                <button onclick="buttonDisplay()"
-                                                                                    type="button"
-                                                                                    class="btn btn-secondary"
-                                                                                    data-dismiss="modal">Close</button>
-                                                                                <button id="crop-btn"
-                                                                                    data-dismiss="modal" type="button"
-                                                                                    class="btn btn-primary">Crop</button>
-
-                                                                            </div>
-
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                </div> --}}
-
 
                                                             </form>
                                                         </div>
 
                                                         {{#each this.Car_Model}}
 
-                                                        <div class="d-flex">
+                                                        <div class="d-flex my-2">
 
 
-                                                            <button type="button" rel="tooltip"
-                                                                title="Remove car-model"
+                                                            <button type="button" rel="tooltip" title="Remove car-model"
                                                                 class="btn btn-white btn-link btn-sm p-0 pb-1 mr-4"
-                                                                onclick="return confirm('Do you want to delete- {{this}} ?')">
+                                                                onclick="return confirm('Do you want to delete- {{this.Model_Name}} ?')">
                                                                 <a
-                                                                    href="/admin/delete-carModel?id={{../this._id}}&name={{this}}">
+                                                                    href="/admin/delete-carModel?brandId={{../this._id}}&modelId={{this.modelId}}">
                                                                     <i class="material-icons">delete</i>
                                                                 </a>
                                                             </button>
 
-                                                            <li>{{this}}</li>
+                                                            <li><span><img style="width:50px;height:50px"
+                                                                        src="/car-model-images/{{this.modelId}}CMI.jpg"
+                                                                        alt=""></span><span
+                                                                    style="margin-left: 10px;">{{this.Model_Name}}</span>
+                                                            </li>
+
+
 
 
                                                         </div>
@@ -300,10 +250,6 @@
         document.getElementById('confirm-btn').style.display = 'block';
     }
 
-    {{!-- function buttonDisplay1() {
-        document.getElementById('confirm-btn1').style.display = 'block';
-    }
-    --}}
 
 
     function fileValidation1() {
@@ -313,7 +259,7 @@
         var fileInput = document.getElementById('file1');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
@@ -372,25 +318,25 @@
 
     }
 
-    {{!-- function fileValidation2() {
+    function fileValidation2(id) {
 
         const imagebox = document.getElementById('image-box')
         const crop_btn = document.getElementById('crop-btn')
-        var fileInput = document.getElementById('file2');
+        var fileInput = document.getElementById(id+'file2');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
-            document.getElementById('errMsg2').innerHTML = '<p style="color:red;">Unsupported file type</p>'
+            document.getElementById(id+'errMsg2').innerHTML = '<p style="color:red;">Unsupported file type</p>'
             fileInput.value = '';
             return false;
 
         } else {
 
             //Image preview
-            document.getElementById('errMsg2').innerHTML = ''
+            document.getElementById(id+'errMsg2').innerHTML = ''
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
             imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
@@ -417,7 +363,7 @@
 
                 cropper.getCroppedCanvas().toBlob((blob) => {
 
-                    let fileInputElement = document.getElementById('file2');
+                    let fileInputElement = document.getElementById(id+'file2');
                     let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
                     let container = new DataTransfer();
 
@@ -425,7 +371,7 @@
                     const img = container.files[0]
                     var url = URL.createObjectURL(img)
                     fileInputElement.files = container.files;
-                    document.getElementById('imgview2').src = url
+                    document.getElementById(id+'imgview2').src = url
                     document.getElementById('image-box').style.display = 'none'
                     document.getElementById('crop-btn').style.display = 'none'
                     document.getElementById('confirm-btn').style.display = 'block'
@@ -436,7 +382,7 @@
 
         }
 
-    } --}}
+    }
 
 
 </script>

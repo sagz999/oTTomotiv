@@ -17,7 +17,7 @@
 <form id="checkout-form">
     <section style="margin-top: 30px;padding-top: 50px">
         <div class="container">
-            <input name="userId" value="{{user._id}}" type="text" hidden>
+            <input name="userId" value="{{user._id}}" type="hidden">
 
             <div class="row">
                 <div class="col-12" style="margin-bottom: 10px ;">
@@ -40,8 +40,9 @@
                                     <dd>PIN: {{this.Post_Code}},</dd>
                                     <dd>Ph: {{this.Phone}},</dd>
                                     <dd>Alt-Ph: {{this.Alt_Phone}}</dd>
-                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span
-                                            style="color: #007eff;">
+                                    <dt><input name="choice"
+                                            onclick="addressSelect('{{this.First_Name}}','{{this.Last_Name}}','{{this.Company_Name}}','{{this.Street_Address}}','{{this.Extra_Details}}','{{this.Town_City}}','{{this.Country_State}}','{{this.Post_Code}}','{{this.Phone}}','{{this.Alt_Phone}}')"
+                                            type="radio" id="useaddress"><span style="color: #007eff;">
                                             Use Address</span></dt><br>
 
                                 </dl>
@@ -62,33 +63,34 @@
 
                             <div class="billing-address-input clearfix">
                                 <label>FIRST NAME *</label>
-                                <input type="text" name="First_Name">
+                                <input type="text" name="First_Name" id="First_Name">
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>LAST NAME *</label>
-                                <input type="text" name="Last_Name">
+                                <input type="text" name="Last_Name" id="Last_Name">
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>COMPANY / HOUSE NAME *</label>
-                                <input type="text" name="Company_Name">
+                                <input type="text" name="Company_Name" id="Company_Name">
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>ADDRESS *</label>
-                                <input type="text" placeholder="Street Address" name="Street_Address">
-                                <input type="text" placeholder="Fashin, suite, unite ect (optinal)"
-                                    name="Extra_Details">
+                                <input type="text" placeholder="Street Address" name="Street_Address"
+                                    id="Street_Address">
+                                <input type="text" placeholder="Fashin, suite, unite ect (optinal)" name="Extra_Details"
+                                    id="Extra_Details">
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>TOWN / CITY *</label>
-                                <input type="text" name="Town_City">
+                                <input type="text" name="Town_City" id="Town_City">
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>COUNTRY / STATES</label>
-                                <input type="text" name="Country_State">
+                                <input type="text" name="Country_State" id="Country_State">
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>POSTCODE / ZIP *</label>
-                                <input type="text" name="Post_Code">
+                                <input type="text" name="Post_Code" id="Post_Code">
                             </div>
                             {{!-- <div class="billing-address-input clearfix">
                                 <label>EMAIL ADDRESS *</label>
@@ -96,18 +98,18 @@
                             </div> --}}
                             <div class="billing-address-input clearfix" style="margin-bottom:0px">
                                 <label>PHONE *</label>
-                                <input type="text" name="Phone">
+                                <input type="text" name="Phone" id="Phone">
                             </div>
                             <div class="cbab-create-account">
-                                <input type="checkbox">
+                                <input onchange="useRegPnum1('{{ user.Pnum }}')" id="useRegPnum" type="checkbox">
                                 <label>Use registered phone number</label>
                             </div>
                             <div class="billing-address-input clearfix">
                                 <label>ALTERNATE PHONE *</label>
-                                <input type="text" name="Alt_Phone">
+                                <input type="text" name="Alt_Phone" id="Alt_Phone">
                             </div><br>
                             <div class="cbab-create-account">
-                                <input type="checkbox">
+                                <input name="saveAddress" type="checkbox">
                                 <label>Save address</label>
                             </div>
                         </div>
@@ -126,7 +128,7 @@
                             <div class="pcb-cuppon-input clearfix">
                                 <div id="errorDiv"></div>
                                 <input type="text" id="couponCode" placeholder="Coupon code" name="Coupon_Code">
-                                <a  onclick="checkCoupon('{{ctotal}}')"
+                                <a onclick="checkCoupon('{{ctotal}}')"
                                     class="checkout-page-button hvr-bs btn btn-primary">Apply</a>
                             </div>
 
@@ -146,7 +148,7 @@
                             <ul>
                                 <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹
                                         {{ctotal}}</span></li>
-                                <li class="clearfix">Discount<span>₹<span id="totaldiscount">0</span></span></li>
+                                <li class="clearfix">Discount<span>- ₹<span id="totaldiscount">0</span></span></li>
                                 <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
                                 <li class="order-total clearfix">Order Total <span>₹ <span
                                             id="totalPrice">{{ctotal}}</span></span></li>
@@ -184,11 +186,119 @@
 </form>
 {{>userfooter}}
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 
-    $('#checkout-form').submit((e) => {
+    //input field validation
+
+    $(document).ready(function () {
+
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
+
+        $('#checkout-form').validate({
+
+            rules: {
+
+                First_Name: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Last_Name: {
+                    required: true,
+                    alpha: true
+                },
+
+                Company_Name: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Street_Address: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Extra_Details: {
+                    required: true,
+                    minlength: 3
+                },
+
+                Town_City: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Country_State: {
+                    required: true,
+                    alpha: true,
+                    minlength: 3
+                },
+
+                Post_Code: {
+                    required: true,
+                    digits: true,
+                    minlength: 6,
+                    maxlength: 6
+                },
+
+                Phone: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+
+                Alt_Phone: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                Pay_Method:{
+                    required:true
+                }
+
+
+            },
+
+            messages: {
+
+                First_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+
+                Last_Name: {
+                    alpha: "Name should be in alphabets"
+                },
+                Town_City: {
+                    alpha: "This field should be in alphabets"
+                },
+
+                Country_State: {
+                    alpha: "This field should be in alphabets"
+                },
+                Pay_Method:{
+                    required:"Choose a payment method"
+                }
+
+            }
+        })
+    })
+
+</script>
+
+<script>
+
+    {{!-- $('#checkout-form').submit((e) => {
         e.preventDefault()
         $.ajax({
             url: '/cartPlaceOrder',
@@ -197,7 +307,7 @@
             success: (response) => {
                 if (response.codSuccess) {
 
-                    location.href = '/order-success'
+                    location.href = '/cartOrder-success'
 
                 } else {
                     razorpayPayment(response)
@@ -207,7 +317,7 @@
 
             }
         })
-    })
+    }) --}}
 
     function razorpayPayment(order) {
 
@@ -265,6 +375,42 @@
 
 </script>
 
+
+<script>
+
+    function useRegPnum1(Pnum) {
+
+
+        if (document.getElementById('useRegPnum').checked === true) {
+
+            document.getElementById('Phone').value = Pnum
+        } else {
+            document.getElementById('Phone').value = ''
+        }
+    }
+
+</script>
+
+<script>
+
+    function addressSelect(First_Name, Last_Name, Company_Name, Street_Address, Extra_Details, Town_City, Country_State, Post_Code, Phone, Alt_Phone) {
+
+        document.getElementById('First_Name').value = First_Name
+        document.getElementById('Last_Name').value = Last_Name
+        document.getElementById('Company_Name').value = Company_Name
+        document.getElementById('Street_Address').value = Street_Address
+        document.getElementById('Extra_Details').value = Extra_Details
+        document.getElementById('Town_City').value = Town_City
+        document.getElementById('Country_State').value = Country_State
+        document.getElementById('Post_Code').value = Post_Code
+        document.getElementById('Phone').value = Phone
+        document.getElementById('Alt_Phone').value = Alt_Phone
+
+
+    }
+
+</script>
+
 <script>
 
     function checkCoupon(price) {
@@ -310,6 +456,11 @@
 
 
 <style>
+    .error {
+        color: red !important;
+        font-size: x-small !important;
+        margin-left: 10px
+    }
     h6 {
         margin: 23px 0 0;
     }

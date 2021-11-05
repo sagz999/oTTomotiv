@@ -1,12 +1,13 @@
 var db = require('../config/connection')
 var collection = require('../config/collections')
 var objectId = require('mongodb').ObjectId
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
     addProduct: (newProduct) => {
         return new Promise(async (resolve, reject) => {
 
-            newProduct.Stock=parseInt(newProduct.Stock)
+            newProduct.Stock = parseInt(newProduct.Stock)
             newProduct.Price = parseInt(newProduct.Price)
             newProduct.Date = new Date()
             await db.get().collection(collection.PRODUCT_COLLECTION).insertOne(newProduct).then((data) => {
@@ -94,13 +95,19 @@ module.exports = {
 
     addSubCategory: (catData) => {
 
+        let catObj={
+            subCatId:uuidv4(),
+            Sub_Cat:catData.Sub_Cat
+
+        }
+
         return new Promise((resolve, reject) => {
             db.get().collection(collection.CATEGORY_COLLECTION).updateOne({ _id: objectId(catData.mainCat_Id) },
                 {
-                    $push: { Sub_Cat: catData.Sub_Cat }
+                    $push: { Sub_Cat: catObj }
 
                 }).then(() => {
-                    resolve()
+                    resolve(catObj.subCatId)
                 })
 
         })
@@ -116,14 +123,14 @@ module.exports = {
         })
     },
 
-    deleteSubCategory: (Id, Name) => {
+    deleteSubCategory: (catId, subCatId) => {
         return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.CATEGORY_COLLECTION).updateOne({ _id: objectId(Id) },
+            db.get().collection(collection.CATEGORY_COLLECTION).updateOne({ _id: objectId(catId) },
 
                 {
                     $pull: {
-                        Sub_Cat: Name
+                        Sub_Cat:{subCatId: subCatId}
                     }
 
                 }).then(() => {
@@ -190,29 +197,37 @@ module.exports = {
 
     addCarModel: (carData) => {
 
+        let newCarModel = {
+            modelId: uuidv4(),
+            Model_Name: carData.Car_Model
+        }
+
+
         return new Promise((resolve, reject) => {
 
             db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(carData.carBrand_Id) },
                 {
-                    $push: { Car_Model: carData.Car_Model }
+                    $push: { Car_Model: newCarModel }
+                    
 
                 }).then(() => {
-                    resolve()
+                    resolve(newCarModel.modelId)
                 })
 
         })
 
     },
 
-    deleteCarModel: (Id, Name) => {
+    deleteCarModel: (brandId, modelId) => {
         return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(Id) },
+            db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(brandId) },
 
                 {
                     $pull: {
-                        Car_Model: Name
+                        Car_Model: {modelId:modelId}
                     }
+
 
                 }).then(() => {
                     resolve()
@@ -240,28 +255,58 @@ module.exports = {
         })
     },
 
-    fetchCategories:()=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.CATEGORY_COLLECTION).find().toArray().then((result)=>{
+    fetchCategories: () => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.CATEGORY_COLLECTION).find().toArray().then((result) => {
                 resolve(result)
             })
         })
     },
 
-    fetchCarBrands:()=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.CAR_BRAND_COLLECTION).find().toArray().then((result)=>{
+    fetchCarBrands: () => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.CAR_BRAND_COLLECTION).find().toArray().then((result) => {
                 resolve(result)
             })
         })
     },
 
-    fetchProdBrands:()=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.PROD_BRAND_COLLECTION).find().toArray().then((result)=>{
+    fetchProdBrands: () => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PROD_BRAND_COLLECTION).find().toArray().then((result) => {
                 resolve(result)
             })
-        }) 
+        })
+    },
+
+    fetchCarModel:(brandId)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.CAR_BRAND_COLLECTION).findOne({_id:objectId(brandId)}).then((carBrand)=>{
+                resolve(carBrand)
+            })
+        })
+    },
+
+    fetchSubCatList:(catId)=>{
+        return new Promise(async(resolve,reject)=>{
+
+            let subCat= await db.get().collection(collection.CATEGORY_COLLECTION).aggregate([
+                {
+                    $match:{_id:objectId(catId)}
+                },
+                {
+                    $unwind:"$Sub_Cat"
+                },
+                {
+                    $project:{
+                        Sub_Cat:'$Sub_Cat.Sub_Cat'
+                    }
+                }
+            ]).toArray()
+
+            resolve(subCat)
+
+        })
     }
 
 

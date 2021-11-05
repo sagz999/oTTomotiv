@@ -6,7 +6,7 @@
 
             <div class="row">
                 <div class="col-md-1 col-sm-1 col-1"></div>
-                <div class="col-md-10 col-sm-10 col-10" >
+                <div class="col-md-10 col-sm-10 col-10">
                     <div class="card ">
                         <div class="card-header card-header-primary">
                             <h4 class="card-title text-center" style="font-weight: bold">CATEGORY MANAGEMENT</h4>
@@ -52,7 +52,7 @@
 
                                                 <td class="text-center">{{add @index '1'}}</td>
 
-                                                <td class="text-center">
+                                                <td class="text-left">
                                                     <button type="button" rel="tooltip" title="Remove Category"
                                                         class="btn btn-white btn-link btn-sm p-0 pb-1"
                                                         onclick="return confirm('Do you want to delete product - {{this.Main_Cat}} ?')">
@@ -66,33 +66,107 @@
                                                 <td>
                                                     <ol>
                                                         <form action="/admin/add-subCat" style="display: flex;"
-                                                            method="post">
+                                                            method="post" enctype="multipart/form-data">
                                                             <input name="mainCat_Id" class="form-control" type="hidden"
                                                                 value="{{this._id}}">
                                                             <input name="Sub_Cat" class="form-control" type="text"
                                                                 placeholder="Add new sub category">
+
+                                                            <div class="mx-2">
+
+                                                                <img src="" alt="" style="width: 50px; height:auto"
+                                                                    id="{{this._id}}imgview1">
+
+                                                            </div>
+
+                                                            <div>
+
+                                                                <label data-toggle="modal"
+                                                                    data-target="#exampleModalCenter"
+                                                                    class="btn btn-primary btn-sm" for="{{this._id}}file1">Logo
+                                                                    Image</label>
+
+
+
+                                                                <input style="display:none" name="Img1" type="file"
+                                                                    class="my-2 form-control-file" id="{{this._id}}file1"
+                                                                    onchange="return fileValidation1('{{this._id}}')">
+                                                                <div id="{{this._id}}errMsg1"></div>
+
+                                                            </div>
+
                                                             <button type="submit" id="confirm-btn"
                                                                 class="btn btn-primary btn-sm"><i
                                                                     class="material-icons">add_to_photos</i></button>
+
+
+                                                            <div class="modal fade" id="exampleModalCenter"
+                                                                tabindex="-1" role="dialog"
+                                                                aria-labelledby="exampleModalCenterTitle"
+                                                                aria-hidden="true">
+
+                                                                <div class="modal-dialog modal-dialog-centered"
+                                                                    role="document">
+
+                                                                    <div class="modal-content">
+
+                                                                        <div class="modal-header">
+
+                                                                            <h4 class="modal-title"
+                                                                                style="font-weight: bold;"
+                                                                                id="exampleModalLongTitle">Crop
+                                                                                Image</h4>
+
+
+
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                            <div id="image-box" style="display:none;">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="modal-footer">
+
+                                                                            <button onclick="buttonDisplay()"
+                                                                                type="button" class="btn btn-secondary"
+                                                                                data-dismiss="modal">Close</button>
+                                                                            <button id="crop-btn" data-dismiss="modal"
+                                                                                type="button"
+                                                                                class="btn btn-primary">Crop</button>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
 
                                                         </form>
 
                                                         {{#each this.Sub_Cat}}
 
-                                                        <div class="d-flex">
+                                                        <div class="d-flex" style="margin-top: 10px;">
 
 
                                                             <button type="button" rel="tooltip"
                                                                 title="Remove Sub-Category"
                                                                 class="btn btn-white btn-link btn-sm p-0 pb-1 mr-4"
-                                                                onclick="return confirm('Do you want to delete product - {{this}} ?')">
+                                                                onclick="return confirm('Do you want to delete product - {{this.Sub_Cat}} ?')">
                                                                 <a
-                                                                    href="/admin/delete-subCategory?id={{../this._id}}&name={{this}}">
+                                                                    href="/admin/delete-subCategory?catId={{../this._id}}&subCatId={{this.subCatId}}">
                                                                     <i class="material-icons">delete</i>
                                                                 </a>
                                                             </button>
 
-                                                            <li>{{this}}</li>
+                                                            {{!-- <li>{{this}}</li> --}}
+
+                                                            <li><span><img style="width:50px;height:50px"
+                                                                        src="/sub-category-images/{{this.subCatId}}SCI.jpg"
+                                                                        alt=""></span><span
+                                                                    style="margin-left: 10px;">{{this.Sub_Cat}}</span>
+                                                            </li>
 
 
                                                         </div>
@@ -129,6 +203,87 @@
 
     </div>
 </div>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+
+<script>
+
+    function buttonDisplay() {
+        document.getElementById('confirm-btn').style.display = 'block';
+    }
+
+
+
+    function fileValidation1(id) {
+
+        const imagebox = document.getElementById('image-box')
+        const crop_btn = document.getElementById('crop-btn')
+        var fileInput = document.getElementById(id+'file1');
+
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+
+            document.getElementById(id+'errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
+            fileInput.value = '';
+            return false;
+
+        } else {
+
+            //Image preview
+            document.getElementById(id+'errMsg1').innerHTML = ''
+            const img_data = fileInput.files[0]
+            const url = URL.createObjectURL(img_data)
+            imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
+            const image = document.getElementById('image')
+            document.getElementById('image-box').style.display = 'block'
+            document.getElementById('crop-btn').style.display = 'block'
+            document.getElementById('confirm-btn').style.display = 'none'
+
+            const cropper = new Cropper(image, {
+
+                autoCropArea: 1,
+                viewMode: 1,
+                scalable: false,
+                zoomable: false,
+                movable: false,
+                aspectRatio: 157 / 155,
+                //preview: '.preview',
+                minCropBoxWidth: 180,
+                minCropBoxHeight: 240,
+
+            })
+
+            crop_btn.addEventListener('click', () => {
+
+                cropper.getCroppedCanvas().toBlob((blob) => {
+
+                    let fileInputElement = document.getElementById(id+'file1');
+                    let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+                    let container = new DataTransfer();
+
+                    container.items.add(file);
+                    const img = container.files[0]
+                    var url = URL.createObjectURL(img)
+                    fileInputElement.files = container.files;
+                    document.getElementById(id+'imgview1').src = url
+                    document.getElementById('image-box').style.display = 'none'
+                    document.getElementById('crop-btn').style.display = 'none'
+                    document.getElementById('confirm-btn').style.display = 'block'
+
+                });
+
+            });
+
+        }
+
+    }
+
+
+</script>
 
 <style>
     .table thead tr th {

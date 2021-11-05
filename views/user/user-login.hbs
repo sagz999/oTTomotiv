@@ -5,15 +5,15 @@
             <h6>Login</h6>
 
             {{#if err}}
-				<p style="color: red;">{{err}}</p>
-			{{/if}}
+            <p style="color: red;">{{err}}</p>
+            {{/if}}
 
             {{#if msg}}
-				<p style="color:green;">{{msg}}</p>
-			{{/if}}
+            <p style="color:green;">{{msg}}</p>
+            {{/if}}
 
             <div class="sign-form">
-                <form class="mb-0" action="/login" method="POST">
+                <form class="mb-0" action="/login" method="POST" id="login-form">
                     <div class="form-group">
                         <input type="email" name="Email" class="form-control" id="username" placeholder="Email">
                     </div>
@@ -24,7 +24,7 @@
                     <div class="pull-left otp-login">
                         <a href="/otprequest">Sign in with OTP</a>
                     </div>
-                    
+
                     <div class="pull-right lost-pass">
                         <a href="/forgot-password">Forget Password?</a>
                     </div>
@@ -38,3 +38,55 @@
     </div>
 
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+
+    $(document).ready(function () {
+        
+
+
+        $('#login-form').validate({
+
+            rules: {
+
+                Email: {
+                    required: true,
+                    email:true,
+                },
+
+                Password: {
+                    required: true  
+                }
+
+            },
+
+            messages: {
+
+                Email: {
+                    required:"Email field must not be blank",
+                    email:"Invalid email"
+                    
+                },
+
+                Password: {
+                    required: "Password field must not be blank"
+                }
+
+            }
+        })
+    })
+
+</script>
+
+<style>
+    .error {
+        color: red !important;
+        font-size: x-small !important;
+        margin-left: 10px
+    }
+</style>

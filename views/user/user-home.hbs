@@ -1,6 +1,6 @@
 {{>userheader}}
 
-<section id="hero" class="hero">
+<section id="hero" class="hero container">
     <div id="hero-slider" class="hero-slider">
 
         <div class="slide bg-overlay">
@@ -34,7 +34,7 @@
                                 Shops, Car Wash, Garages, Automobile Mechanicals, Mechanic Workshops, Auto Painting,
                                 Auto Centres.
                             </div>
-                            
+
                             <div class="slide-action">
                                 <a class="btn btn-primary" href="#">Check It Now</a>
                                 <a class="btn btn-primary btn-white" href="#">Purchase Now</a>
@@ -110,64 +110,129 @@
 
 </section>
 
-
-<section id="featuredItems" class="shop">
-    <div class="container">
-        <div class="row product-boxes">
-
-            <div class="col-xs-12 col-sm-4 col-md-4 product-box">
-                <a href="#">
-                    <div class="product-img">
-                        <img src="images/shop/small/1.jpg" alt="Product" />
-                        <div class="product-hover">
-                            <div class="product-link">
-                                <h3>Car Wheels</h3>
-                                <p>Best Metal</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </a>
+<section id="clients" class="clients bg-gray">
+    <div class="container heading">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <p class="subheading">LET'S GET STARTED</p>
+                <h2>SHOP BY CAR</h2>
             </div>
 
+        </div>
 
-            <div class="col-xs-12 col-sm-4 col-md-4 product-box">
-                <a href="#">
-                    <div class="product-img">
-                        <img src="images/shop/small/3.jpg" alt="Product" />
-                        <div class="product-hover">
-                            <div class="product-link">
-                                <h3>Car Engines</h3>
-                                <p>Best Prices</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </a>
+        <div class="row heading-desc">
+            <div class="col-xs-12 col-sm-12 col-md-10">
+                <p>Choose your car from the list so that, we could introduce you the best match from our collection for
+                    a hustle free shopping experience</p>
             </div>
 
-
-            <div class="col-xs-12 col-sm-4 col-md-4 product-box">
-                <a href="#">
-                    <div class="product-img">
-                        <img src="images/shop/small/3.jpg" alt="Product" />
-                        <div class="product-hover">
-                            <div class="product-link">
-                                <h3>Car Batteries</h3>
-                                <p>Best Quality</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </a>
+            <div class="col-xs-12 col-sm-12 col-md-2">
+                <a class="btn btn-primary btn-block" href="#">Check All Brands</a>
             </div>
 
         </div>
 
     </div>
+
+    <div class="container">
+        <div class="clients-bg">
+            <div class="row">
+                <div class="col-xs-12 colsm-12 col-md-12 client-carousel">
+
+                    {{#each carBrands}}
+
+                    <div class="client">
+                        <a href="/chooseCarModel?brandId={{this._id}}"><img src="/car-brand-logos/{{this._id}}CBL.jpg"
+                                style="height:100px;width:100px" alt="client"></a>
+                    </div>
+
+                    {{/each}}
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+<section id="featuredItems" class="shop" style="padding-top: 8px;">
+
+    <div class="container heading">
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <p class="subheading">LET'S SEE WHAT YOU ARE LOOKING FOR</p>
+                <h2>SHOP BY CATEGORY</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container">
+
+
+        <ul style="width:100%" class="nav  nav-tabs navbar-nav navbar-left">
+            {{#each categories}}
+            <li>
+                <a style="color:black" data-toggle="tab" href="#{{this._id}}">{{this.Main_Cat}}</a>
+            </li>
+            {{/each}}
+
+        </ul>
+
+
+        <div class="tab-content">
+            {{#each categories}}
+            <div class="tab-pane" id="{{this._id}}">
+                <div class="row product-boxes">
+
+                    {{#each this.Sub_Cat}}
+                    <div class="col-md-3 product-box">
+
+                        <a href="#">
+
+                            <div class="product-img" style="display:flex; justify-content:center;">
+                                <img src="sub-category-images/{{this.subCatId}}SCI.jpg" style="height:150px;width:150px"
+                                    alt="Product" />
+                            </div>
+
+                            <div class="text-center" style="margin-top:12px;">
+                                <h6>{{this.Sub_Cat}}</h6>
+                            </div>
+
+                        </a>
+
+                    </div>
+                    {{/each}}
+
+
+                </div>
+            </div>
+
+            {{/each}}
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+    {{!-- <div class="container">
+        <div class="row product-boxes">
+
+
+
+        </div>
+
+    </div> --}}
 
     <div class="container heading">
         <div class="row">
@@ -242,95 +307,15 @@
 </section>
 
 
-<section id="clients" class="clients bg-gray">
-    <div class="container heading">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <p class="subheading">Awesome</p>
-                <h2>Our Brands</h2>
-            </div>
 
-        </div>
-
-        <div class="row heading-desc">
-            <div class="col-xs-12 col-sm-12 col-md-10">
-                <p>Car Shop is a business theme. Perfectly suited for Auto Mechanic, Car Repair Shops, Car Wash,
-                    Garages,
-                    Automobile Mechanicals, Mechanic Workshops, Auto Painting, Auto Centres.</p>
-            </div>
-
-            <div class="col-xs-12 col-sm-12 col-md-2">
-                <a class="btn btn-primary btn-block" href="#">Check All Brands</a>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="container">
-        <div class="clients-bg">
-            <div class="row">
-                <div class="col-xs-12 colsm-12 col-md-12 client-carousel">
-
-                    <div class="client">
-                        <img src="images/clients/1.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/2.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/3.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/4.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/5.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/6.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/4.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/5.png" alt="client">
-                    </div>
-
-
-                    <div class="client">
-                        <img src="images/clients/6.png" alt="client">
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</section>
 
 
 <section id="newItems" class="shop">
     <div class="container heading">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
-                <p class="subheading">we get</p>
-                <h2>New Items</h2>
+                <p class="subheading">our hot selling</p>
+                <h2>Featured Products</h2>
             </div>
 
         </div>
