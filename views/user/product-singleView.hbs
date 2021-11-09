@@ -24,21 +24,24 @@
                         <img src="/product-images/{{product._id}}_2.jpg" alt="product image" class="zoom-image">
                         <img src="/product-images/{{product._id}}_3.jpg" alt="product image" class="zoom-image">
                         <img src="/product-images/{{product._id}}_4.jpg" alt="product image" class="zoom-image">
-                        
+
 
                     </div>
                     <div class="product-img-nav">
                         <img src="/product-images/{{product._id}}_1.jpg" alt="product image" style="height: 50px;">
-                        <img src="/product-images/{{product._id}}_2.jpg" alt="product image" style="height: 50px;" >
-                        <img src="/product-images/{{product._id}}_3.jpg" alt="product image" style="height: 50px;" >
-                        <img src="/product-images/{{product._id}}_4.jpg" alt="product image" style="height: 50px;" >
-                        
+                        <img src="/product-images/{{product._id}}_2.jpg" alt="product image" style="height: 50px;">
+                        <img src="/product-images/{{product._id}}_3.jpg" alt="product image" style="height: 50px;">
+                        <img src="/product-images/{{product._id}}_4.jpg" alt="product image" style="height: 50px;">
+
                     </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-7">
                 <div class="product-title text-center-xs">
                     <h3>{{product.Product_Name}}</h3>
+                    <h3>{{#wishlistUpdate wishlist product._id}}
+                        {{/wishlistUpdate}}</h3>
+
                 </div>
 
                 <div class="product-meta mb-30">
@@ -68,15 +71,14 @@
                 <div class="product-action">
                     <div class="product-cta text-right text-center-xs">
                         {{!-- <a class="btn btn-primary" href="#">add to cart</a> --}}
-                        {{#hello cart product._id product.Price}}
+                        {{#hello cart product._id product.Price product.Product_Name}}
 
                         {{/hello}}
-                        <a class="btn btn-primary bordered" href="#">wishlist</a>
                         <a class="btn btn-primary" href="/prodBuyNow?prodId={{product._id}}">Buy Now</a>
                     </div>
                 </div>
 
-               
+
 
             </div>
         </div>
@@ -86,7 +88,7 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 pager">
-               
+
             </div>
         </div>
 
@@ -105,7 +107,8 @@
                                     <div class="product-hover">
                                         <div class="product-action">
                                             <a class="btn btn-primary" href="#">Add To Cart</a>
-                                            <a class="btn btn-primary" href="/view-product?id={{this._id}}">Item Details</a>
+                                            <a class="btn btn-primary" href="/view-product?id={{this._id}}">Item
+                                                Details</a>
                                         </div>
                                     </div>
 
@@ -140,3 +143,56 @@
 
 </section>
 {{>userfooter}}
+
+<script>
+
+    function addToWishList(prodId) {
+
+        $.ajax({
+            url: '/addToWishlist?prodId=' + prodId,
+            method: 'get',
+            success: (result) => {
+                swal("Success!", "Product added to wishlist!", "success", {
+                        button: "OK",
+                    }).then(() => {
+                        location.reload()
+                    })
+            }
+        })
+    }
+
+
+    function removeFromWish(prodId) {
+        $.ajax({
+            url: '/removeFromWish?prodId=' + prodId,
+            method: 'get',
+            success: (result) => {
+                swal("Removed!", "Product removed from wishlist!", "warning", {
+                        button: "OK",
+                    }).then(() => {
+                        location.reload()
+                    })
+            }
+        })
+    }
+
+    function addToCart(prodId, price, prodName) {
+        $.ajax({
+            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
+            method: 'get',
+            success: (response) => {
+                if (response.status) {
+                    let count = $('#cart-count').html()
+                    count = parseInt(count) + 1
+                    $("#cart-count").html(count)
+                    swal("Success!", "Product added to cart!", "success", {
+                        button: "OK",
+                    }).then(() => {
+                        location.reload()
+                    })
+                }
+            }
+        })
+    }
+
+</script>

@@ -9,7 +9,8 @@ module.exports = {
 
             newProduct.Stock = parseInt(newProduct.Stock)
             newProduct.Price = parseInt(newProduct.Price)
-            newProduct.Date = new Date()
+            newProduct.Date=new Date().toLocaleString('en-US').slice(0, 9),
+            newProduct.Time= new Date().toLocaleString('en-US').slice(11, 21),
             await db.get().collection(collection.PRODUCT_COLLECTION).insertOne(newProduct).then((data) => {
 
                 resolve(data.insertedId)

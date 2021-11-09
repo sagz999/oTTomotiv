@@ -263,8 +263,8 @@
                     minlength: 10,
                     maxlength: 10
                 },
-                Pay_Method:{
-                    required:true
+                Pay_Method: {
+                    required: true
                 }
 
 
@@ -286,10 +286,30 @@
                 Country_State: {
                     alpha: "This field should be in alphabets"
                 },
-                Pay_Method:{
-                    required:"Choose a payment method"
+                Pay_Method: {
+                    required: "Choose a payment method"
                 }
 
+            },
+
+            submitHandler: function () {
+                $.ajax({
+                    url: '/cartPlaceOrder',
+                    method: 'post',
+                    data: $('#checkout-form').serialize(),
+                    success: (response) => {
+                        if (response.codSuccess) {
+
+                            location.href = '/cartOrder-success'
+
+                        } else {
+                            razorpayPayment(response)
+                        }
+
+
+
+                    }
+                })
             }
         })
     })
@@ -297,27 +317,6 @@
 </script>
 
 <script>
-
-    {{!-- $('#checkout-form').submit((e) => {
-        e.preventDefault()
-        $.ajax({
-            url: '/cartPlaceOrder',
-            method: 'post',
-            data: $('#checkout-form').serialize(),
-            success: (response) => {
-                if (response.codSuccess) {
-
-                    location.href = '/cartOrder-success'
-
-                } else {
-                    razorpayPayment(response)
-                }
-
-
-
-            }
-        })
-    }) --}}
 
     function razorpayPayment(order) {
 
@@ -363,7 +362,7 @@
             method: 'post',
             success: (response) => {
                 if (response.status) {
-                    location.href = '/order-success'
+                    location.href = '/cartOrder-success'
                 } else {
                     alert('Payment Failed')
                 }
@@ -461,6 +460,7 @@
         font-size: x-small !important;
         margin-left: 10px
     }
+
     h6 {
         margin: 23px 0 0;
     }

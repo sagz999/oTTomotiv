@@ -8,6 +8,7 @@ const crypto = require('crypto')
 const Razorpay = require('razorpay')
 const { resolve } = require('path')
 const { v4: uuidv4 } = require('uuid');
+const { info } = require('console')
 
 var instance = new Razorpay({
     key_id: 'rzp_test_BR5CAu00Vuru3P',
@@ -194,10 +195,11 @@ module.exports = {
     },
 
 
-    addTocart: (prodId, userId, price) => {
+    addTocart: (prodId, userId, price, prodName) => {
 
         let prodObj = {
             item: objectId(prodId),
+            Product_Name: prodName,
             quantity: 1,
             price: price,
             total: parseInt(price),
@@ -324,15 +326,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
 
             if (details.count == -1 && details.quantity == 1) {
-
-                db.get().collection(collection.CART_COLLECTION)
-                    .updateOne({ _id: objectId(details.cart) },
-                        {
-                            $pull: { products: { item: objectId(details.product) } }
-                        }).then((response) => {
-
-                            resolve({ removeProd: true })
-                        })
+                resolve({ removeProd: true })
             } else {
                 db.get().collection(collection.CART_COLLECTION)
                     .updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product) },
@@ -431,8 +425,8 @@ module.exports = {
                 Products: products,
                 Total_Amount: total,
                 Payment_Stats: payStatus,
-                Date: new Date().toLocaleString('en-US').slice(0, 10),
-                Time: new Date().toLocaleString('en-US').slice(12, 23),
+                Date: new Date().toLocaleString('en-US').slice(0, 9),
+                Time: new Date().toLocaleString('en-US').slice(11, 21),
                 Mode: 'cart'
 
             }
@@ -479,10 +473,11 @@ module.exports = {
                 ProdId: product._id,
                 Product_Name: product.Product_Name,
                 Price: product.Price,
-                Total_Amount: product.totalfinalPrice,
+                quantity: 1,
+                Total_Amount: parseInt(order.totalfinalPrice),
                 Payment_Stats: payStatus,
-                Date: new Date().toLocaleString('en-US').slice(0, 10),
-                Time: new Date().toLocaleString('en-US').slice(12, 23),
+                Date: new Date().toLocaleString('en-US').slice(0, 9),
+                Time: new Date().toLocaleString('en-US').slice(11, 21),
                 Mode: 'buynow',
                 Status: 'Placed'
 
@@ -635,18 +630,26 @@ module.exports = {
     },
 
     fetchAllUserOrders: (userId) => {
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.ORDER_COLLECTION).find({ UserId: objectId(userId) }).toArray().then((allOrders) => {
-                resolve(allOrders)
-            })
+
+        return new Promise(async (resolve, reject) => {
+
+            let userOrders = await db.get().collection(collection.ORDER_COLLECTION).find({ UserId: objectId(userId) }).toArray()
+
+            resolve(userOrders)
+
         })
+
     },
 
     getSpecificOrder: (orderId) => {
+
         return new Promise(async (resolve, reject) => {
+
             let order = await db.get().collection(collection.ORDER_COLLECTION).findOne({ _id: objectId(orderId) })
             resolve(order)
+
         })
+
     },
 
     changeUserStats: (userId) => {
@@ -831,7 +834,7 @@ module.exports = {
                 {
                     multi: true
                 }).then(() => {
-                    
+
                     resolve()
                 })
         })
@@ -931,7 +934,7 @@ module.exports = {
                 if (coupon) {
 
                     db.get().collection(collection.ORDER_COLLECTION).findOne({ UserId: objectId(userId), Coupon_Code: couponCode }).then((Couponstat) => {
-                        
+
                         if (Couponstat) {
 
                             let Usedcoupon = {}
@@ -957,7 +960,604 @@ module.exports = {
                 }
             })
         })
-    }
+    },
+
+    fetchWishlist: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let wishlist = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({ user: objectId(userId) })
+
+            if (wishlist) {
+                resolve(wishlist.products)
+            } else {
+                resolve(false)
+            }
+
+        })
+    },
+
+    addToWishlist: (userId, prodId) => {
+        return new Promise(async (resolve, reject) => {
+
+            let product = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(prodId) })
+
+            let wishObj = {
+                item: objectId(prodId),
+                prodName: product.Product_Name,
+                prodPrice: product.Price,
+                prodStock: product.Stock
+
+            }
+
+            var wishList = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({ user: objectId(userId) })
+
+            if (wishList) {
+
+                db.get().collection(collection.WISHLIST_COLLECTION).updateOne({ user: objectId(userId) }, {
+                    $push: {
+                        products: wishObj
+                    }
+                }).then((response) => {
+                    resolve(response)
+                })
+
+
+            } else {
+                let newWish = {
+                    user: objectId(userId),
+                    products: [wishObj]
+                }
+
+                db.get().collection(collection.WISHLIST_COLLECTION).insertOne(newWish).then((response) => {
+                    resolve(response)
+                })
+
+            }
+        })
+    },
+
+
+    removeFromWishlist: (userId, prodId) => {
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.WISHLIST_COLLECTION).updateOne({ user: objectId(userId) }, {
+                $pull: {
+                    products: { item: objectId(prodId) }
+                }
+            }).then((response) => {
+                resolve(response)
+            })
+        })
+    },
+
+
+    //admin-dashboard helpers start
+
+    totalUsersCount: () => {
+        return new Promise(async (resolve, reject) => {
+
+            let allUsers = await db.get().collection(collection.USER_COLLECTION).count()
+            let blockedUsers = await db.get().collection(collection.USER_COLLECTION).count({ Status: false })
+            let activeUsers = await db.get().collection(collection.USER_COLLECTION).count({ Status: true })
+
+            let userCounts = {
+                allUsers: allUsers,
+                blockedUsers: blockedUsers,
+                activeUsers: activeUsers
+            }
+
+            resolve(userCounts)
+
+        })
+    },
+
+    orderCount: () => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ORDER_COLLECTION).count().then((count)=>{
+                resolve(count)
+            })
+        })
+    },
+
+
+    totalRevenue: () => {
+        return new Promise(async (resolve, reject) => {
+
+            let buyNowRevenue = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        Mode: 'buynow',
+                        Status: 'Delivered'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$Total_Amount' }
+
+                    }
+                }
+            ]).toArray()
+
+            if (buyNowRevenue[0]) {
+                buyNowRevenue = buyNowRevenue[0].total
+            } else {
+                buyNowRevenue = 0
+            }
+
+            let cartRevenue = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Delivered' }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$Products.total' }
+
+                    }
+                }
+
+            ]).toArray()
+
+            if (cartRevenue[0]) {
+                cartRevenue = cartRevenue[0].total
+            } else {
+                cartRevenue = 0
+            }
+
+            let totalRevenue = buyNowRevenue + cartRevenue
+
+            resolve(totalRevenue)
+
+        })
+    },
+
+    orderPaymentMethod: () => {
+        return new Promise(async (resolve, reject) => {
+            let COD = await db.get().collection(collection.ORDER_COLLECTION).count({ Pay_Method: 'COD' })
+            let Online = await db.get().collection(collection.ORDER_COLLECTION).count({ Pay_Method: 'Online' })
+
+            let Pay_Method = {
+                COD: COD,
+                Online: Online
+            }
+
+            resolve(Pay_Method)
+        })
+    },
+
+    totalProdCount: () => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PRODUCT_COLLECTION).count().then((totalProdCount) => {
+                resolve(totalProdCount)
+            })
+        })
+    },
+
+    ProdsStockCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let lowStockProdCount = await db.get().collection(collection.PRODUCT_COLLECTION).find({ $and: [{ Stock: { $lte: 5 } }, { Stock: { $gte: 1 } }] }).toArray()
+            lowStockProdCount = lowStockProdCount.length
+
+            let outOfStockProdCount = await db.get().collection(collection.PRODUCT_COLLECTION).find({ Stock: 0 }).toArray()
+            outOfStockProdCount = outOfStockProdCount.length
+
+            let inStockProdCount = await db.get().collection(collection.PRODUCT_COLLECTION).find({ Stock: { $gt: 5 } }).toArray()
+            inStockProdCount = inStockProdCount.length
+
+            let ProdsStockCount = {
+                lowStockProdCount: lowStockProdCount,
+                outOfStockProdCount: outOfStockProdCount,
+                inStockProdCount: inStockProdCount
+            }
+            console.log('ProdsStockCount:', ProdsStockCount)
+
+            resolve(ProdsStockCount)
+        })
+    },
+
+    orderCounts: () => {
+        return new Promise(async (resolve, reject) => {
+
+            let buyNowOrderCount = await db.get().collection(collection.ORDER_COLLECTION).count({ Mode: 'buynow' })
+            let cartOrderCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $project: {
+                        Products: 1
+                    }
+                }
+
+            ]).toArray()
+
+            cartOrderCount = cartOrderCount.length
+
+            let AllOrderCount = buyNowOrderCount + cartOrderCount
+
+
+
+
+            let buynowPlacedOrderCount = await db.get().collection(collection.ORDER_COLLECTION).count({ Mode: 'buynow', Status: 'Placed' })
+            let cartPlacedOrderCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Placed' }
+                }
+            ]).toArray()
+
+            cartPlacedOrderCount = cartPlacedOrderCount.length
+
+            let totalPlacedOrderCount = buynowPlacedOrderCount + cartPlacedOrderCount
+
+
+
+
+            let buynowShippedOrderCount = await db.get().collection(collection.ORDER_COLLECTION).count({ Mode: 'buynow', Status: 'Shipped' })
+            let cartShippedOrderCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Shipped' }
+                }
+            ]).toArray()
+
+            cartShippedOrderCount = cartShippedOrderCount.length
+
+            let totalShippedOrderCount = buynowShippedOrderCount + cartShippedOrderCount
+
+
+
+
+            let buynowDeliveredOrderCount = await db.get().collection(collection.ORDER_COLLECTION).count({ Mode: 'buynow', Status: 'Delivered' })
+            let cartDeliveredOrderCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Delivered' }
+                }
+            ]).toArray()
+
+            cartDeliveredOrderCount = cartDeliveredOrderCount.length
+
+            let totalDeliveredOrderCount = buynowDeliveredOrderCount + cartDeliveredOrderCount
+
+
+
+
+            let buynowCancelledOrderCount = await db.get().collection(collection.ORDER_COLLECTION).count({ Mode: 'buynow', Status: 'Cancelled' })
+            let cartCancelledOrderCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Cancelled' }
+                }
+            ]).toArray()
+
+            cartCancelledOrderCount = cartCancelledOrderCount.length
+
+            let totalCancelledOrderCount = buynowCancelledOrderCount + cartCancelledOrderCount
+
+
+            let Counts = {
+                AllOrderCount: AllOrderCount,
+                totalPlacedOrderCount: totalPlacedOrderCount,
+                totalShippedOrderCount: totalShippedOrderCount,
+                totalDeliveredOrderCount: totalDeliveredOrderCount,
+                totalCancelledOrderCount: totalCancelledOrderCount
+            }
+
+            resolve(Counts)
+
+        })
+    },
+
+    prodsInOrderCounts: () => {
+        return new Promise(async (resolve, reject) => {
+
+            let totalBuyNowProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        Mode: 'buynow'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$quantity' }
+
+                    }
+                }
+            ]).toArray()
+
+            if (totalBuyNowProdCount[0]) {
+                totalBuyNowProdCount = totalBuyNowProdCount[0].total
+            } else {
+                totalBuyNowProdCount = 0
+            }
+
+            let totalCartProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$Products.quantity' }
+
+                    }
+                }
+
+            ]).toArray()
+
+            if (totalCartProdCount[0]) {
+                totalCartProdCount = totalCartProdCount[0].total
+            } else {
+                totalCartProdCount = 0
+            }
+
+            let totalProdCount = totalBuyNowProdCount + totalCartProdCount
+
+
+
+
+            let totalBuyNowPlacedProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        Mode: 'buynow',
+                        Status: 'Placed'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$quantity' }
+
+                    }
+                }
+            ]).toArray()
+
+            if (totalBuyNowPlacedProdCount[0]) {
+                totalBuyNowPlacedProdCount = totalBuyNowPlacedProdCount[0].total
+            } else {
+                totalBuyNowPlacedProdCount = 0
+            }
+
+            let totalCartPlacedProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Placed' }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$Products.quantity' }
+
+                    }
+                }
+
+            ]).toArray()
+
+            if (totalCartPlacedProdCount[0]) {
+                totalCartPlacedProdCount = totalCartPlacedProdCount[0].total
+            } else {
+                totalCartPlacedProdCount = 0
+            }
+
+            let totalPlacedProdCount = totalBuyNowPlacedProdCount + totalCartPlacedProdCount
+
+
+
+
+            let totalBuyNowShippedProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        Mode: 'buynow',
+                        Status: 'Shipped'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$quantity' }
+
+                    }
+                }
+            ]).toArray()
+
+            if (totalBuyNowShippedProdCount[0]) {
+                totalBuyNowShippedProdCount = totalBuyNowShippedProdCount[0].total
+            } else {
+                totalBuyNowShippedProdCount = 0
+            }
+
+            let totalCartShippedProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Shipped' }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$Products.quantity' }
+
+                    }
+                }
+
+            ]).toArray()
+
+            if (totalCartShippedProdCount[0]) {
+                totalCartShippedProdCount = totalCartShippedProdCount[0].total
+            } else {
+                totalCartShippedProdCount = 0
+            }
+
+            let totalShippedProdCount = totalBuyNowShippedProdCount + totalCartShippedProdCount
+
+
+
+
+            let totalBuyNowDeliveredProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        Mode: 'buynow',
+                        Status: 'Delivered'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$quantity' }
+
+                    }
+                }
+            ]).toArray()
+
+            if (totalBuyNowDeliveredProdCount[0]) {
+                totalBuyNowDeliveredProdCount = totalBuyNowDeliveredProdCount[0].total
+            } else {
+                totalBuyNowDeliveredProdCount = 0
+            }
+
+            let totalCartDeliveredProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Delivered' }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$Products.quantity' }
+
+                    }
+                }
+
+            ]).toArray()
+
+            if (totalCartDeliveredProdCount[0]) {
+                totalCartDeliveredProdCount = totalCartDeliveredProdCount[0].total
+            } else {
+                totalCartDeliveredProdCount = 0
+            }
+
+            let totalDeliveredProdCount = totalBuyNowDeliveredProdCount + totalCartDeliveredProdCount
+
+
+
+
+            let totalBuyNowCancelledProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        Mode: 'buynow',
+                        Status: 'Cancelled'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$quantity' }
+
+                    }
+                }
+            ]).toArray()
+
+            if (totalBuyNowCancelledProdCount[0]) {
+                totalBuyNowCancelledProdCount = totalBuyNowCancelledProdCount[0].total
+            } else {
+                totalBuyNowCancelledProdCount = 0
+            }
+
+            let totalCartCancelledProdCount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { Mode: 'cart' }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: { 'Products.status': 'Cancelled' }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$Products.quantity' }
+
+                    }
+                }
+
+            ]).toArray()
+
+            if (totalCartCancelledProdCount[0]) {
+                totalCartCancelledProdCount = totalCartCancelledProdCount[0].total
+            } else {
+                totalCartCancelledProdCount = 0
+            }
+
+            let totalCancelledProdCount = totalBuyNowCancelledProdCount + totalCartCancelledProdCount
+
+
+
+
+            let prodsInOrderCounts = {
+
+                totalProdCount: totalProdCount,
+                totalPlacedProdCount: totalPlacedProdCount,
+                totalShippedProdCount: totalShippedProdCount,
+                totalDeliveredProdCount: totalDeliveredProdCount,
+                totalCancelledProdCount: totalCancelledProdCount
+
+            }
+
+            resolve(prodsInOrderCounts)
+
+        })
+    },
+
+    //admin-dashboard helpers ends
+
 
 
 

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var productHelper = require('../helpers/producthelper');
+const userhelper = require('../helpers/userhelper');
 var userHelper = require('../helpers/userhelper')
 
 
@@ -18,9 +19,29 @@ const verifyLog = (req, res, next) => {
 }
 
 /* GET home page. */
-router.get('/', verifyLog, (req, res) => {
+router.get('/', verifyLog,async (req, res) => {
 
-  res.render('admin/admin-dash', { title: 'Admin Dashboard', isAdmin: true });
+  let userCounts=await userHelper.totalUsersCount()
+  let totalProducts= await userHelper.totalProdCount()
+  let totalRevenue= await userHelper.totalRevenue()
+  let orderCounts= await userHelper.orderCounts()
+  let prodsInOrderCounts= await userHelper.prodsInOrderCounts()
+  let ProdsStockCounts= await userHelper.ProdsStockCount()
+  let payMethod= await userHelper.orderPaymentMethod()
+  let orderCount=await userHelper.orderCount()
+
+
+
+  res.render('admin/admin-dash', { title: 'Admin Dashboard', isAdmin: true,
+  userCounts,
+  totalProducts,
+  totalRevenue,
+  orderCounts,
+  prodsInOrderCounts,
+  ProdsStockCounts,
+  payMethod,
+  orderCount
+});
 
 });
 

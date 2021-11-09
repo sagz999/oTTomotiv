@@ -13,99 +13,137 @@
         </div>
 
     </div>
-    <div class="invoice overflow-auto " id="invoice">
-        <div class=" col-md-12 ">
-            <header style="background-color: black;">
-                <div class="row" style="margin: 0;">
-                    <div class="col-md-4 logo_agile">
+    <div class='container'>
+        <div class="invoice overflow-auto " id="invoice">
+            <div class=" col-md-12 ">
+                <header style="background-color: black;">
+                    <div class="row" style="margin: 0;">
+                        <div class="col-md-4 logo_agile">
 
-                        <a href="/" class="font-weight-bold font-italic">
-                            <img src="images/logo/otto.png" alt=" " style="width: 250px;" class="img-fluid">
-                        </a>
-
-                    </div>
-                    <div class="col-md-8 company-details">
-                        <h3 class="name">
-                            <a style="color: #fff;" target="_blank" href="https://lobianijs.com">
-                                Team-oTTomotiv
+                            <a href="/" class="font-weight-bold font-italic">
+                                <img src="images/logo/otto.png" alt=" " style="width: 250px;" class="img-fluid">
                             </a>
-                        </h3>
-                        <p style="margin: 0;">Opp Malabar Eye Hospital Kaizen Tower,</p>
-                        <p style="margin: 0;">Eranhipaalam, Kozhikode,</p>
-                        <p style="margin: 0;">Kerala 673006</p>
-                    </div>
-                </div>
-            </header>
 
-            <main style="padding-left: 20px;padding-right: 20px;">
-                <div class="row contacts">
-                    <div class="col invoice-to">
-                        <div class="text-gray-light">INVOICE TO:</div>
-                        <h2 class="to">{{order.Name}}</h2>
-                        <div class="address">{{order.Address.Company_Name}}<br>
-                            {{order.Address.Street_Address}},{{order.Address.Extra_Details}}<br>
-                            {{order.Address.Town_City}},{{order.Address.Country_State}}<br>
-                            PIN: {{order.Address.Post_Code}}<br>
-                            {{order.Address.Phone.Phone}}
+                        </div>
+                        <div class="col-md-8 company-details">
+                            <h3 class="name">
+                                <a style="color: #fff;" target="_blank" href="https://lobianijs.com">
+                                    Team-oTTomotiv
+                                </a>
+                            </h3>
+                            <p style="margin: 0;">Opp Malabar Eye Hospital Kaizen Tower,</p>
+                            <p style="margin: 0;">Eranhipaalam, Kozhikode,</p>
+                            <p style="margin: 0;">Kerala 673006</p>
                         </div>
                     </div>
-                    <div class="col invoice-details">
-                        <div class="text-gray-light">INVOICE ID:{{order._id}}</div>
-                        <div class="date">Date of Invoice: {{order.Date}}</div>
+                </header>
+
+
+                <main style="padding-left: 50px;padding-right: 50px">
+                    <div class="row contacts">
+                        <div class="col invoice-to">
+                            <div class="text-gray-light">INVOICE TO:</div>
+                            <h2 class="to">{{order.Name}}</h2>
+                            <div class="address">{{order.Address.Company_Name}}<br>
+                                {{order.Address.Street_Address}},{{order.Address.Extra_Details}}<br>
+                                {{order.Address.Town_City}},{{order.Address.Country_State}}<br>
+                                PIN: {{order.Address.Post_Code}}<br>
+                                {{order.Address.Phone.Phone}}
+                            </div>
+                        </div>
+                        <div class="col invoice-details">
+                            <div class="text-gray-light">INVOICE ID:{{order._id}}</div>
+                            <div class="date">Date of Invoice: {{order.Date}}</div>
+                        </div>
                     </div>
-                </div>
-                <table border="0" cellspacing="0" cellpadding="0" class="col-sm-12">
-                    <thead>
-                        <tr>
-                            <th>SL NO</th>
-                            <th class="text-left">PRODUCT</th>
-                            <th class="text-right">UNIT PRICE</th>
-                            <th class="text-right">QTY</th>
-                            <th class="text-right">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    <table border="0" cellspacing="0" cellpadding="0" class="col-sm-12">
+                        <thead>
+                            <tr>
+                                <th>SL NO</th>
+                                <th class="text-left">PRODUCT</th>
+                                <th class="text-right">UNIT PRICE</th>
+                                <th class="text-right">QTY</th>
+                                <th class="text-right">TOTAL</th>
+                            </tr>
+                        </thead>
+                        {{#eq order.Mode 'buynow'}}
+                        <tbody>
 
-                        <tr>
-                            <td class="no">1</td>
-                            <td class="text-left">{{order.Product_Name}}</td>
-                            <td class="unit">₹ {{order.Price}}</td>
-                            <td class="qty">1</td>
-                            <td class="total">₹ {{order.Total_Amount}}</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">SUBTOTAL</td>
-                            <td>₹ {{order.Total_Amount}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">TAX 25%</td>
-                            <td>$1,300.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">GRAND TOTAL</td>
-                            <td>₹ {{order.Total_Amount}}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-                {{!-- <div class="thanks">Thank you!</div> --}}
-                <div class="notices">
-                    <div>NOTICE:</div>
-                    <div class="notice">Goods once sold cannot be returned back unless damaged </div>
-                </div>
-            </main>
+                            <tr>
+                                <td class="no">1</td>
+                                <td class="text-left">{{order.Product_Name}}</td>
+                                <td class="unit">₹ {{order.Price}}</td>
+                                <td class="qty">1</td>
+                                <td class="total">₹ {{order.Total_Amount}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">SUBTOTAL</td>
+                                <td>₹ {{order.Total_Amount}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">TAX 25%</td>
+                                <td>$1,300.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">GRAND TOTAL</td>
+                                <td>₹ {{order.Total_Amount}}</td>
+                            </tr>
+                        </tfoot>
+                        {{else}}
 
 
-            <footer>
-                Invoice was created on a computer and is valid without the signature and seal.
-            </footer>
+
+                        <tbody>
+
+                            <tr>
+                                <td class="no">1</td>
+                                <td class="text-left">{{product.Product_Name}}</td>
+                                <td class="unit">₹ {{product.price}}</td>
+                                <td class="qty">{{product.quantity}}</td>
+                                <td class="total">₹ {{product.total}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">SUBTOTAL</td>
+                                <td>₹ {{product.total}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">TAX 25%</td>
+                                <td>$1,300.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">GRAND TOTAL</td>
+                                <td>₹ {{product.total}}</td>
+                            </tr>
+                        </tfoot>
+
+                        {{/eq}}
+
+                    </table>
+                    {{!-- <div class="thanks">Thank you!</div> --}}
+                    <div class="notices">
+                        <div>NOTICE:</div>
+                        <div class="notice">Goods once sold cannot be returned back unless damaged </div>
+                    </div>
+                </main>
+
+
+                <footer>
+                    Invoice was created on a computer and is valid without the signature and seal.
+                </footer>
+            </div>
+            <!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+            <div></div>
         </div>
-        <!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
-        <div></div>
     </div>
 </div>
 

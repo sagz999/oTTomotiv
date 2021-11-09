@@ -46,11 +46,11 @@
                                         <select style="background:#202940;color:#8b92a9;border:none" name="Sub_Category"
                                             class="custom-select mr-sm-2" id="subCatList">
                                             <option selected disabled>Choose...</option>
-                                            {{!-- {{#each category}}
-                                            {{#each this.Sub_Cat}} --}}
+                                            {{#each category}}
+                                            {{#each this.Sub_Cat}}
                                             <option id="subcatList">{{this.Sub_Cat}}</option>
-                                            {{!-- {{/each}}
-                                            {{/each}} --}}
+                                            {{/each}}
+                                            {{/each}}
                                         </select>
                                     </div>
 
@@ -93,7 +93,7 @@
                                             <option selected disabled>Choose...</option>
                                             {{#each carBrand}}
                                             {{#each this.Car_Model}}
-                                            <option>{{this}}</option>
+                                            <option>{{this.Model_Name}}</option>
                                             {{/each}}
                                             {{/each}}
 
@@ -318,7 +318,7 @@
         var fileInput = document.getElementById('file1');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
@@ -385,7 +385,7 @@
         var fileInput = document.getElementById('file2');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
@@ -451,7 +451,7 @@
         var fileInput = document.getElementById('file3');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
@@ -517,7 +517,7 @@
         var fileInput = document.getElementById('file4');
 
         var filePath = fileInput.value;
-        var allowedExtensions = /(\.jpg|\.jpeg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 

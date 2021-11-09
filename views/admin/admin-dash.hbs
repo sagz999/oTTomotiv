@@ -66,17 +66,16 @@
                         <div class="card card-stats">
                             <div class="card-header card-header-warning card-header-icon">
                                 <div class="card-icon">
-                                    <i class="material-icons">content_copy</i>
+                                    <i class="material-icons">person_outline</i>
                                 </div>
-                                <p class="card-category">Total users</p>
-                                <h3 class="card-title">23
-                                    {{!-- <small></small> --}}
-                                </h3>
+                                <p class="card-category" style="color:#fff">Total users</p>
+                                <h3 class="card-title" style="color:#fff">{{userCounts.allUsers}}</h3>
+
                             </div>
                             <div class="card-footer">
                                 <div class="stats">
-                                    {{!-- <i class="material-icons text-warning">warning</i>
-                                    <a href="#pablo" class="warning-link">Get More Space...</a> --}}
+                                    <i class="material-icons ">visibility</i>
+                                    <a href="/admin/all-users" style="color:#a9afbbd1">View users</a>
                                 </div>
                             </div>
                         </div>
@@ -85,30 +84,31 @@
                         <div class="card card-stats">
                             <div class="card-header card-header-success card-header-icon">
                                 <div class="card-icon">
-                                    <i class="material-icons">store</i>
+                                    <i class="material-icons">currency_rupee</i>
                                 </div>
-                                <p class="card-category">Revenue</p>
-                                <h3 class="card-title">$34,245</h3>
+                                <p class="card-category" style="color:#fff">Revenue</p>
+                                <h3 class="card-title" style="color:#fff">₹ {{totalRevenue}}</h3>
                             </div>
                             <div class="card-footer">
                                 <div class="stats">
-                                    <i class="material-icons">date_range</i> Last 24 Hours
+                                    <i class="material-icons">update</i> Just Updated
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
                         <div class="card card-stats">
-                            <div class="card-header card-header-danger card-header-icon">
+                            <div class="card-header card-header-primary card-header-icon">
                                 <div class="card-icon">
-                                    <i class="material-icons">info_outline</i>
+                                    <i class="material-icons">category</i>
                                 </div>
-                                <p class="card-category">Cancelled Orders</p>
-                                <h3 class="card-title">75</h3>
+                                <p class="card-category" style="color:#fff">Total products</p>
+                                <h3 class="card-title" style="color:#fff">{{totalProducts}}</h3>
                             </div>
                             <div class="card-footer">
                                 <div class="stats">
-                                    <i class="material-icons">local_offer</i> Tracked from Github
+                                    <i class="material-icons ">visibility</i>
+                                    <a href="/admin/view-products" style="color:#a9afbbd1">View products</a>
                                 </div>
                             </div>
                         </div>
@@ -117,10 +117,103 @@
                         <div class="card card-stats">
                             <div class="card-header card-header-info card-header-icon">
                                 <div class="card-icon">
-                                    <i class="fa fa-twitter"></i>
+                                    <i class="material-icons ">shopping_bag</i>
                                 </div>
-                                <p class="card-category">All orders</p>
-                                <h3 class="card-title">245</h3>
+                                <p class="card-category" style="color:#fff">Total orders</p>
+                                <h3 class="card-title" style="color:#fff">{{orderCount}}</h3>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons ">visibility</i>
+                                    <a href="/admin/orders" style="color:#a9afbbd1">View orders</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xl-4 col-lg-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header">
+                                <canvas id="canvas"></canvas>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title text-center" style="color:#fff">Total Orders</h4>
+                                <p class="card-category text-center">
+                                    Total orders placed by users
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">update</i> Just Updated
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header">
+                                <canvas id="canvas2"></canvas>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title text-center" style="color:#fff">Ordered products</h4>
+                                <p class="card-category text-center">Total products in orders</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">update</i> Just Updated
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header">
+                                <canvas id="canvas1"></canvas>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title text-center" style="color:#fff">Stock status</h4>
+                                <p class="card-category text-center">Product stock details</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">update</i> Just Updated
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-6 col-lg-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header">
+                                <canvas id="canvas3"></canvas>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title text-center" style="color:#fff">All users</h4>
+                                <p class="card-category text-center">
+                                    All user details and status
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">update</i> Just Updated
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header">
+                                <canvas id="canvas4"></canvas>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title text-center" style="color:#fff">Pay method</h4>
+                                <p class="card-category text-center">Details of payment method used</p>
                             </div>
                             <div class="card-footer">
                                 <div class="stats">
@@ -130,9 +223,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
 
 
                 {{!-- <div class="row">
@@ -536,3 +626,196 @@
 
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+
+<script>
+    const ctx = document.getElementById('canvas').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+
+            labels: ['Placed', 'Shipped', 'Delivered', 'Cancelled'],
+            datasets: [{
+                label: 'Total Orders',
+                data: [{{ orderCounts.totalPlacedOrderCount }}, {{ orderCounts.totalShippedOrderCount }},{{ orderCounts.totalDeliveredOrderCount }}, {{ orderCounts.totalCancelledOrderCount}}],
+    backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+    ],
+        borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+<script>
+    const ctx1 = document.getElementById('canvas1').getContext('2d');
+    const myChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['In-stock', 'Low on-stock', 'Out of-stock'],
+            datasets: [{
+                label: 'Total stock',
+                data: [{{ProdsStockCounts.inStockProdCount}},{{ProdsStockCounts.lowStockProdCount}}, {{ProdsStockCounts.outOfStockProdCount}}],
+    backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+    ],
+        borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+<script>
+    const ctx2 = document.getElementById('canvas2').getContext('2d');
+    const myChart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: ['Placed-prods', 'Shipped-prods', 'Delivered-prods', 'Cancelled-prods'],
+            datasets: [{
+                label: 'Ordered products',
+                data: [{{ prodsInOrderCounts.totalPlacedProdCount }}, {{ prodsInOrderCounts.totalShippedProdCount }},{{ prodsInOrderCounts.totalDeliveredProdCount }}, {{ prodsInOrderCounts.totalCancelledProdCount }}],
+    backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+    ],
+        borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+<script>
+    const ctx3 = document.getElementById('canvas3').getContext('2d');
+    const myChart3 = new Chart(ctx3, {
+        type: 'pie',
+        data: {
+            labels: ['Active', 'Blocked'],
+            datasets: [{
+                label: 'All users',
+                data: [{{ userCounts.activeUsers }}, {{ userCounts.blockedUsers }}],
+    backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+    ],
+        borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+<script>
+    const ctx4 = document.getElementById('canvas4').getContext('2d');
+    const myChart4 = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+            labels: ['COD', 'Online'],
+            datasets: [{
+                label: 'Pay method',
+                data: [{{ payMethod.COD }}, {{ payMethod.Online }}],
+    backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+    ],
+        borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>

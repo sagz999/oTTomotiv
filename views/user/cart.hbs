@@ -17,7 +17,7 @@
 {{#if cartProd}}
 
 <section id="shopcart" class="shop shop-cart">
-    
+
     <div class="container">
         <div class="row">
             <div class="cart-table table-responsive">
@@ -38,7 +38,7 @@
                     </thead>
 
                     <tbody>
-                        
+
                         {{#each cartProd}}
 
                         <tr class="cart-product">
@@ -65,14 +65,14 @@
                                 <div class="product-quantity">
 
                                     <a style="cursor: pointer;"
-                                        onclick="changeQty('{{this._id}}','{{this.product._id}}',-1,'{{this.product.Price}}','{{../user._id}}')">
+                                        onclick="changeQty('{{this.product.Stock}}','{{this._id}}','{{this.product._id}}',-1,'{{this.product.Price}}','{{../user._id}}')">
                                         <i class="fa fa-minus"></i>
                                     </a>
 
                                     <span id="{{this.product._id}}">{{this.quantity}}</span>
 
                                     <a style="cursor: pointer;"
-                                        onclick="changeQty('{{this._id}}','{{this.product._id}}',1,'{{this.product.Price}}','{{../user._id}}')">
+                                        onclick="changeQty('{{this.product.Stock}}','{{this._id}}','{{this.product._id}}',1,'{{this.product.Price}}','{{../user._id}}')">
                                         <i class="fa fa-plus"></i>
                                     </a>
 
@@ -85,9 +85,8 @@
 
                             <td>
 
-
-                                <!-- Button trigger modal -->
-                                <a style="cursor: pointer;" data-toggle="modal" data-target="#exampleModalCenter">
+                                <a style="cursor: pointer;"
+                                    onclick="deleteconfirm('{{this._id}}','{{this.product._id}}')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-trash" viewBox="0 0 16 16">
                                         <path
@@ -96,30 +95,6 @@
                                             d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
                                     </svg>
                                 </a>
-
-                                <!-- Modal -->
-                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Do you want to remove
-                                                    this product?</h5>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm btn-success"
-                                                    data-dismiss="modal">Close</button>
-
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="deleteProd('{{this._id}}','{{this.product._id}}')">Confirm</button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
 
                             </td>
 
@@ -160,3 +135,118 @@
 {{/if}}
 
 {{>userfooter}}
+
+<script>
+
+    function changeQty(stock, cartId, prodId, count, price, userId) {
+
+        let quantity = parseInt(document.getElementById(prodId).innerHTML)
+
+        if (count == 1 && quantity == 8) {
+            swal("Limit reached!", "You can only add upto 8 products!", "warning");
+        } else {
+            if (count == 1) {
+                if (stock - 1 >= quantity) {
+
+                    count = parseInt(count)
+                    price = parseInt(price)
+                    id = prodId + '1'
+
+                    $.ajax({
+                        url: '/change-product-quantity',
+                        data: {
+                            user: userId,
+                            cart: cartId,
+                            product: prodId,
+                            count: count,
+                            quantity: quantity,
+                            price: price
+                        },
+                        method: 'post',
+                        success: (response) => {
+
+                            document.getElementById(prodId).innerHTML = quantity + count
+                            document.getElementById(id).innerHTML = (quantity + count) * price
+                            document.getElementById('ctotal').innerHTML = response.ctotal
+
+                        }
+                    })
+                } else {
+                    swal("Oops!!..", `Reached stock limit!`, "warning");
+                }
+
+
+
+            } else {
+
+                count = parseInt(count)
+                price = parseInt(price)
+                id = prodId + '1'
+
+                $.ajax({
+                    url: '/change-product-quantity',
+                    data: {
+                        user: userId,
+                        cart: cartId,
+                        product: prodId,
+                        count: count,
+                        quantity: quantity,
+                        price: price
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        if (response.removeProd) {
+
+                            swal("Limit reached!", `You cannot reduce the quantity any further!`, "info");
+                        } else {
+                            document.getElementById(prodId).innerHTML = quantity + count
+                            document.getElementById(id).innerHTML = (quantity + count) * price
+                            document.getElementById('ctotal').innerHTML = response.ctotal
+                        }
+                    }
+                })
+
+            }
+        }
+
+
+    }
+
+
+
+</script>
+<script>
+    function deleteconfirm(cartId, prodId) {
+        swal({
+            title: "Are you sure?",
+            text: "The product will be removed from your cart!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    $.ajax({
+                        url: '/remove-item?cartId=' + cartId + '&prodId=' + prodId,
+                        method: 'get',
+                        success: (result) => {
+                            if (result.removeItem) {
+                                swal("Deleted!", "The product has been deleted from the cart!", "success", {
+                                    button: "OK",
+                                }).then(() => {
+
+                                    location.reload()
+                                })
+
+                            } else {
+                                console.log('Failed to remove product')
+                            }
+                        }
+                    })
+
+                }
+            });
+    }
+
+</script>

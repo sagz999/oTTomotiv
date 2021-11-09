@@ -304,7 +304,7 @@ router.get('/logout', (req, res) => {
 
 //Product single-View
 
-router.get('/view-product/', cartCounter, async (req, res) => {
+router.get('/view-product/', verifyLog, cartCounter, async (req, res) => {
 
 
   await productHelper.fetchProduct(req.query.id).then(async (product) => {
@@ -312,8 +312,9 @@ router.get('/view-product/', cartCounter, async (req, res) => {
     await productHelper.getRelproducts(product).then(async (relProduct) => {
 
       let cart = await userHelper.fetchCartProd(req.session.user._id)
+      let wishlist = await userHelper.fetchWishlist(req.session.user._id)
 
-      res.render('user/product-singleView', { title: product.Product_Name, isUser: true, user: req.session.user, product, relProduct, cartCount: req.session.cartCount, cart });
+      res.render('user/product-singleView', { title: product.Product_Name, isUser: true, user: req.session.user, product, relProduct, cartCount: req.session.cartCount, cart, wishlist });
 
     })
 
@@ -332,7 +333,7 @@ router.get('/cart', verifyLog, cartCounter, async (req, res) => {
 
 router.get('/add-to-cart/', verifyLog, (req, res) => {
 
-  userHelper.addTocart(req.query.id, req.session.user._id, req.query.price).then(() => {
+  userHelper.addTocart(req.query.id, req.session.user._id, req.query.price, req.query.prodName).then(() => {
     res.json({ status: true })
   })
 })
@@ -371,6 +372,7 @@ router.post('/cartPlaceOrder', async (req, res) => {
   }
 
   userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {
+    req.session.orderId=orderId
 
     products.map((data) => {
       productHelper.cartStockUpdate(data)
@@ -422,6 +424,7 @@ router.post('/buyNowPlaceOrder', async (req, res) => {
 
   userHelper.buyNowPlaceOrder(req.body, product).then((orderId) => {
 
+    req.session.orderId=orderId
     req.session.prod = false
 
     if (req.body['Pay_Method'] == 'COD') {
@@ -447,9 +450,9 @@ router.post('/buyNowPlaceOrder', async (req, res) => {
 })
 
 
-router.get('/buyNowOrder-success', verifyLog, (req, res) => {
+router.get('/buyNowOrder-success', verifyLog,cartCounter, (req, res) => {
 
-  res.render('user/order-success', { title: 'Order Placed', isUser: true, user: req.session.user, cartCount: 0 })
+  res.render('user/order-success', { title: 'Order Placed', isUser: true, user: req.session.user, cartCount: req.session.cartCount})
 
 })
 
@@ -463,20 +466,17 @@ router.get('/cartOrder-success', verifyLog, (req, res) => {
 
 })
 
-
-
-
-router.get('/view-orders', verifyLog, cartCounter, async (req, res) => {
-
-  await userHelper.getUserOrders(req.session.user._id).then(async (orders) => {
-
-    let len = (orders.length) - 1
-    let ProdsInOrder = await userHelper.getProdsInOrder(orders[len]._id)
-    let Order = orders[len]
-
-    res.render('user/orders', { title: 'Orders', isUser: true, user: req.session.user, ProdsInOrder, Order, cartCount: req.session.cartCount })
-  })
+router.get('/view-orderSummary',verifyLog, cartCounter,(req,res)=>{
+userHelper.getSpecificOrder(req.session.orderId).then((order)=>{
+  res.render('user/order-summary',{title:'Order Summary',isUser:true,user: req.session.user, cartCount: req.session.cartCount,order})
+  
 })
+
+
+})
+
+
+
 
 
 router.post('/verify-payment', (req, res) => {
@@ -503,31 +503,12 @@ router.get('/all-orders', verifyLog, cartCounter, (req, res) => {
 
   userHelper.fetchAllUserOrders(req.session.user._id).then((allOrders) => {
 
-    res.render('user/all-orders', { title: 'All-Orders', isUser: true, user: req.session.user, cartCount: req.session.cartCount, allOrders })
+    res.render('user/orders', { title: 'All-Orders', isUser: true, user: req.session.user, cartCount: req.session.cartCount, allOrders })
 
   })
 
 })
 
-
-router.get('/view-prodsInOrder/', verifyLog, cartCounter, async (req, res) => {
-
-  let Order = await userHelper.getSpecificOrder(req.query.orderId)
-
-  if (Order.Mode === 'buynow') {
-
-    res.render('user/products-in-order', { title: 'Order Details', isUser: true, user: req.session.user, cartCount: req.session.cartCount, Order })
-
-  } else {
-
-    let prodsInOrder = await userHelper.getProdsInOrder(req.query.orderId)
-
-
-    res.render('user/products-in-order', { title: 'Ordered products', isUser: true, user: req.session.user, cartCount: req.session.cartCount, prodsInOrder, Order })
-
-  }
-
-})
 
 router.get('/profile', verifyLog, cartCounter, (req, res) => {
 
@@ -642,7 +623,22 @@ router.post('/edit-address', (req, res) => {
 
 router.get('/get-orderInvoice/', verifyLog, cartCounter, (req, res) => {
   userHelper.getSpecificOrder(req.query.orderId).then((order) => {
-    res.render('user/order-invoice', { title: 'Product Invoice', isUser: true, user: req.session.user, cartCount: req.session.cartCount, order })
+    if (order.Mode == 'buynow') {
+      res.render('user/order-invoice', { title: 'Product Invoice', isUser: true, user: req.session.user, cartCount: req.session.cartCount, order })
+    } else {
+
+      let prodId = req.query.prodId
+      let products = order.Products
+      for (key in products) {
+        if (products[key].item.toString() == prodId.toString()) {
+          
+          res.render('user/order-invoice', { title: 'Product Invoice', isUser: true, user: req.session.user, cartCount: req.session.cartCount, order, product:products[key] })
+        }
+      }
+
+
+    }
+
   })
 })
 
@@ -666,18 +662,44 @@ router.get('/checkCouponCart/', verifyLog, (req, res) => {
 
 router.get('/chooseCarModel/', cartCounter, (req, res) => {
   productHelper.fetchCarModel(req.query.brandId).then((carBrand) => {
-    res.render('user/select-car-model',{title:'Select car model', isUser:true,user: req.session.user, cartCount: req.session.cartCount,carBrand })
+    res.render('user/select-car-model', { title: 'Select car model', isUser: true, user: req.session.user, cartCount: req.session.cartCount, carBrand })
   })
 })
 
-router.get('/shop',async (req,res)=>{
+router.get('/shop',cartCounter, async (req, res) => {
 
   let carBrands = await productHelper.fetchCarBrands()
   let categories = await productHelper.fetchCategories()
+  let products= await productHelper.getAllproducts()
 
-  res.render('user/shop-all',{title:'Shop', isUser:true, user:req.session.user, cartCount:req.session.cartCount, carBrands, categories})
+  if(req.session.user){
+    let cart = await userHelper.fetchCartProd(req.session.user._id)
+    res.render('user/shop-all', { title: 'Shop', isUser: true, user: req.session.user, cartCount: req.session.cartCount, carBrands, categories ,products,cart})
+  }else{
+
+    res.render('user/shop-all', { title: 'Shop', isUser: true, user: req.session.user, cartCount: req.session.cartCount, carBrands, categories ,products})
+  }
+  
 })
 
+router.get('/addToWishlist/', verifyLog, cartCounter, (req, res) => {
+  userHelper.addToWishlist(req.session.user._id, req.query.prodId).then((result) => {
+    res.json(result)
+  })
+})
+
+router.get('/removeFromWish/', verifyLog, cartCounter, (req, res) => {
+  userHelper.removeFromWishlist(req.session.user._id, req.query.prodId).then((result) => {
+    res.json(result)
+  })
+})
+
+router.get('/wishlist', verifyLog, cartCounter, (req, res) => {
+  userHelper.fetchWishlist(req.session.user._id).then(async (wishlistProds) => {
+    let cart = await userHelper.fetchCartProd(req.session.user._id)
+    res.render('user/wishlist', { title: 'wishlist', isUser: true, user: req.session.user, cartCount: req.session.cartCount, wishlistProds, cart })
+  })
+})
 
 module.exports = router;
 

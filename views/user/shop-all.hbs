@@ -202,15 +202,28 @@
 
                 <div class="row">
 
-                    {{!-- {{#each }} --}}
-                    
+                    {{#each products }}
+
                     <div class="col-xs-12 col-sm-6 col-md-4 product">
                         <div class="product-img">
-                            <img src="assets/images/shop/grid/1.jpg" alt="Product" />
+                            <img src="/product-images/{{this._id}}_1.jpg" alt="Product" />
                             <div class="product-hover">
                                 <div class="product-action">
-                                    <a class="btn btn-primary" href="#">Add To Cart</a>
-                                    <a class="btn btn-primary" href="#">Item Details</a>
+                                    {{#if ../user}}
+
+                                    <a class="btn btn-primary" href="/prodBuyNow?prodId={{this._id}}">Buy now</a>
+
+                                    {{#hello ../cart this._id this.Price this.Product_Name}}
+
+                                    {{/hello}}
+
+                                    {{else}}
+
+                                    <a class="btn btn-primary" href="/login">Buy now</a>
+
+                                    <a class="btn btn-primary" href="/login">Add to cart</a>
+
+                                    {{/if}}
                                 </div>
                             </div>
 
@@ -218,25 +231,25 @@
 
                         <div class="product-bio">
                             <div class="prodcut-cat">
-                                <a href="#">Opel</a>
+                                <a href="#">{{this.Car_Model}}</a>
                             </div>
 
                             <div class="prodcut-title">
                                 <h3>
-                                    <a href="#">Brake Discs</a>
+                                    <a href="/view-product?id={{this._id}}">{{this.Product_Name}}</a>
                                 </h3>
                             </div>
 
                             <div class="product-price">
-                                <span class="symbole">$</span><span>68.00</span>
+                                <span class="symbole">₹</span><span>{{this.Price}}</span>
                             </div>
 
                         </div>
 
                     </div>
 
-                    {{!-- {{/each}} --}}
-                    
+                    {{/each}}
+
 
                 </div>
 
@@ -270,3 +283,20 @@
 </section>
 
 {{>userfooter}}
+
+<script>
+    function addToCart(prodId, price,prodName) {
+        $.ajax({
+            url: '/add-to-cart?id=' + prodId + '&price=' + price+'&prodName=' + prodName,
+            method: 'get',
+            success: (response) => {
+                if (response.status) {
+                    let count = $('#cart-count').html()
+                    count = parseInt(count) + 1
+                    $("#cart-count").html(count)
+                    location.reload()
+                }
+            }
+        })
+    }
+</script>

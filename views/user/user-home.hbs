@@ -1,6 +1,6 @@
 {{>userheader}}
 
-<section id="hero" class="hero container">
+<section id="hero" class="hero">
     <div id="hero-slider" class="hero-slider">
 
         <div class="slide bg-overlay">
@@ -259,7 +259,7 @@
 
 
 
-                            {{#hello ../cart this._id this.Price}}
+                            {{#hello ../cart this._id this.Price this.Product_Name}}
 
                             {{/hello}}
 
@@ -365,18 +365,28 @@
 {{>userfooter}}
 
 <script>
-    function addToCart(prodId, price) {
+
+    function addToCart(prodId, price, prodName) {
         $.ajax({
-            url: '/add-to-cart?id=' + prodId + '&price=' + price,
+
+            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
             method: 'get',
             success: (response) => {
+
                 if (response.status) {
                     let count = $('#cart-count').html()
                     count = parseInt(count) + 1
                     $("#cart-count").html(count)
-                    location.reload()
+                    swal("Success!", "Product added to cart!", "success", {
+                        button: "OK",
+                    }).then(()=>{    
+                            location.reload()    
+                    })
+
                 }
+
             }
         })
     }
+
 </script>

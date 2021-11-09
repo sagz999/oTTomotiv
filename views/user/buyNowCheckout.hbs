@@ -248,8 +248,8 @@
                     minlength: 10,
                     maxlength: 10
                 },
-                Pay_Method:{
-                    required:true
+                Pay_Method: {
+                    required: true
                 }
 
 
@@ -272,7 +272,7 @@
                     alpha: "This field should be in alphabets"
                 },
                 Post_Code: {
-                    digits: "Post code should be of digits" 
+                    digits: "Post code should be of digits"
                 },
 
                 Phone: {
@@ -282,31 +282,24 @@
                 Alt_Phone: {
                     digits: "Mobile should be of digits"
                 },
-                
-                Pay_Method:{
-                    required:"Choose a payment method"
+
+                Pay_Method: {
+                    required: "Choose a payment method"
                 }
 
-            }
-        })
-    })
+            },
 
-</script>
+            submitHandler: function () {
 
-<script>
-
-    {
-        {
-            !--$('#checkout-form').submit((e) => {
-                e.preventDefault()
                 $.ajax({
+
                     url: '/buyNowPlaceOrder',
                     method: 'post',
                     data: $('#checkout-form').serialize(),
                     success: (response) => {
                         if (response.codSuccess) {
 
-                            location.href = '/order-success'
+                            location.href = '/buyNowOrder-success'
 
                         } else {
                             razorpayPayment(response)
@@ -315,9 +308,19 @@
 
 
                     }
+
                 })
-            }) --}
-    }
+
+            }
+
+        })
+    })
+
+</script>
+
+<script>
+
+
 
     function razorpayPayment(order) {
 
