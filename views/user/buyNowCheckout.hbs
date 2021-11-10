@@ -137,6 +137,7 @@
                                             id="totalPrice">{{product.Price}}</span></span></li>
                                 <input type="hidden" name="totalfinalPrice" id="totalfinalPrice"
                                     value="{{product.Price}}">
+                                    <input type="hidden" name="usdToInr" id="usdToInr">
                             </ul>
                         </div>
                     </div>
@@ -156,6 +157,9 @@
                                 <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online
                                     Payment</label>
                                 <input type="radio" value="Online" name="Pay_Method">
+
+                            </div>
+                            <div class="pcb-cuppon-input clearfix" id="paypal-button">
 
                             </div>
 
@@ -455,6 +459,66 @@
         })
 
     }
+
+</script>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+
+<script>
+
+    paypal.Button.render({
+        // Configure environment
+        env: 'sandbox',
+        client: {
+            sandbox: 'demo_sandbox_client_id',
+            production: 'demo_production_client_id'
+        },
+        // Customize button (optional)
+        locale: 'en_US',
+        style: {
+            size: 'small',
+            color: 'blue',
+            shape: 'rect',
+        },
+        // Enable Pay Now checkout flow (optional)
+        commit: true,
+        // Set up a payment
+        payment: function (data, actions) {
+
+            $.ajax({
+                url: '/currencycoverter/?amount=' + document.getElementById('totalfinalPrice').value,
+                method: 'post',
+                success: (convertedAmount) => {
+                    document.getElementById('usdToInr').value = convertedAmount
+                }
+            })
+            price = document.getElementById('usdToInr').value
+
+
+            return actions.payment.create({
+                transactions: [{
+                    amount: {
+                        total: parseFloat(price).toFixed(2),
+                        currency: 'USD',
+                    }
+                }]
+            });
+        },
+
+        // Execute the payment
+
+        onAuthorize: function (data, actions) {
+
+            return actions.payment.execute().then(function () {
+                // Show a confirmation message to the buyer
+                location.href = '/buyNowOrder-success'
+
+            });
+
+        }
+
+    }, '#paypal-button');
 
 </script>
 

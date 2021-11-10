@@ -9,6 +9,8 @@ const Razorpay = require('razorpay')
 const { resolve } = require('path')
 const { v4: uuidv4 } = require('uuid');
 const { info } = require('console')
+const axios = require('axios')
+const ACCESS_KEY = '0cfd4d6b3fd4b48c97b9b9900a03cec5'
 
 var instance = new Razorpay({
     key_id: 'rzp_test_BR5CAu00Vuru3P',
@@ -1051,7 +1053,7 @@ module.exports = {
 
     orderCount: () => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.ORDER_COLLECTION).count().then((count)=>{
+            db.get().collection(collection.ORDER_COLLECTION).count().then((count) => {
                 resolve(count)
             })
         })
@@ -1154,7 +1156,6 @@ module.exports = {
                 outOfStockProdCount: outOfStockProdCount,
                 inStockProdCount: inStockProdCount
             }
-            console.log('ProdsStockCount:', ProdsStockCount)
 
             resolve(ProdsStockCount)
         })
@@ -1559,6 +1560,157 @@ module.exports = {
     //admin-dashboard helpers ends
 
 
+    convertAmount: (amount) => {
+        return new Promise(async (resolve, reject) => {
+            amount = parseInt(amount)
+            axios.get(`http://apilayer.net/api/live?access_key=${ACCESS_KEY}&currencies=INR`).then(response => {
+                amount = amount / response.data.quotes.USDINR
+                resolve(amount)
+            })
+        })
+    },
 
+    fetchOffers: () => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.OFFER_COLLECTION).find().toArray().then((offers) => {
+                resolve(offers)
+            })
+        })
+    },
+
+    checkOfferExist:(subCat)=>{
+        return new Promise((resolve, reject) => {
+            
+            db.get().collection(collection.OFFER_COLLECTION).findOne({subCategory:subCat}).then((offers) => {
+                resolve(offers)
+            })
+        })
+    },
+
+    checkOfferExpiry:()=>{
+
+        return new Promise((resolve, reject) => {
+
+            let date=new Date().toLocaleString('en-US').slice(0, 10)
+
+            db.get().collection(collection.OFFER_COLLECTION).find({expiryDate:date}).toArray().then((offers) => {
+                resolve(offers)
+            })
+
+        })
+
+    },
+
+    addNewOffer: (offerData) => {
+        return new Promise((resolve, reject) => {
+
+            offerData.offerDiscount = parseInt(offerData.offerDiscount)
+
+            db.get().collection(collection.OFFER_COLLECTION).insertOne({
+                offerName: offerData.offerName,
+                subCategory: offerData.subCategory,
+                addedDate: new Date().toLocaleString('en-US').slice(0, 10),
+                expiryDate: new Date(offerData.expiryDate).toLocaleString('en-US').slice(0, 10),
+                offerDiscount: offerData.offerDiscount
+            }).then(() => {
+
+                db.get().collection(collection.PRODUCT_COLLECTION).updateMany(
+                    { Sub_Category: offerData.subCategory },
+                    {
+                        $set: {
+                            offer: offerData.offerDiscount
+                        }
+                    }
+                ).then(() => {
+
+                    db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: offerData.subCategory }).toArray().then((products) => {
+                        resolve(products)
+                    })
+
+                })
+
+            })
+
+
+        })
+    },
+
+    changeOfferProdPrice: (singleProd) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
+                { _id: objectId(singleProd._id) },
+                {
+                    $set: {
+                        tempPrice: singleProd.Price,
+                        Price: singleProd.Price - (singleProd.Price * singleProd.offer / 100)
+                    }
+                }
+            ).then(() => {
+
+                resolve()
+
+            })
+
+        })
+
+    },
+
+    fetchAllProdInSubCatToUpdate: (subCat) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: subCat }).toArray().then((products) => {
+
+                resolve(products)
+
+            })
+
+
+        })
+
+    },
+
+    updateEachProdBackToOrgPrice: (SingleProd) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
+                { _id: objectId(SingleProd._id) },
+                {
+                    $set: { Price: SingleProd.tempPrice }
+                }
+            ).then(() => {
+
+                db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
+                    { _id: objectId(SingleProd._id) },
+                    {
+                        $unset: { tempPrice: "", offer: "" }
+                    }
+                ).then(() => {
+
+                    resolve()
+
+                })
+
+            })
+
+        })
+    },
+
+    deleteOffer:(offerId)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            db.get().collection(collection.OFFER_COLLECTION).deleteOne({_id:objectId(offerId)}).then(()=>{
+                resolve()
+            })
+
+        })
+
+    }
 
 }
+
+

@@ -40,6 +40,23 @@ const cartCounter = async (req, res, next) => {
 
 router.get('/', cartCounter, async (req, res) => {
 
+  userHelper.checkOfferExpiry().then((offers)=>{
+    offers.map((eachOffers)=>{
+     
+      userHelper.fetchAllProdInSubCatToUpdate(eachOffers.subCategory).then((products) => {
+
+        products.map((SingleProd) => {
+          userHelper.updateEachProdBackToOrgPrice(SingleProd)
+        })
+    
+        userHelper.deleteOffer(eachOffers._id)
+    
+      })
+
+    })
+
+  })
+
   let product = await productHelper.getAllproducts()
   let carBrands = await productHelper.fetchCarBrands()
   let categories = await productHelper.fetchCategories()
@@ -698,6 +715,12 @@ router.get('/wishlist', verifyLog, cartCounter, (req, res) => {
   userHelper.fetchWishlist(req.session.user._id).then(async (wishlistProds) => {
     let cart = await userHelper.fetchCartProd(req.session.user._id)
     res.render('user/wishlist', { title: 'wishlist', isUser: true, user: req.session.user, cartCount: req.session.cartCount, wishlistProds, cart })
+  })
+})
+
+router.post('/currencycoverter/',(req,res)=>{
+  userHelper.convertAmount(req.query.amount).then((convertedAmount)=>{
+    res.json(convertedAmount)
   })
 })
 

@@ -8,6 +8,7 @@ module.exports={
     CAR_BRAND_COLLECTION:'car-brand',
     ADDRESS_COLLECTION:'Address',
     COUPON_COLLECTION:'coupon',
-    WISHLIST_COLLECTION:'wishlist'
+    WISHLIST_COLLECTION:'wishlist',
+    OFFER_COLLECTION:'offer'
     
 }
