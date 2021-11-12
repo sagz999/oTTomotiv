@@ -83,7 +83,225 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <center>
+                    <div class="product-tabs" style="width: 80%;margin-top: 5em;">
 
+                        <ul class="nav nav-tabs" role="tablist">
+
+                            <li role="presentation" class="active">
+                                <a href="#description" aria-controls="description" role="tab"
+                                    data-toggle="tab">description</a>
+                            </li>
+
+                            <li role="presentation">
+                                <a href="#reviews" aria-controls="reviews" role="tab" data-toggle="tab">reviews
+                                    ({{reviewCount}})</a>
+                            </li>
+
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="description">
+                                <p>{{product.Description}}</p>
+                            </div>
+
+                            {{!-- Review Section --}}
+                            <div role="tabpanel" class="tab-pane reviews" id="reviews">
+                                {{#if review}}
+                                {{#if userPurchasedItem}}
+                                {{#if checkUserCmmnts}}
+                                <h6 class="text-center">YOUR REVIEW</h6>
+                                <ul class="product-review list-unstyled">
+
+                                    <li class="review-comment text-left">
+
+                                        <div style="display: flex;">
+                                            <h6 style="display: flex;align-items: center">{{checkUserCmmnts.userName}}
+                                            </h6>
+                                            <a style="margin-left: 10px;cursor: pointer;"
+                                                onclick="editReview('{{checkUserCmmnts.rating}}','{{checkUserCmmnts.review}}')"
+                                                data-toggle="modal" id="editreviewBtn">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+
+                                            <a style="margin-left: 5px;cursor: pointer;"
+                                                onclick="deleteReview('{{product._id}}','{{checkUserCmmnts.userId}}')">
+                                                <i class="material-icons">delete</i>
+                                            </a>
+                                        </div>
+
+
+                                        <p class="review-date">Posted on: {{checkUserCmmnts.postedDate}}</p>
+
+
+                                        <div class="product-rating">
+                                            {{#printStar checkUserCmmnts.rating}}
+                                            {{/printStar}}
+                                        </div>
+
+                                        <div class="product-comment">
+                                            <p>{{checkUserCmmnts.review}}</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                {{!-- Modal --}}
+                                <div class="modal fade" id="reviewModalEdit" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Your Rating</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <center>
+                                                    <div class="form-review">
+
+                                                        <form id="editreviewform">
+                                                            {{!-- Star Rating --}}
+                                                            <label>Rating</label><br>
+                                                            <span class="star-rating">
+                                                                <input type="radio" id="1" name="rating2"
+                                                                    value="1"><i></i>
+                                                                <input type="radio" id="2" name="rating2"
+                                                                    value="2"><i></i>
+                                                                <input type="radio" id="3" name="rating2"
+                                                                    value="3"><i></i>
+                                                                <input type="radio" id="4" name="rating2"
+                                                                    value="4"><i></i>
+                                                                <input type="radio" id="5" name="rating2"
+                                                                    value="5"><i></i>
+                                                            </span>
+                                                            {{!-- Start Rating --}}
+                                                            <textarea class="form-control" id="reviewToEdit" rows="5"
+                                                                placeholder="Review"></textarea>
+
+                                                            <button
+                                                                onclick="postEditedReview('{{product._id}}','{{user._id}}')"
+                                                                class="btn btn-primary btn-black btn-block">Update
+                                                                review</button>
+                                                        </form>
+
+                                                    </div>
+                                                </center>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {{!-- Modal Ends --}}
+                                {{else}}
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                    data-target="#reviewModal" style="margin-bottom: 3em;">
+                                    Add Review
+                                </button>
+                                {{/if}}
+                                {{/if}}
+                                <center>
+                                    {{#if reviewExist}}
+                                    <h6>ALL REVIEWS</h6>
+                                    <ul class="product-review list-unstyled" style="overflow-y: scroll;height: 30em;">
+                                        {{#each review.prodReview}}
+                                        {{!-- {{#eq this.userId ../userCmmntId}}
+                                        <h1>gasjdgkja</h1>
+                                        {{else}} --}}
+                                        <li class="review-comment text-left">
+
+                                            <h6>{{this.userName}}</h6>
+
+                                            <p class="review-date">Posted on: {{this.postedDate}}</p>
+
+
+                                            <div class="product-rating">
+                                                {{#printStar this.rating}}
+                                                {{/printStar}}
+                                            </div>
+
+                                            <div class="product-comment">
+                                                <p>{{this.review}}</p>
+                                            </div>
+                                        </li>
+                                        {{!-- {{/eq}} --}}
+                                        {{/each}}
+
+                                    </ul>
+                                    {{else}}
+                                    <h3 style="color: rgb(122, 122, 122);">No reviews Yet !</h3><br>
+                                    <img src="/images/No review.svg" alt="" height="300px">
+                                    {{/if}}
+                                </center>
+                                <hr>
+                                {{else}}
+                                <h3 style="color: rgb(122, 122, 122);">No reviews Yet !</h3><br>
+                                <img src="/images/No review.svg" alt="" height="300px">
+
+                                {{#if userPurchasedItem}}
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                    data-target="#reviewModal" style="margin-bottom: 3em;">
+                                    Add Review
+                                </button>
+                                {{/if}}
+
+                                {{/if}}
+
+                                {{!-- Modal --}}
+                                <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Your Rating</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <center>
+                                                    <div class="form-review">
+
+                                                        <form id="reviewform">
+                                                            {{!-- Star Rating --}}
+                                                            <label>Rating</label><br>
+                                                            <span class="star-rating">
+                                                                <input type="radio" name="rating1" value="1"><i></i>
+                                                                <input type="radio" name="rating1" value="2"><i></i>
+                                                                <input type="radio" name="rating1" value="3"><i></i>
+                                                                <input type="radio" name="rating1" value="4"><i></i>
+                                                                <input type="radio" name="rating1" value="5"><i></i>
+                                                            </span>
+                                                            {{!-- Start Rating --}}
+                                                            <textarea class="form-control" id="review" rows="5"
+                                                                placeholder="Review"></textarea>
+
+                                                            <button
+                                                                onclick="postReview('{{product._id}}','{{product.Product_Name}}','{{user._id}}','{{user.Username}}')"
+                                                                class="btn btn-primary btn-black btn-block">Post Your
+                                                                review</button>
+                                                        </form>
+
+                                                    </div>
+                                                </center>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {{!-- Modal Ends --}}
+
+                            </div>
+                            {{!-- Review section Ends --}}
+                        </div>
+
+                    </div>
+                </center>
+            </div>
+        </div>
 
 
         <div class="row">
@@ -153,10 +371,10 @@
             method: 'get',
             success: (result) => {
                 swal("Success!", "Product added to wishlist!", "success", {
-                        button: "OK",
-                    }).then(() => {
-                        location.reload()
-                    })
+                    button: "OK",
+                }).then(() => {
+                    location.reload()
+                })
             }
         })
     }
@@ -168,10 +386,10 @@
             method: 'get',
             success: (result) => {
                 swal("Removed!", "Product removed from wishlist!", "warning", {
-                        button: "OK",
-                    }).then(() => {
-                        location.reload()
-                    })
+                    button: "OK",
+                }).then(() => {
+                    location.reload()
+                })
             }
         })
     }
@@ -195,4 +413,242 @@
         })
     }
 
+    function postReview(prodId, prodName, userId, userName) {
+
+        let ratingCheck = document.querySelector('input[name="rating1"]:checked')
+        let rating = ratingCheck ? parseInt(ratingCheck.value) : 0
+        let review = document.getElementById('review').value
+
+        $.ajax({
+
+            url: '/post-review',
+
+            method: 'post',
+
+            data: {
+                prodId: prodId,
+                prodName: prodName,
+                userId: userId,
+                userName: userName,
+                rating: rating,
+                review: review
+            },
+
+            success: (response) => {
+                swal("Success!", "Added your review!", "success", {
+                    button: "OK",
+                }).then(() => {
+                    location.reload()
+                })
+            }
+
+        })
+    }
+
+    function postEditedReview(prodId, userId) {
+        let ratingCheck = document.querySelector('input[name="rating2"]:checked')
+        let rating = ratingCheck ? parseInt(ratingCheck.value) : 0
+        let review = document.getElementById('reviewToEdit').value
+
+        $.ajax({
+
+            url: '/post-edited-review',
+
+            method: 'post',
+
+            data: {
+                prodId: prodId,
+                userId: userId,
+                rating: rating,
+                review: review
+            },
+
+            success: (response) => {
+                swal("Done!", "Your review is updated!", "success", {
+                    button: "OK",
+                }).then(() => {
+                    location.reload()
+                })
+            }
+
+        })
+    }
+
+    function editReview(rating, review) {
+        document.getElementById('editreviewBtn').dataset.target = '#reviewModalEdit'
+        document.getElementById('reviewToEdit').value = review
+        document.getElementById(rating).checked = true
+
+
+    }
+
+    function deleteReview(prodId, userId) {
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to delete this comment?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: '/delete-review?prodId=' + prodId + '&userId=' + userId,
+                    method: 'post',
+                    success: (response) => {
+                        swal("Done!", "Your review has been removed", "success", {
+                            button: "OK",
+                        }).then(() => {
+                            location.reload()
+                        })
+
+                    }
+
+                })
+            }
+        })
+    }
+
 </script>
+
+<style>
+    .wishBack {
+        background-color: #c2c2c23d;
+        padding: 6px;
+        border-radius: 60px;
+    }
+
+    .star-rating {
+        margin: 25px 0 0px;
+        font-size: 0;
+        white-space: nowrap;
+        display: inline-block;
+        width: 175px;
+        height: 35px;
+        overflow: hidden;
+        position: relative;
+        background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjREREREREIiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
+        background-size: contain;
+    }
+
+    .star-rating i {
+        opacity: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 20%;
+        z-index: 1;
+        background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjRkZERjg4IiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
+        background-size: contain;
+    }
+
+    .star-rating input {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        opacity: 0;
+        display: inline-block;
+        width: 20%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        z-index: 2;
+        position: relative;
+    }
+
+    .star-rating input:hover+i,
+    .star-rating input:checked+i {
+        opacity: 1;
+    }
+
+    .star-rating i~i {
+        width: 40%;
+    }
+
+    .star-rating i~i~i {
+        width: 60%;
+    }
+
+    .star-rating i~i~i~i {
+        width: 80%;
+    }
+
+    .star-rating i~i~i~i~i {
+        width: 100%;
+    }
+
+    span.scale-rating {
+        margin: 5px 0 15px;
+        display: inline-block;
+
+        width: 100%;
+
+    }
+
+    span.scale-rating>label {
+        position: relative;
+        -webkit-appearance: none;
+        outline: 0 !important;
+        border: 1px solid grey;
+        height: 33px;
+        margin: 0 5px 0 0;
+        width: calc(10% - 7px);
+        float: left;
+        cursor: pointer;
+    }
+
+    span.scale-rating label {
+        position: relative;
+        -webkit-appearance: none;
+        outline: 0 !important;
+        height: 33px;
+
+        margin: 0 5px 0 0;
+        width: calc(10% - 7px);
+        float: left;
+        cursor: pointer;
+    }
+
+    span.scale-rating input[type=radio] {
+        position: absolute;
+        -webkit-appearance: none;
+        opacity: 0;
+        outline: 0 !important;
+        /border-right: 1px solid grey;/ height: 33px;
+
+        margin: 0 5px 0 0;
+
+        width: 100%;
+        float: left;
+        cursor: pointer;
+        z-index: 3;
+    }
+
+    span.scale-rating label:hover {
+        background: #fddf8d;
+    }
+
+    span.scale-rating input[type=radio]:last-child {
+        border-right: 0;
+    }
+
+    span.scale-rating label input[type=radio]:checked~label {
+        -webkit-appearance: none;
+
+        margin: 0;
+        background: #fd8d8d;
+    }
+
+    span.scale-rating label:before {
+        content: attr(value);
+        top: 7px;
+        width: 100%;
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        vertical-align: middle;
+        z-index: 2;
+    }
+
+    /*Rating Ends */
+</style>

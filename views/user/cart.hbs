@@ -172,7 +172,7 @@
                         }
                     })
                 } else {
-                    swal("Oops!!..", `Reached stock limit!`, "warning");
+                    swal("Oops!!..", `Reached stock limit!`, "error");
                 }
 
 
@@ -197,7 +197,7 @@
                     success: (response) => {
                         if (response.removeProd) {
 
-                            swal("Limit reached!", `You cannot reduce the quantity any further!`, "info");
+                            swal("Limit reached!", `You cannot reduce the quantity any further!`, "error");
                         } else {
                             document.getElementById(prodId).innerHTML = quantity + count
                             document.getElementById(id).innerHTML = (quantity + count) * price

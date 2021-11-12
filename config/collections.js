@@ -9,6 +9,7 @@ module.exports={
     ADDRESS_COLLECTION:'Address',
     COUPON_COLLECTION:'coupon',
     WISHLIST_COLLECTION:'wishlist',
-    OFFER_COLLECTION:'offer'
+    OFFER_COLLECTION:'offer',
+    REVIEW_COLLECTION:'product-reviews'
     
 }

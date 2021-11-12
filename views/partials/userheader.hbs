@@ -1,3 +1,78 @@
+<script>
+
+  function searchProd() {
+
+    let input = document.getElementById('searchtext').value
+
+    if (input != '') {
+
+      document.getElementById('searchResult').innerHTML = ''
+
+      $.ajax({
+
+        url: '/search',
+        method: 'post',
+        data: {
+          keyword: input
+        },
+        success: (response) => {
+
+          document.getElementById('searchResErr').style.display = 'none'
+
+          if (response.length > 0) {
+
+            var result = []
+
+            for (i = 0; i < response.length; i++) {
+
+              result[i] = {
+                name: response[i].Product_Name,
+                id: response[i]._id
+              }
+
+            } 
+
+            var atag = []
+
+            for (i = 0; i < response.length; i++) {
+
+              atag[i] = document.createElement('a')
+
+              atag[i].setAttribute('id', `${result[i].id}`);
+              atag[i].innerHTML = `<img src="/product-images/${result[i].id}_1.jpg"  style="height: 50px;float:left;border-radius:80px" alt="">${result[i].name}`
+              atag[i].setAttribute('style', 'margin-left: 25px')
+              atag[i].href = `/view-product?id=${result[i].id}`
+
+              $("#searchResult").append(atag[i]);
+              $("#searchResult").append(`<hr>`)
+              $("#searchResult").append(`<br>`)
+
+            }
+
+
+
+          } else {
+
+            document.getElementById('searchResult').innerHTML = ''
+            document.getElementById('searchResErr').style.display = 'block'
+            document.getElementById('searchResErr').innerHTML = 'No match found'
+
+          }
+
+        }
+
+      })
+
+    } else {
+      document.getElementById('searchResult').innerHTML = ''
+      document.getElementById('searchResErr').style.display = 'block'
+      document.getElementById('searchResErr').innerHTML = 'Input field is blank'
+    }
+
+  }
+
+</script>
+
 <header id="navbar-spy" class="header header-1">
 
   <nav id="primary-menu" class="navbar navbar-fixed-top">
@@ -27,7 +102,7 @@
             <ul class="dropdown-menu">
 
               <li>
-                <a href="#">Shop by car </a>
+                <a href="/all-brands">Shop by car </a>
               </li>
 
               <li>
@@ -59,13 +134,18 @@
           <div class="search-box">
             <form class="search-form">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Type Your Search Words">
+                <input type="text" class="form-control" id="searchtext" placeholder="Type Your Search Words">
                 <span class="input-group-btn">
-                  <button class="btn" type="button"><i class="fa fa-search"></i></button>
+                  <button class="btn" onclick="searchProd()" type="button"><i class="fa fa-search"></i></button>
                 </span>
               </div>
 
             </form>
+            <span id="searchResErr" style="color:red"></span>
+            <div id="searchResult" style="overflow-y: scroll;height:200px">
+              
+            </div>
+
           </div>
         </div>
 
@@ -87,11 +167,11 @@
         <div class="module module-wishlist pull-left">
           <div class="wishlist-icon">
             <a href="/wishlist" style="color: #fff;">
-            <i class="fa fa-heart"></i>
+              <i class="fa fa-heart"></i>
             </a>
             <span class="title">Wishlist</span>
           </div>
-          
+
         </div>
 
         <ul class="nav navbar-nav navbar-left">
@@ -165,5 +245,4 @@
 
   </nav>
 </header>
-
 

@@ -1,0 +1,36 @@
+{{>userheader}}
+
+<section style="padding-top:50px;padding-bottom:30px;margin-bottom:-100px">
+    <div class="container heading">
+
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <p class="subheading">LET'S GET STARTED</p>
+                <h2>CHOOSE YOUR CAR BRAND</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row product-boxes">
+
+        {{#each carBrands}}
+        <div class="col-md-3 product-box">
+
+            <a href="/chooseCarModel?brandId={{this._id}}">
+
+                <div class="product-img" style="display:flex; justify-content:center;">
+                    <img src="/car-brand-logos/{{this._id}}CBL.jpg" style="height:120px;width:120px;margin-bottom:12px"
+                        alt="Product" />
+                </div>
+
+            </a>
+
+        </div>
+        {{/each}}
+
+
+    </div>
+</section>
+{{>userfooter}}

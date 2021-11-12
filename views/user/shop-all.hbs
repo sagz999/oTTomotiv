@@ -231,7 +231,7 @@
 
                         <div class="product-bio">
                             <div class="prodcut-cat">
-                                <a href="#">{{this.Car_Model}}</a>
+                                <a href="/shopByProdBrand?prodBrand={{this.Product_Brand}}">{{this.Product_Brand}}</a>
                             </div>
 
                             <div class="prodcut-title">
@@ -285,18 +285,28 @@
 {{>userfooter}}
 
 <script>
-    function addToCart(prodId, price,prodName) {
+
+    function addToCart(prodId, price, prodName) {
         $.ajax({
-            url: '/add-to-cart?id=' + prodId + '&price=' + price+'&prodName=' + prodName,
+
+            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
             method: 'get',
             success: (response) => {
+
                 if (response.status) {
                     let count = $('#cart-count').html()
                     count = parseInt(count) + 1
                     $("#cart-count").html(count)
-                    location.reload()
+                    swal("Success!", "Product added to cart!", "success", {
+                        button: "OK",
+                    }).then(()=>{    
+                            location.reload()    
+                    })
+
                 }
+
             }
         })
     }
+
 </script>

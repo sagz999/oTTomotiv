@@ -30,6 +30,22 @@ router.get('/', verifyLog, async (req, res) => {
   let payMethod = await userHelper.orderPaymentMethod()
   let orderCount = await userHelper.orderCount()
 
+  userHelper.checkOfferExpiry().then((offers)=>{
+    offers.map((eachOffers)=>{
+     
+      userHelper.fetchAllProdInSubCatToUpdate(eachOffers.subCategory).then((products) => {
+
+        products.map((SingleProd) => {
+          userHelper.updateEachProdBackToOrgPrice(SingleProd)
+        })
+    
+        userHelper.deleteOffer(eachOffers._id)
+    
+      })
+
+    })
+
+  })
 
 
   res.render('admin/admin-dash', {

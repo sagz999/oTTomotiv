@@ -257,8 +257,11 @@ module.exports = {
 
 
     fetchCartProd: (userId) => {
+
         return new Promise(async (resolve, reject) => {
+
             let cartProds = await db.get().collection(collection.CART_COLLECTION).aggregate([
+
                 {
                     $match: { user: objectId(userId) }
                 },
@@ -293,15 +296,14 @@ module.exports = {
             ]).toArray()
 
             if (cartProds.length != 0) {
-
+                for (key in cartProds) {
+                    product = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(cartProds[key].item) })
+                    await db.get().collection(collection.CART_COLLECTION).updateOne({ products: { $elemMatch: { item: product._id } } }, { $set: { 'products.$.price': product.Price, 'products.$.total': cartProds[key].quantity * product.Price } })
+                }
                 resolve(cartProds)
-
             } else {
-
                 resolve(false)
-
             }
-
 
         })
     },
@@ -1570,6 +1572,8 @@ module.exports = {
         })
     },
 
+    //offer helpers starts
+
     fetchOffers: () => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.OFFER_COLLECTION).find().toArray().then((offers) => {
@@ -1578,22 +1582,22 @@ module.exports = {
         })
     },
 
-    checkOfferExist:(subCat)=>{
+    checkOfferExist: (subCat) => {
         return new Promise((resolve, reject) => {
-            
-            db.get().collection(collection.OFFER_COLLECTION).findOne({subCategory:subCat}).then((offers) => {
+
+            db.get().collection(collection.OFFER_COLLECTION).findOne({ subCategory: subCat }).then((offers) => {
                 resolve(offers)
             })
         })
     },
 
-    checkOfferExpiry:()=>{
+    checkOfferExpiry: () => {
 
         return new Promise((resolve, reject) => {
 
-            let date=new Date().toLocaleString('en-US').slice(0, 10)
+            let date = new Date().getTime()
 
-            db.get().collection(collection.OFFER_COLLECTION).find({expiryDate:date}).toArray().then((offers) => {
+            db.get().collection(collection.OFFER_COLLECTION).find({ expiryDate: { $lte: date } }).toArray().then((offers) => {
                 resolve(offers)
             })
 
@@ -1610,7 +1614,7 @@ module.exports = {
                 offerName: offerData.offerName,
                 subCategory: offerData.subCategory,
                 addedDate: new Date().toLocaleString('en-US').slice(0, 10),
-                expiryDate: new Date(offerData.expiryDate).toLocaleString('en-US').slice(0, 10),
+                expiryDate: new Date(offerData.expiryDate).getTime(),
                 offerDiscount: offerData.offerDiscount
             }).then(() => {
 
@@ -1699,12 +1703,194 @@ module.exports = {
         })
     },
 
-    deleteOffer:(offerId)=>{
+    deleteOffer: (offerId) => {
 
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.OFFER_COLLECTION).deleteOne({_id:objectId(offerId)}).then(()=>{
+            db.get().collection(collection.OFFER_COLLECTION).deleteOne({ _id: objectId(offerId) }).then(() => {
                 resolve()
+            })
+
+        })
+
+    },
+
+    //offer helpers ends
+
+
+    //review helpers start
+
+    fetchReviews: (prodId) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.REVIEW_COLLECTION).findOne({ prodId: objectId(prodId) }).then((review) => {
+
+                resolve(review)
+
+            })
+
+        })
+
+    },
+
+    checkUserPurchasedItem: (userId, prodId) => {
+
+        return new Promise(async (resolve, reject) => {
+
+            let buyNowPurchaseCheck = await db.get().collection(collection.ORDER_COLLECTION).count({ UserId: objectId(userId), Mode: 'buynow', ProdId: prodId, Status: 'Delivered' })
+
+
+
+            let cartPurchaseCheck = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        UserId: objectId(userId),
+                        Mode: 'cart'
+                    }
+                },
+                {
+                    $unwind: '$Products'
+                },
+                {
+                    $match: {
+                        'Products.item': objectId(prodId),
+                        'Products.status': 'Delivered'
+                    }
+                }
+            ]).toArray()
+
+            if (buyNowPurchaseCheck != 0 || cartPurchaseCheck.length != 0) {
+
+                resolve(true)
+
+            } else {
+
+                resolve(false)
+
+            }
+
+
+        })
+
+    },
+
+    addReview: (reviewData) => {
+
+        let reviewObj = {
+
+            userId: objectId(reviewData.userId),
+            userName: reviewData.userName,
+            rating: parseInt(reviewData.rating),
+            review: reviewData.review,
+            postedDate: new Date().toLocaleString('en-US').slice(0, 10)
+
+        }
+
+        return new Promise(async (resolve, reject) => {
+
+            let reviewCheck = await db.get().collection(collection.REVIEW_COLLECTION).findOne({ prodId: objectId(reviewData.prodId) })
+
+            if (reviewCheck) {
+
+                db.get().collection(collection.REVIEW_COLLECTION).updateOne(
+                    { prodId: objectId(reviewData.prodId) },
+                    {
+                        $push: { prodReview: reviewObj }
+
+                    }).then(() => {
+
+                        resolve()
+                    })
+
+            } else {
+
+                let prodReviewObj = {
+
+                    prodId: objectId(reviewData.prodId),
+                    prodName: reviewData.prodName,
+                    prodReview: [reviewObj]
+
+                }
+
+                db.get().collection(collection.REVIEW_COLLECTION).insertOne(prodReviewObj).then(() => {
+                    resolve()
+                })
+
+            }
+
+        })
+
+    },
+
+    checkUserCmmnts: (prodId, userId) => {
+
+        return new Promise(async (resolve, reject) => {
+
+
+
+            let userCmmnt = await db.get().collection(collection.REVIEW_COLLECTION).aggregate([
+                {
+                    $match: { prodId: objectId(prodId) }
+                },
+                {
+                    $unwind: '$prodReview'
+                },
+                {
+                    $match: { 'prodReview.userId': objectId(userId) }
+                }
+            ]).toArray()
+
+            if (userCmmnt.length > 0) {
+
+                resolve(userCmmnt[0].prodReview)
+
+            } else {
+
+                resolve(false)
+
+            }
+        })
+
+    },
+
+    deleteReview: (prodId, userId) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.REVIEW_COLLECTION).updateOne({ prodId: objectId(prodId) }, { $pull: { prodReview: { userId: objectId(userId) } } }).then(() => {
+                resolve()
+            })
+
+        })
+
+    },
+
+    editReview: (editedReviewData) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.REVIEW_COLLECTION).updateOne({ prodId: objectId(editedReviewData.prodId), prodReview: { $elemMatch: { userId: objectId(editedReviewData.userId) } } },
+                {
+                    $set: {
+                        'prodReview.$.rating': editedReviewData.rating,
+                        'prodReview.$.review': editedReviewData.review,
+                        'prodReview.$.postedDate': new Date().toLocaleString('en-US').slice(0, 10)
+                    }
+                }).then(() => {
+                    resolve()
+                })
+        })
+    },
+
+    //review helpers start
+
+    fetchSearchMatchProds: (searchData) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ Product_Name: { $regex: searchData.keyword, $options: "$i" } }).toArray().then((products) => {
+
+                resolve(products)
+
             })
 
         })
@@ -1712,5 +1898,7 @@ module.exports = {
     }
 
 }
+
+
 
 

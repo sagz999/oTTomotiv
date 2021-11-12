@@ -127,7 +127,7 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <a class="btn btn-primary btn-block" href="#">Check All Brands</a>
+                <a class="btn btn-primary btn-block" href="/all-brands">Check All Brands</a>
             </div>
 
         </div>
@@ -193,7 +193,7 @@
                     {{#each this.Sub_Cat}}
                     <div class="col-md-3 product-box">
 
-                        <a href="#">
+                        <a href="/shopByCat?subCat={{this.Sub_Cat}}">
 
                             <div class="product-img" style="display:flex; justify-content:center;">
                                 <img src="sub-category-images/{{this.subCatId}}SCI.jpg" style="height:150px;width:150px"
@@ -279,7 +279,7 @@
 
                 <div class="product-bio">
                     <div class="prodcut-cat">
-                        <a href="#">{{this.Car_Model}}</a>
+                        <a href="/shopByProdBrand?prodBrand={{this.Product_Brand}}">{{this.Product_Brand}}</a>
                     </div>
 
                     <div class="prodcut-title">

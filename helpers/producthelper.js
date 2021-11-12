@@ -9,20 +9,20 @@ module.exports = {
 
             newProduct.Stock = parseInt(newProduct.Stock)
             newProduct.Price = parseInt(newProduct.Price)
-            newProduct.Date=new Date().toLocaleString('en-US').slice(0, 10),
-            newProduct.Time= new Date().toLocaleString('en-US').slice(11, 22),
-            await db.get().collection(collection.PRODUCT_COLLECTION).insertOne(newProduct).then((data) => {
+            newProduct.Date = new Date().toLocaleString('en-US').slice(0, 10),
+                newProduct.Time = new Date().toLocaleString('en-US').slice(11, 22),
+                await db.get().collection(collection.PRODUCT_COLLECTION).insertOne(newProduct).then((data) => {
 
-                resolve(data.insertedId)
-            })
+                    resolve(data.insertedId)
+                })
         })
 
     },
 
-    getRelproducts: (product) => {
+    getRelproducts: (Sub_Cat) => {
         return new Promise(async (resolve, reject) => {
-            let relProduct = await db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: product.Sub_Category }).toArray()
-            resolve(relProduct)
+            let Products = await db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: Sub_Cat }).toArray()
+            resolve(Products)
         })
     },
 
@@ -96,9 +96,9 @@ module.exports = {
 
     addSubCategory: (catData) => {
 
-        let catObj={
-            subCatId:uuidv4(),
-            Sub_Cat:catData.Sub_Cat
+        let catObj = {
+            subCatId: uuidv4(),
+            Sub_Cat: catData.Sub_Cat
 
         }
 
@@ -131,7 +131,7 @@ module.exports = {
 
                 {
                     $pull: {
-                        Sub_Cat:{subCatId: subCatId}
+                        Sub_Cat: { subCatId: subCatId }
                     }
 
                 }).then(() => {
@@ -209,7 +209,7 @@ module.exports = {
             db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(carData.carBrand_Id) },
                 {
                     $push: { Car_Model: newCarModel }
-                    
+
 
                 }).then(() => {
                     resolve(newCarModel.modelId)
@@ -226,7 +226,7 @@ module.exports = {
 
                 {
                     $pull: {
-                        Car_Model: {modelId:modelId}
+                        Car_Model: { modelId: modelId }
                     }
 
 
@@ -280,27 +280,27 @@ module.exports = {
         })
     },
 
-    fetchCarModel:(brandId)=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.CAR_BRAND_COLLECTION).findOne({_id:objectId(brandId)}).then((carBrand)=>{
+    fetchCarModel: (brandId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.CAR_BRAND_COLLECTION).findOne({ _id: objectId(brandId) }).then((carBrand) => {
                 resolve(carBrand)
             })
         })
     },
 
-    fetchSubCatList:(catId)=>{
-        return new Promise(async(resolve,reject)=>{
+    fetchSubCatList: (catId) => {
+        return new Promise(async (resolve, reject) => {
 
-            let subCat= await db.get().collection(collection.CATEGORY_COLLECTION).aggregate([
+            let subCat = await db.get().collection(collection.CATEGORY_COLLECTION).aggregate([
                 {
-                    $match:{_id:objectId(catId)}
+                    $match: { _id: objectId(catId) }
                 },
                 {
-                    $unwind:"$Sub_Cat"
+                    $unwind: "$Sub_Cat"
                 },
                 {
-                    $project:{
-                        Sub_Cat:'$Sub_Cat.Sub_Cat'
+                    $project: {
+                        Sub_Cat: '$Sub_Cat.Sub_Cat'
                     }
                 }
             ]).toArray()
@@ -308,6 +308,39 @@ module.exports = {
             resolve(subCat)
 
         })
+    },
+
+    fetchProdsUnderBrand: (prodBrand) => {
+
+        return new Promise(async (resolve, reject) => {
+
+            let prodBrandData = await db.get().collection(collection.PROD_BRAND_COLLECTION).findOne({ Prod_Brand: prodBrand })
+            let products = await db.get().collection(collection.PRODUCT_COLLECTION).find({ Product_Brand: prodBrand }).toArray()
+
+            let Prod = {
+
+                prodBrandData: prodBrandData,
+                products: products
+
+            }
+
+            resolve(Prod)
+        })
+
+    },
+
+    fetchProdsUnderCarModel: (carModel) => {
+
+        return new Promise(async (resolve, reject) => {
+
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ Car_Model: carModel }).toArray().then((products)=>{
+
+                resolve(products)
+                
+            })
+
+        })
+
     }
 
 
