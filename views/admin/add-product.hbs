@@ -32,8 +32,9 @@
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Main Category</label>
-                                        <select onchange="fetchSubCat()" style="background:#202940;color:#8b92a9;border:none"
-                                            name="Main_Category" class="custom-select mr-sm-2" id="mainCatList">
+                                        <select onchange="fetchSubCat()"
+                                            style="background:#202940;color:#8b92a9;border:none" name="Main_Category"
+                                            class="custom-select mr-sm-2" id="mainCatList">
                                             <option selected disabled>Choose...</option>
                                             {{#each category}}
                                             <option>{{this.Main_Cat}}</option>
@@ -45,12 +46,8 @@
                                         <label style="font-weight:bold;">Sub Category</label>
                                         <select style="background:#202940;color:#8b92a9;border:none" name="Sub_Category"
                                             class="custom-select mr-sm-2" id="subCatList">
-                                            <option selected disabled>Choose...</option>
-                                            {{#each category}}
-                                            {{#each this.Sub_Cat}}
-                                            <option id="subcatList">{{this.Sub_Cat}}</option>
-                                            {{/each}}
-                                            {{/each}}
+                                            <option selected disabled>Choose..</option>
+
                                         </select>
                                     </div>
 
@@ -64,7 +61,7 @@
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Product Brand</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none"
+                                        <select  style="background:#202940;color:#8b92a9;border:none"
                                             name="Product_Brand" class="custom-select mr-sm-2">
                                             <option selected disabled>Choose...</option>
                                             {{#each prodBrand}}
@@ -76,8 +73,8 @@
 
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Car Brand</label>
-                                        <select style="background:#202940;color:#8b92a9;border:none" name="Car_Brand"
-                                            class="custom-select mr-sm-2">
+                                        <select onchange="fetchCarModel()" style="background:#202940;color:#8b92a9;border:none" name="Car_Brand"
+                                            class="custom-select mr-sm-2" id="Car_Brand">
                                             <option selected disabled>Choose...</option>
                                             {{#each carBrand}}
                                             <option>{{this.Car_Brand}}</option>
@@ -89,14 +86,9 @@
                                     <div class="col-md-3 my-1">
                                         <label style="font-weight:bold;">Car Model</label>
                                         <select style="background:#202940;color:#8b92a9;border:none" name="Car_Model"
-                                            class="custom-select mr-sm-2">
+                                            class="custom-select mr-sm-2" id="Car_Model">
                                             <option selected disabled>Choose...</option>
-                                            {{#each carBrand}}
-                                            {{#each this.Car_Model}}
-                                            <option>{{this.Model_Name}}</option>
-                                            {{/each}}
-                                            {{/each}}
-
+                    
                                         </select>
                                     </div>
 
@@ -134,11 +126,12 @@
                                                 <div class="row">
 
                                                     {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file1">Add Image</label> --}}
+                                                        class="btn btn-primary btn-sm" for="file1">Add Image</label>
+                                                    --}}
                                                     <div id="errMsg1"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter"  name="Img1" type="file"
-                                                        class="my-2 form-control-file" id="file1"
-                                                        onchange="return fileValidation1()">
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                        name="Img1" type="file" class="my-2 form-control-file"
+                                                        id="file1" onchange="return fileValidation1()">
 
                                                 </div>
 
@@ -156,11 +149,12 @@
                                                 <div class="row">
 
                                                     {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file2">Add Image</label> --}}
+                                                        class="btn btn-primary btn-sm" for="file2">Add Image</label>
+                                                    --}}
                                                     <div id="errMsg2"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter" name="Img2" type="file"
-                                                        class="my-2 form-control-file" id="file2"
-                                                        onchange="return fileValidation2()">
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                        name="Img2" type="file" class="my-2 form-control-file"
+                                                        id="file2" onchange="return fileValidation2()">
 
                                                 </div>
 
@@ -180,11 +174,12 @@
                                                 <div class="row">
 
                                                     {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file3">Add Image</label> --}}
+                                                        class="btn btn-primary btn-sm" for="file3">Add Image</label>
+                                                    --}}
                                                     <div id="errMsg3"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter"  name="Img3" type="file"
-                                                        class="my-2 form-control-file" id="file3"
-                                                        onchange="return fileValidation3()">
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                        name="Img3" type="file" class="my-2 form-control-file"
+                                                        id="file3" onchange="return fileValidation3()">
 
                                                 </div>
 
@@ -201,11 +196,12 @@
                                                 <div class="row">
 
                                                     {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file4">Add Image</label> --}}
+                                                        class="btn btn-primary btn-sm" for="file4">Add Image</label>
+                                                    --}}
                                                     <div id="errMsg4"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter" name="Img4" type="file"
-                                                        class="my-2 form-control-file" id="file4"
-                                                        onchange="return fileValidation4()">
+                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                        name="Img4" type="file" class="my-2 form-control-file"
+                                                        id="file4" onchange="return fileValidation4()">
 
                                                 </div>
 
@@ -593,8 +589,8 @@
                     required: true,
                     minlength: 3
                 },
-                Stock:{
-                    required:true
+                Stock: {
+                    required: true
                 },
 
                 Main_Category: {
@@ -651,28 +647,78 @@
 
 <script>
 
-function fetchSubCat(){
+    function fetchSubCat() {
 
-    let MainCatId=document.getElementById('mainCatList').value
+        let MainCat = document.getElementById('mainCatList').value
 
-    $.ajax({
+        $.ajax({
 
-        url:'/admin/fetchSubCat?catId='+MainCatId,
-        method:'get',
-        success:(subCatList)=>{
-            
-        }
+            url: '/admin/fetchSubCat?MainCat=' + MainCat,
+            method: 'post',
+            success: (subCatList) => {
+                document.getElementById('subCatList').innerHTML = ''
+                if (subCatList.length > 0) {
+                    
+                    var result = []
 
-    })
+                    for (i = 0; i < subCatList.length; i++) {
+                        result[i] = subCatList[i].Sub_Cat
+                    }
 
-}
+
+                    var option = []
+                    for (i = 0; i < result.length; i++) {
+                        option[i] = document.createElement('option')
+                        option[i].innerHTML = result[i]
+                        option[i].value = result[i]
+                        $("#subCatList").append(option[i]);
+                    }
+                }
+            }
+
+        })
+
+    }
+
+    function fetchCarModel(){
+
+        let CarBrand = document.getElementById('Car_Brand').value
+
+        $.ajax({
+
+            url: '/admin/fetchCarModels?CarBrand=' + CarBrand,
+            method: 'post',
+            success: (carModelList) => {
+                document.getElementById('Car_Model').innerHTML = ''
+                if (carModelList.length > 0) {
+                    
+                    var result1 = []
+
+                    for (i = 0; i < carModelList.length; i++) {
+                        result1[i] = carModelList[i].Car_Model
+                    }
+
+
+                    var option1 = []
+                    for (i = 0; i < result1.length; i++) {
+                        option1[i] = document.createElement('option')
+                        option1[i].innerHTML = result1[i]
+                        option1[i].value = result1[i]
+                        $("#Car_Model").append(option1[i]);
+                    }
+                }
+            }
+
+        })
+
+    }
 
 </script>
 
 <style>
     .error {
         color: red !important;
-        font-size:small !important;
-       
+        font-size: small !important;
+
     }
 </style>

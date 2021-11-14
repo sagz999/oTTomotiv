@@ -63,15 +63,18 @@ router.get('/', cartCounter, async (req, res) => {
 
   if (req.session.user) {
 
-    let cart = await userHelper.fetchCartProd(req.session.user._id)
-
-    res.render('user/user-home', { title: 'Homepage', isUser: true, user: req.session.user, product, cartCount: req.session.cartCount, cart, carBrands, categories });
+    var cart = await userHelper.fetchCartProd(req.session.user._id)
+    
 
   } else {
 
-    res.render('user/user-home', { title: 'Homepage', isUser: true, product, cartCount: req.session.cartCount, carBrands, categories });
-
+    var cart = false
+   
   }
+
+  res.render('user/user-home', { title: 'Homepage', isUser: true, user: req.session.user, product, cartCount: req.session.cartCount, cart, carBrands, categories });
+
+
 
 
 
@@ -83,10 +86,16 @@ router.get('/', cartCounter, async (req, res) => {
 /*log section-Start */
 
 router.get('/otprequest', (req, res) => {
+  if (req.session.forgPass) {
+    var forgotPass = true
+  } else {
+    var forgotPass = false
+  }
 
-  res.render('user/otp-request', { title: 'OTP request', isUser: true, err: req.session.otpErr, forgotPass: req.session.forgPass })
+  res.render('user/otp-request', { title: 'OTP request', isUser: true, err: req.session.otpErr, forgotPass })
 
   req.session.otpErr = false
+
 
 })
 
@@ -96,13 +105,14 @@ router.post('/otprequest', (req, res) => {
 
   req.session.Mob = parseInt('' + req.body.countryCode + req.body.Pnum)
   req.session.Pnum = req.body.Pnum
+  req.session.Ccode = req.body.countryCode
+  req.session.resendMsg = false
 
-  if (req.session.forgPass === false) {
+  if (req.body.resend) {
 
-    req.session.Signin = true
+    req.session.resendMsg = "OTP has been resend successfully"
 
   }
-
 
   userHelper.checkNum(req.body).then((result) => {
 
@@ -115,6 +125,7 @@ router.post('/otprequest', (req, res) => {
         otpClient.verify.services(otpConfig.serviceID)
           .verifications.create({ to: '+' + req.session.Mob, channel: 'sms' })
           .then(() => {
+
 
             res.redirect('/otpverify')
 
@@ -146,16 +157,23 @@ router.post('/otprequest', (req, res) => {
 
 router.get('/otpverify', (req, res) => {
 
+
+
+
   res.render('user/otp-verify', {
     title: 'Verification',
     isUser: true,
     mobile: req.session.Mob,
     Pnum: req.session.Pnum,
-    err: req.session.verErr
+    Ccode: req.session.Ccode,
+    err: req.session.verErr,
+    Msg: req.session.resendMsg
   })
-  req.session.mobile = false
-  req.session.Pnum = false
+
+
   req.session.verErr = false
+
+
 
 })
 
@@ -166,6 +184,10 @@ router.post('/otpverify', (req, res) => {
     .then((result) => {
 
       if (result.status == 'approved') {
+
+        req.session.mobile = false
+        req.session.Pnum = false
+        req.session.Ccode = false
 
         if (req.session.Signin) {
           userHelper.fetchOtpuser(req.body.Pnum).then((user) => {
@@ -188,20 +210,20 @@ router.post('/otpverify', (req, res) => {
 
           })
 
-        } else {
-          req.session.forgPass = false
+        } else if (req.session.forgPass) {
           res.render('user/reset-password', { title: 'Reset password', isUser: true })
+          req.session.forgPass = false
         }
 
       } else {
-        
 
-          req.session.verErr = 'Invalid OTP'
-          res.redirect('/otpverify')
 
-        }
+        req.session.verErr = 'Invalid OTP'
+        res.redirect('/otpverify')
 
-      })
+      }
+
+    })
     .catch((err) => {
 
       req.session.verErr = 'Unexpected error, please try after sometime'
@@ -211,14 +233,16 @@ router.post('/otpverify', (req, res) => {
 })
 
 
-
+router.get('/otp-signin', (req, res) => {
+  req.session.Signin = true
+  req.session.forgPass = false
+  res.redirect('/otprequest')
+})
 
 router.get('/forgot-password', (req, res) => {
-
+  req.session.Signin = false
   req.session.forgPass = true
   res.redirect('/otprequest')
-
-
 })
 
 router.post('/reset-password', (req, res) => {
@@ -231,7 +255,39 @@ router.post('/reset-password', (req, res) => {
 })
 
 
-router.get('/login', (req, res) => {
+router.get('/login/', (req, res) => {
+
+  if (req.query.guestRedirect) {
+
+    if (req.query.token == 'guestToBuyNow') {
+
+      req.session.buyNowStatus = true
+      req.session.buyNowProdId = req.query.prodId
+
+    } else if (req.query.token == 'guestToCart') {
+
+      req.session.cartStatus = true
+      req.session.cartProdId = req.query.prodId
+      req.session.cartProdPrice = req.query.prodPrice
+      req.session.cartProdName = req.query.prodName
+
+    }else if(req.query.token == 'guestToCartPage'){
+
+      req.session.guestToCart=true
+  
+    }else if(req.query.token == 'guestToWishlist'){
+  
+      req.session.guestToWishlist=true
+  
+    }else if(req.query.token == 'guestToAddWishlist'){
+  
+      req.session.guestToAddWishlist=true
+      req.session.wishlistProdId=req.query.prodId
+  
+    }
+
+  }
+
   if (req.session.userLog) {
     res.redirect('/')
   } else {
@@ -240,17 +296,50 @@ router.get('/login', (req, res) => {
     req.session.signupSucc = false
   }
 
+
 });
 
 router.post('/login', (req, res) => {
   userHelper.doLogin(req.body).then((result) => {
 
     if (result.status) {
-      //if login success
 
+      //if login success
       req.session.user = result.user
       req.session.userLog = true
-      res.redirect('/')
+
+      if (req.session.buyNowStatus) {
+
+        res.redirect('/prodBuyNow?prodId=' + req.session.buyNowProdId)
+        req.session.buyNowStatus = false
+        req.session.buyNowProdId = false
+
+      } else if (req.session.cartStatus) {
+
+        res.redirect('/add-to-cart?id=' + req.session.cartProdId + '&price=' + req.session.cartProdPrice + '&prodName=' + req.session.cartProdName)
+        req.session.cartProdId = false
+        req.session.cartProdPrice = false
+        req.session.cartProdName = false
+
+      }else if(req.session.guestToCart){
+
+        res.redirect('/cart')
+        req.session.guestToCart=false
+
+      }else if(req.session.guestToWishlist){
+
+        res.redirect('/wishlist')
+        req.session.guestToWishlist=false
+
+      }else if(req.session.guestToAddWishlist){
+
+        res.redirect('/addToWishlist?prodId=' + req.session.wishlistProdId)
+
+      }else {
+
+        res.redirect('/')
+
+      }
 
     } else {
       //if login error
@@ -285,6 +374,8 @@ router.post('/signup', (req, res) => {
       req.session.Mob = parseInt('' + req.body.countryCode + req.body.Pnum)
       req.session.Pnum = req.body.Pnum
       req.session.Signup = true
+      req.session.Signin = false
+      req.session.forgPass = false
       req.session.newUserData = req.body
 
 
@@ -314,6 +405,8 @@ router.get('/logout', (req, res) => {
   req.session.user = false
   req.session.cartCount = false
 
+  req.session.destroy()
+
   res.redirect('/')
 })
 
@@ -322,39 +415,56 @@ router.get('/logout', (req, res) => {
 
 //Product single-View
 
-router.get('/view-product/', verifyLog, cartCounter, async (req, res) => {
+router.get('/view-product/',cartCounter, async (req, res) => {
 
 
   let product = await productHelper.fetchProduct(req.query.id)
   let relProduct = await productHelper.getRelproducts(product.Sub_Category)
-  let cart = await userHelper.fetchCartProd(req.session.user._id)
-  let wishlist = await userHelper.fetchWishlist(req.session.user._id)
   let review = await userHelper.fetchReviews(req.query.id)
   var reviewCount
+
   if (review) {
+
     var reviewExist
     reviewCount = review.prodReview.length
     if (reviewCount > 0) {
+
       reviewExist = true
+
     } else {
+
       reviewExist = false
+
     }
+
   } else {
+
     reviewCount = 0
-  }
-  let userPurchasedItem = await userHelper.checkUserPurchasedItem(req.session.user._id, req.query.id)
-  if (userPurchasedItem) {
-
-    var checkUserCmmnts = await userHelper.checkUserCmmnts(req.query.id, req.session.user._id)
-
 
   }
 
+  if(req.session.user){
+
+    var cart = await userHelper.fetchCartProd(req.session.user._id)
+    var wishlist = await userHelper.fetchWishlist(req.session.user._id)
+    var userPurchasedItem = await userHelper.checkUserPurchasedItem(req.session.user._id, req.query.id)
+
+    if (userPurchasedItem) {
+  
+      var checkUserCmmnts = await userHelper.checkUserCmmnts(req.query.id, req.session.user._id)
+  
+    }
+
+  }else{
+
+    var cart = false
+    var wishlist = false
+    var userPurchasedItem = false
+    var checkUserCmmnts = false
+    
+  }
+  
   res.render('user/product-singleView', { title: product.Product_Name, isUser: true, user: req.session.user, product, relProduct, cartCount: req.session.cartCount, cart, wishlist, review, userPurchasedItem, checkUserCmmnts, reviewExist, reviewCount });
-
-
-
-
 
 });
 
@@ -370,7 +480,13 @@ router.get('/cart', verifyLog, cartCounter, async (req, res) => {
 router.get('/add-to-cart/', verifyLog, (req, res) => {
 
   userHelper.addTocart(req.query.id, req.session.user._id, req.query.price, req.query.prodName).then(() => {
-    res.json({ status: true })
+    if (req.session.cartStatus) {
+      res.redirect('/cart')
+      req.session.cartStatus = false
+    } else {
+      res.json({ status: true })
+    }
+
   })
 })
 
@@ -388,7 +504,6 @@ router.get('/remove-item/', verifyLog, (req, res) => {
     res.json(result)
   })
 })
-
 
 router.get('/cartCheckout', verifyLog, cartCounter, async (req, res) => {
 
@@ -433,8 +548,6 @@ router.post('/cartPlaceOrder', async (req, res) => {
 
 
   })
-
-
 
 })
 
@@ -508,12 +621,7 @@ router.get('/view-orderSummary', verifyLog, cartCounter, (req, res) => {
 
   })
 
-
 })
-
-
-
-
 
 router.post('/verify-payment', (req, res) => {
 
@@ -581,9 +689,7 @@ router.post('/update-profile', (req, res) => {
 
     }
 
-
   })
-
 
 })
 
@@ -704,23 +810,34 @@ router.get('/chooseCarModel/', cartCounter, (req, res) => {
 
 router.get('/shop', cartCounter, async (req, res) => {
 
-  let carBrands = await productHelper.fetchCarBrands()
+  let prodBrands = await productHelper.fetchProdBrands()
   let categories = await productHelper.fetchCategories()
   let products = await productHelper.getAllproducts()
 
   if (req.session.user) {
     let cart = await userHelper.fetchCartProd(req.session.user._id)
-    res.render('user/shop-all', { title: 'Shop', isUser: true, user: req.session.user, cartCount: req.session.cartCount, carBrands, categories, products, cart })
+    res.render('user/shop-all', { title: 'Shop', isUser: true, user: req.session.user, cartCount: req.session.cartCount, prodBrands, categories, products, cart })
   } else {
 
-    res.render('user/shop-all', { title: 'Shop', isUser: true, user: req.session.user, cartCount: req.session.cartCount, carBrands, categories, products })
+    res.render('user/shop-all', { title: 'Shop', isUser: true, user: req.session.user, cartCount: req.session.cartCount, prodBrands, categories, products })
   }
 
 })
 
 router.get('/addToWishlist/', verifyLog, cartCounter, (req, res) => {
   userHelper.addToWishlist(req.session.user._id, req.query.prodId).then((result) => {
-    res.json(result)
+    if(req.session.guestToAddWishlist){
+
+      res.redirect('/view-product?id='+req.session.wishlistProdId)
+      req.session.guestToAddWishlist=false
+      req.session.wishlistProdId=false
+
+    }else{
+
+      res.json(result)
+
+    }
+    
   })
 })
 
@@ -763,7 +880,6 @@ router.post('/post-edited-review', (req, res) => {
 
 router.post('/search', (req, res) => {
   userHelper.fetchSearchMatchProds(req.body).then((products) => {
-    console.log('products:', products)
     res.json(products)
   })
 })
@@ -774,35 +890,41 @@ router.get('/all-brands', (req, res) => {
   })
 })
 
-router.get('/shopByCat/',verifyLog, (req, res) => {
+router.get('/shopByCat/', verifyLog, (req, res) => {
 
   productHelper.getRelproducts(req.query.subCat).then(async (products) => {
     let cart = await userHelper.fetchCartProd(req.session.user._id)
-    let catName= req.query.subCat
-    res.render('user/shop-by-category', { title: 'Shop by category', isUser: true, user: req.session.user, cartCount: req.session.cartCount,products,cart,catName })
+    let catName = req.query.subCat
+    res.render('user/shop-by-category', { title: 'Shop by category', isUser: true, user: req.session.user, cartCount: req.session.cartCount, products, cart, catName })
   })
 
 })
 
-router.get('/shopByProdBrand/',verifyLog,(req,res)=>{
+router.get('/shopByProdBrand/', verifyLog, (req, res) => {
   productHelper.fetchProdsUnderBrand(req.query.prodBrand).then(async (resultObj) => {
-    let prodBrandData=resultObj.prodBrandData
-    let products=resultObj.products
-    
+    let prodBrandData = resultObj.prodBrandData
+    let products = resultObj.products
+
     let cart = await userHelper.fetchCartProd(req.session.user._id)
-    res.render('user/products-from-brand', { title: 'Shop by Brand', isUser: true, user: req.session.user, cartCount: req.session.cartCount,products,cart,prodBrandData })
+    res.render('user/products-from-brand', { title: 'Shop by Brand', isUser: true, user: req.session.user, cartCount: req.session.cartCount, products, cart, prodBrandData })
   })
 })
 
-router.get('/shop-by-car-model/',verifyLog,(req,res)=>{
-  console.log('Id:',req.query.carModelId)
-  productHelper.fetchProdsUnderCarModel(req.query.carModel).then(async(products)=>{
+router.get('/shop-by-car-model/', verifyLog, (req, res) => {
+
+  productHelper.fetchProdsUnderCarModel(req.query.carModel).then(async (products) => {
     let cart = await userHelper.fetchCartProd(req.session.user._id)
-    let carModelId=req.query.carModelId
-    let carModelName=req.query.carModel
-    res.render('user/shop-by-car', { title: 'Shop by Car', isUser: true, user: req.session.user, cartCount: req.session.cartCount,products,cart,carModelId,carModelName})
+    let carModelId = req.query.carModelId
+    let carModelName = req.query.carModel
+    res.render('user/shop-by-car', { title: 'Shop by Car', isUser: true, user: req.session.user, cartCount: req.session.cartCount, products, cart, carModelId, carModelName })
 
   })
+})
+
+router.get('/choose-category', async (req, res) => {
+
+  let category = await productHelper.fetchCategories()
+  res.render('user/choose-category', { title: 'Choose category', isUser: true, user: req.session.user, cartCount: req.session.cartCount, category })
 })
 
 

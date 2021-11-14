@@ -288,12 +288,12 @@ module.exports = {
         })
     },
 
-    fetchSubCatList: (catId) => {
+    fetchSubCatList: (MainCat) => {
         return new Promise(async (resolve, reject) => {
 
             let subCat = await db.get().collection(collection.CATEGORY_COLLECTION).aggregate([
                 {
-                    $match: { _id: objectId(catId) }
+                    $match: { Main_Cat:{$regex:MainCat }}
                 },
                 {
                     $unwind: "$Sub_Cat"
@@ -304,8 +304,32 @@ module.exports = {
                     }
                 }
             ]).toArray()
-
+            
             resolve(subCat)
+
+        })
+    },
+
+    fetchCarModelList: (carBrand) => {
+        return new Promise(async (resolve, reject) => {
+
+            let carModels = await db.get().collection(collection.CAR_BRAND_COLLECTION).aggregate([
+                {
+                    $match: { Car_Brand:{$regex:carBrand }}
+                },
+                {
+                    $unwind: "$Car_Model"
+                },
+                {
+                    $project: {
+                        Car_Model: '$Car_Model.Model_Name'
+                    }
+                }
+            ]).toArray()
+
+            
+            
+            resolve(carModels)
 
         })
     },

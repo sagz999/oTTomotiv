@@ -30,7 +30,7 @@
                 id: response[i]._id
               }
 
-            } 
+            }
 
             var atag = []
 
@@ -98,7 +98,7 @@
           </li>
 
           <li class="has-dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle">shop</a>
+            <a style="cursor: pointer;" data-toggle="dropdown" class="dropdown-toggle">shop</a>
             <ul class="dropdown-menu">
 
               <li>
@@ -106,7 +106,7 @@
               </li>
 
               <li>
-                <a href="#">Shop by category</a>
+                <a href="/choose-category">Shop by category</a>
               </li>
 
               <li>
@@ -116,12 +116,12 @@
             </ul>
           </li>
 
-          <li>
-            <a href="about.html">about</a>
-          </li>
+          {{!-- <li>
+            <a href="#aboutus">about</a>
+          </li> --}}
 
           <li>
-            <a href="about.html">Contact</a>
+            <a href="#aboutus">Contact</a>
           </li>
 
         </ul>
@@ -143,7 +143,7 @@
             </form>
             <span id="searchResErr" style="color:red"></span>
             <div id="searchResult" style="overflow-y: scroll;height:200px">
-              
+
             </div>
 
           </div>
@@ -153,11 +153,13 @@
         <div class="module module-cart pull-left">
 
           <div class="cart-icon">
-
+            {{#if user}}
             <a href="/cart" style="color: #fff;"><i class="fa fa-shopping-cart"></i></a>
             <span class="title">shop cart</span>
-            {{#if user}}
             <span class="cart-label" id="cart-count">{{cartCount}}</span>
+            {{else}}
+            <a href="/login?token=guestToCartPage&guestRedirect=true" style="color: #fff;"><i class="fa fa-shopping-cart"></i></a>
+            <span class="title">shop cart</span>
             {{/if}}
 
           </div>
@@ -166,10 +168,17 @@
 
         <div class="module module-wishlist pull-left">
           <div class="wishlist-icon">
+            {{#if user}}
             <a href="/wishlist" style="color: #fff;">
               <i class="fa fa-heart"></i>
             </a>
             <span class="title">Wishlist</span>
+            {{else}}
+            <a href="/login?token=guestToWishlist&guestRedirect=true" style="color: #fff;">
+              <i class="fa fa-heart"></i>
+            </a>
+            <span class="title">Wishlist</span>
+            {{/if}}
           </div>
 
         </div>
@@ -245,4 +254,3 @@
 
   </nav>
 </header>
-

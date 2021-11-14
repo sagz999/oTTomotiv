@@ -10,11 +10,39 @@
                         <h5>categories</h5>
                     </div>
                     <div class="widget-content">
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled nav">
                             {{#each categories}}
+                            <li class="has-dropdown">
+                                <a style="cursor: pointer;" data-toggle="dropdown" class="dropdown-toggle"><i
+                                        class="fa fa-angle-double-right"></i>{{this.Main_Cat}}</a>
+
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    {{#each this.Sub_Cat}}
+                                    <li>
+                                        <a href="Sub"><i
+                                            class="fa fa-angle-double-right"></i>{{this.Sub_Cat}} </a>
+                                    </li>
+                                    
+                                    {{/each}}
+                                </ul>
+
+                            </li>
+                            {{/each}}
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="widget widget-categories">
+                    <div class="widget-title">
+                        <h5>Brands</h5>
+                    </div>
+                    <div class="widget-content">
+                        <ul class="list-unstyled nav">
+                            {{#each prodBrands}}
                             <li>
-                                <a href="#"><i
-                                        class="fa fa-angle-double-right"></i>{{this.Main_Cat}}<span>(5)</span></a>
+                                <a href=""><i
+                                        class="fa fa-angle-double-right"></i>{{this.Prod_Brand}}</a>
                             </li>
                             {{/each}}
 
@@ -23,157 +51,6 @@
                 </div>
 
 
-                {{!-- <div class="widget widget-recent-products">
-                    <div class="widget-title">
-                        <h5>Recent Items</h5>
-                    </div>
-                    <div class="widget-content">
-
-                        <div class="product">
-                            <img src="assets/images/shop/thumb/4.jpg" alt="product" />
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <a href="#">Front LIGHTING</a>
-                                </div>
-                                <div class="product-meta">
-                                    <span class="color-theme">$13.99</span>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="product">
-                            <img src="assets/images/shop/thumb/5.jpg" alt="product" />
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <a href="#">Thermal Fan</a>
-                                </div>
-                                <div class="product-meta">
-                                    <span class="color-theme">$15.99</span>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="product">
-                            <img src="assets/images/shop/thumb/6.jpg" alt="product" />
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <a href="#">Cold Air System</a>
-                                </div>
-                                <div class="product-meta">
-                                    <span class="color-theme">$11.99</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div> --}}
-
-
-                {{!-- <div class="widget widget-filter">
-                    <div class="widget-title">
-                        <h5>Filter By Price</h5>
-                    </div>
-                    <div class="widget-content">
-                        <div id="slider-range"></div>
-                        <p>
-                            <label for="amount">Price: </label>
-                            <input type="text" id="amount" readonly>
-                        </p>
-                        <a class="btn btn-secondary" href="#">filter</a>
-                    </div>
-                </div> --}}
-
-
-                <div class="widget widget-brands">
-                    <div class="widget-title">
-                        <h5>Brands</h5>
-                    </div>
-                    <div class="widget-content">
-                        <form>
-
-                            {{#each carBrands}}
-
-                            <div class="check-option">
-                                <input type="checkbox" class="checkbox-style" name="brands" id="Opel" value="Opel">
-                                <label for="Opel" class="checkbox-label">{{this.Car_Brand}} <span>(5)</span></label>
-                            </div>
-
-                            {{/each}}
-
-                        </form>
-                    </div>
-                </div>
-
-
-                {{!-- <div class="widget widget-recent-products">
-                    <div class="widget-title">
-                        <h5>Best Sellers</h5>
-                    </div>
-                    <div class="widget-content">
-
-                        <div class="product">
-                            <img src="assets/images/shop/thumb/7.jpg" alt="product" />
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <a href="#">Front LIGHTING</a>
-                                </div>
-                                <div class="product-meta">
-                                    <span class="color-theme">$13.99</span>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="product">
-                            <img src="assets/images/shop/thumb/8.jpg" alt="product" />
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <a href="#">Thermal Fan</a>
-                                </div>
-                                <div class="product-meta">
-                                    <span class="color-theme">$15.99</span>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="product">
-                            <img src="assets/images/shop/thumb/8.jpg" alt="product" />
-                            <div class="product-desc">
-                                <div class="product-title">
-                                    <a href="#">Cold Air System</a>
-                                </div>
-                                <div class="product-meta">
-                                    <span class="color-theme">$11.99</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div> --}}
-
-
-                {{!-- <div class="widget widget-tags">
-                    <div class="widget-title">
-                        <h5>tag clouds</h5>
-                    </div>
-                    <div class="widget-content">
-                        <a href="#">responsive</a>
-                        <a href="#">modern</a>
-                        <a href="#">corporate</a>
-                        <a href="#">business</a>
-                        <a href="#">fresh</a>
-                        <a href="#">awesome</a>
-                        <a href="#">business</a>
-                        <a href="#">fresh</a>
-                        <a href="#">corporate</a>
-                        <a href="#">autoshop</a>
-                    </div>
-                </div> --}}
 
             </div>
 
@@ -299,8 +176,8 @@
                     $("#cart-count").html(count)
                     swal("Success!", "Product added to cart!", "success", {
                         button: "OK",
-                    }).then(()=>{    
-                            location.reload()    
+                    }).then(() => {
+                        location.reload()
                     })
 
                 }

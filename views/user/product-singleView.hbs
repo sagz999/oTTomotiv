@@ -38,19 +38,34 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-7">
                 <div class="product-title text-center-xs">
+
                     <h3>{{product.Product_Name}}</h3>
+                    {{#if user}}
                     <h3>{{#wishlistUpdate wishlist product._id}}
                         {{/wishlistUpdate}}</h3>
+                    {{else}}
+                    <h3>
+                    <a class="wishOn " style=" width: 20px; border: white" href="/login?prodId={{product._id}}&token=guestToAddWishlist&guestRedirect=true"><i class="bi bi-heart"></i></a>
+                    </h3>
+                    {{/if}}
 
                 </div>
 
                 <div class="product-meta mb-30">
 
                     <div class="product-price pull-left pull-none-xs">
-                        <p>₹{{product.Price}}</p>
+                        <span>
+                            <p>₹{{product.Price}}</p>
+                            {{#if product.offer}}
+                            <span style="font-size: small;"> MRP : ₹<s>{{product.tempPrice}}</s><span
+                                    style="color: green;"> {{product.offer}}%
+                                    OFF</span></span>
+
+                            {{/if}}
+                        </span>
                     </div>
 
-                </div>
+                </div><br><br>
 
                 <div class="product-desc text-center-xs">
                     <p class="mb-0">{{product.Description}}</p>
@@ -70,11 +85,24 @@
                 <hr class="mt-30 mb-30">
                 <div class="product-action">
                     <div class="product-cta text-right text-center-xs">
-                        {{!-- <a class="btn btn-primary" href="#">add to cart</a> --}}
-                        {{#hello cart product._id product.Price product.Product_Name}}
 
+                        {{#if user}}
+
+                        {{#hello cart product._id product.Price product.Product_Name}}
                         {{/hello}}
+
                         <a class="btn btn-primary" href="/prodBuyNow?prodId={{product._id}}">Buy Now</a>
+                        {{else}}
+
+                        <a class="btn btn-primary"
+                            href="/login?prodId={{product._id}}&prodPrice={{product.Price}}&prodName={{product.Product_Name}}&token=guestToCart&guestRedirect=true">Add
+                            to cart</a>
+
+                        <a class="btn btn-primary"
+                            href="/login?prodId={{product._id}}&token=guestToBuyNow&guestRedirect=true">Buy now</a>
+
+                        {{/if}}
+
                     </div>
                 </div>
 

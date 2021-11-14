@@ -440,9 +440,17 @@ router.get('/delete-coupon/', verifyLog, (req, res) => {
   })
 })
 
-router.get('/fetchSubCat/', verifyLog, (req, res) => {
-  productHelper.fetchSubCatList(req.query.catId).then((subCatList) => {
+router.post('/fetchSubCat/', verifyLog, (req, res) => {
+  productHelper.fetchSubCatList(req.query.MainCat).then((subCatList) => {
+    
     res.json(subCatList)
+  })
+})
+
+router.post('/fetchCarModels/', verifyLog, (req, res) => {
+  productHelper.fetchCarModelList(req.query.CarBrand).then((carModelList) => {
+    
+    res.json(carModelList)
   })
 })
 

@@ -90,7 +90,7 @@ handlebars.registerHelper("wishlistUpdate", (wishlist, prodId) => {
     }
   var btn
   if (exist == true) {
-    btn = `<a class="wishOn" style="width: 20px; border: white " onclick=" removeFromWish('${prodId}')"><i class="bi bi-heart-fill"></i></a>`
+    btn = `<a class="wishOn" style="width: 20px; border: white; color:red; " onclick=" removeFromWish('${prodId}')"><i class="bi bi-heart-fill"></i></a>`
   } else {
     btn = `<a class="wishOn " style=" width: 20px; border: white " onclick="addToWishList('${prodId}')"><i class="bi bi-heart"></i></a>`
   }
