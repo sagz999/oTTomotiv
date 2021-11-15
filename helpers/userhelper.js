@@ -6,6 +6,7 @@ var objectId = require('mongodb').ObjectId
 const crypto = require('crypto')
 
 const Razorpay = require('razorpay')
+var paypal = require('paypal-rest-sdk');
 const { resolve } = require('path')
 const { v4: uuidv4 } = require('uuid');
 const { info } = require('console')
@@ -16,6 +17,12 @@ var instance = new Razorpay({
     key_id: 'rzp_test_BR5CAu00Vuru3P',
     key_secret: 'QW2zVUpfyn2rg3lN5kO8knV7',
 });
+
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': 'AQqrMNJgHgz4dQumhvZ3hZOfPHEuBDxdSl531wQTEtEwTcLf27yX77QJc2ZIz2M94npHb7v9h4T7WuBP',
+    'client_secret': 'ED787-HyrIAalWO3hXIQpXREyYskVn0au2MchD0QURnRC1GnHrzkXtsC6S_RQDjeimtlzrP1sVXXIhMA'
+  });
 
 module.exports = {
 
@@ -400,14 +407,15 @@ module.exports = {
     },
 
 
-    placeOrder: (order, products, total) => {
+    placeOrder: (order, products, total,refId) => {
         return new Promise((resolve, reject) => {
 
-            let payStatus = order.Pay_Method === 'COD' ? 'Completed' : 'Pending'
+            let payStatus = order.Pay_Method === 'COD' ? 'Pending' : 'Completed'
 
             let orderObj = {
 
                 Name: order.First_Name + ' ' + order.Last_Name,
+                RefId:refId,
 
                 Address: {
                     Company_Name: order.Company_Name,
@@ -443,15 +451,16 @@ module.exports = {
         })
     },
 
-    buyNowPlaceOrder: (order, product) => {
+    buyNowPlaceOrder: (order, product,refId) => {
         return new Promise((resolve, reject) => {
 
-            let payStatus = order.Pay_Method === 'COD' ? 'Completed' : 'Pending'
+            let payStatus = order.Pay_Method === 'COD' ? 'Pending' : 'Completed'
 
 
             let orderObj = {
 
                 Name: order.First_Name + ' ' + order.Last_Name,
+                RefId:refId,
 
                 Address: {
                     First_Name: order.First_Name,
@@ -573,21 +582,21 @@ module.exports = {
     },
 
 
-    generateRazorpay: (orderId, totalPrice) => {
+    generateRazorpay: (refId, totalPrice) => {
         return new Promise((resolve, reject) => {
 
             var options = {
 
                 amount: totalPrice * 100,  // amount in the smallest currency unit  
                 currency: "INR",
-                receipt: "" + orderId
+                receipt: "" + refId
 
             };
 
             instance.orders.create(options, function (err, order) {
 
                 resolve(order)
-
+                
             });
 
 
@@ -596,32 +605,66 @@ module.exports = {
 
 
     verifyPayment: (details) => {
+
         return new Promise((resolve, reject) => {
+
             let hmac = crypto.createHmac('sha256', 'QW2zVUpfyn2rg3lN5kO8knV7');
             hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]']);
             hmac = hmac.digest('hex')
 
             if (hmac == details['payment[razorpay_signature]']) {
+
                 resolve()
+
             } else {
+
                 reject()
+
             }
+
         })
+
     },
 
+    generatePaypal: (orderId, totalPrice) => {
+        
+        return new Promise(async (resolve, reject) => {
+            var create_payment_json = {
+                "intent": "sale",
+                "payer": {
+                    "payment_method": "paypal"
+                },
+                "redirect_urls": {
+                    "return_url": 'http://localhost:8000/test',
+                    "cancel_url": "http://cancel.url"
+                },
+                "transactions": [{
+                    "item_list": {
+                        "items": [{
+                            "name": orderId,
+                            "sku": "item",
+                            "price": totalPrice,
+                            "currency": "USD",
+                            "quantity": 1
+                        }]
+                    },
+                    "amount": {
+                        "currency": "USD",
+                        "total": totalPrice,
+                    },
+                    "description": "The Payement success"
+                }]
+            };
+            paypal.payment.create(create_payment_json, function (error, payment) {
+                if (error) {
+                    
+                    reject(false);
 
-    changePaymentStatus: (orderId) => {
-
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.ORDER_COLLECTION)
-                .updateOne({ _id: objectId(orderId) },
-                    {
-                        $set: {
-                            Payment_Stats: 'Completed'
-                        }
-                    }).then(() => {
-                        resolve()
-                    })
+                } else {
+                    
+                    resolve(true)
+                }
+            });
         })
     },
 
@@ -721,6 +764,17 @@ module.exports = {
 
 
         return new Promise((resolve, reject) => {
+            if(statusUpdate=='Delivered'){
+                db.get().collection(collection.ORDER_COLLECTION)
+                .updateOne({ _id: objectId(orderId) },
+                    {
+                        $set: {
+                            Payment_Stats: 'Completed'
+                        }
+                    }).then(() => {
+                        resolve()
+                    })
+            }
 
             db.get().collection(collection.ORDER_COLLECTION)
                 .updateOne({ _id: objectId(orderId) },
@@ -982,40 +1036,63 @@ module.exports = {
     addToWishlist: (userId, prodId) => {
         return new Promise(async (resolve, reject) => {
 
-            let product = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(prodId) })
-
-            let wishObj = {
-                item: objectId(prodId),
-                prodName: product.Product_Name,
-                prodPrice: product.Price,
-                prodStock: product.Stock
-
-            }
-
-            var wishList = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({ user: objectId(userId) })
-
-            if (wishList) {
-
-                db.get().collection(collection.WISHLIST_COLLECTION).updateOne({ user: objectId(userId) }, {
-                    $push: {
-                        products: wishObj
-                    }
-                }).then((response) => {
-                    resolve(response)
-                })
-
-
-            } else {
-                let newWish = {
-                    user: objectId(userId),
-                    products: [wishObj]
+            var itemExist = await db.get().collection(collection.WISHLIST_COLLECTION).aggregate([
+                {
+                    $match: { user: objectId(userId) }
+                },
+                {
+                    $unwind: '$products'
+                },
+                {
+                    $match: { 'products.item': objectId(prodId) }
                 }
 
-                db.get().collection(collection.WISHLIST_COLLECTION).insertOne(newWish).then((response) => {
-                    resolve(response)
-                })
+            ]).toArray()
+
+            if (itemExist.length > 0) {
+
+                resolve(false)
+
+            } else {
+
+                let product = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(prodId) })
+
+                let wishObj = {
+                    item: objectId(prodId),
+                    prodName: product.Product_Name,
+                    prodPrice: product.Price,
+                    prodStock: product.Stock
+
+                }
+
+                var wishList = await db.get().collection(collection.WISHLIST_COLLECTION).findOne({ user: objectId(userId) })
+
+                if (wishList) {
+
+                    db.get().collection(collection.WISHLIST_COLLECTION).updateOne({ user: objectId(userId) }, {
+                        $push: {
+                            products: wishObj
+                        }
+                    }).then((response) => {
+                        resolve(response)
+                    })
+
+
+                } else {
+                    let newWish = {
+                        user: objectId(userId),
+                        products: [wishObj]
+                    }
+
+                    db.get().collection(collection.WISHLIST_COLLECTION).insertOne(newWish).then((response) => {
+                        resolve(response)
+                    })
+
+                }
 
             }
+
+
         })
     },
 

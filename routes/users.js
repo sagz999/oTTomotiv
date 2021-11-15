@@ -5,6 +5,7 @@ var userHelper = require('../helpers/userhelper')
 var productHelper = require('../helpers/producthelper')
 var otpConfig = require('../config/otpconfig');
 const userhelper = require('../helpers/userhelper');
+const { v4: uuidv4 } = require('uuid');
 
 const otpClient = require('twilio')(otpConfig.accountSID, otpConfig.authToken)
 
@@ -64,12 +65,12 @@ router.get('/', cartCounter, async (req, res) => {
   if (req.session.user) {
 
     var cart = await userHelper.fetchCartProd(req.session.user._id)
-    
+
 
   } else {
 
     var cart = false
-   
+
   }
 
   res.render('user/user-home', { title: 'Homepage', isUser: true, user: req.session.user, product, cartCount: req.session.cartCount, cart, carBrands, categories });
@@ -271,19 +272,19 @@ router.get('/login/', (req, res) => {
       req.session.cartProdPrice = req.query.prodPrice
       req.session.cartProdName = req.query.prodName
 
-    }else if(req.query.token == 'guestToCartPage'){
+    } else if (req.query.token == 'guestToCartPage') {
 
-      req.session.guestToCart=true
-  
-    }else if(req.query.token == 'guestToWishlist'){
-  
-      req.session.guestToWishlist=true
-  
-    }else if(req.query.token == 'guestToAddWishlist'){
-  
-      req.session.guestToAddWishlist=true
-      req.session.wishlistProdId=req.query.prodId
-  
+      req.session.guestToCart = true
+
+    } else if (req.query.token == 'guestToWishlist') {
+
+      req.session.guestToWishlist = true
+
+    } else if (req.query.token == 'guestToAddWishlist') {
+
+      req.session.guestToAddWishlist = true
+      req.session.wishlistProdId = req.query.prodId
+
     }
 
   }
@@ -321,21 +322,21 @@ router.post('/login', (req, res) => {
         req.session.cartProdPrice = false
         req.session.cartProdName = false
 
-      }else if(req.session.guestToCart){
+      } else if (req.session.guestToCart) {
 
         res.redirect('/cart')
-        req.session.guestToCart=false
+        req.session.guestToCart = false
 
-      }else if(req.session.guestToWishlist){
+      } else if (req.session.guestToWishlist) {
 
         res.redirect('/wishlist')
-        req.session.guestToWishlist=false
+        req.session.guestToWishlist = false
 
-      }else if(req.session.guestToAddWishlist){
+      } else if (req.session.guestToAddWishlist) {
 
         res.redirect('/addToWishlist?prodId=' + req.session.wishlistProdId)
 
-      }else {
+      } else {
 
         res.redirect('/')
 
@@ -415,7 +416,7 @@ router.get('/logout', (req, res) => {
 
 //Product single-View
 
-router.get('/view-product/',cartCounter, async (req, res) => {
+router.get('/view-product/', cartCounter, async (req, res) => {
 
 
   let product = await productHelper.fetchProduct(req.query.id)
@@ -443,27 +444,27 @@ router.get('/view-product/',cartCounter, async (req, res) => {
 
   }
 
-  if(req.session.user){
+  if (req.session.user) {
 
     var cart = await userHelper.fetchCartProd(req.session.user._id)
     var wishlist = await userHelper.fetchWishlist(req.session.user._id)
     var userPurchasedItem = await userHelper.checkUserPurchasedItem(req.session.user._id, req.query.id)
 
     if (userPurchasedItem) {
-  
+
       var checkUserCmmnts = await userHelper.checkUserCmmnts(req.query.id, req.session.user._id)
-  
+
     }
 
-  }else{
+  } else {
 
     var cart = false
     var wishlist = false
     var userPurchasedItem = false
     var checkUserCmmnts = false
-    
+
   }
-  
+
   res.render('user/product-singleView', { title: product.Product_Name, isUser: true, user: req.session.user, product, relProduct, cartCount: req.session.cartCount, cart, wishlist, review, userPurchasedItem, checkUserCmmnts, reviewExist, reviewCount });
 
 });
@@ -515,39 +516,70 @@ router.get('/cartCheckout', verifyLog, cartCounter, async (req, res) => {
 
 router.post('/cartPlaceOrder', async (req, res) => {
 
-  let products = await userHelper.getCartProductList(req.session.user._id)
-  let totalPrice = req.body.totalfinalPrice
+  req.session.products = await userHelper.getCartProductList(req.session.user._id)
+  req.session.totalPrice = req.body.totalfinalPrice
+  req.session.refId = uuidv4()
+  req.session.orderData = req.body
 
   if (req.body.saveAddress == 'on') {
     await userHelper.addNewAddress(req.body, req.session.user._id)
   }
 
-  userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {
-    req.session.orderId = orderId
+  if (req.body.Pay_Method == 'COD') {
 
-    products.map((data) => {
-      productHelper.cartStockUpdate(data)
-    })
-
-    if (req.body['Pay_Method'] == 'COD') {
-
-      res.json({ codSuccess: true })
-
-    } else if (req.body['Pay_Method'] == "Online") {
-
-      userHelper.generateRazorpay(orderId, totalPrice).then((result) => {
-        res.json(result)
+    userHelper.placeOrder(req.body, req.session.products, req.body.totalfinalPrice, req.session.refId).then((orderId) => {
+      req.session.orderId = orderId
+      req.session.products.map((data) => {
+        productHelper.cartStockUpdate(data)
       })
 
-    } else {
+      req.session.products = false
+      req.session.totalPrice = false
+      req.session.refId = false
+      req.session.orderData = false
 
-      console.log("error");
+      res.json({ codSuccess: true })
+    })
 
-    }
+  } else if (req.body.Pay_Method == "Razorpay") {
+    userHelper.generateRazorpay(req.session.refId, req.body.totalfinalPrice).then((result) => {
 
+      let userData = {
+        Name: req.session.user.Username,
+        Phone: req.session.user.Pnum,
+        Email: req.session.user.Email
+      }
 
+      res.json({ result, userData })
+    })
 
-  })
+  } else if (req.body.Pay_Method == "PayPal") {
+
+    userHelper.generatePaypal(req.session.refId, req.body.usdToInr).then((paySuccess) => {
+
+      userHelper.placeOrder(req.body, req.session.products, req.body.totalfinalPrice, req.session.refId).then((orderId) => {
+        req.session.orderId = orderId
+
+        req.session.products.map((data) => {
+          productHelper.cartStockUpdate(data)
+        })
+
+        req.session.products = false
+        req.session.refId = false
+        req.session.orderData = false
+        req.session.totalPrice = false
+
+        res.json(paySuccess)
+
+      })
+
+    }).catch((err) => {
+
+      console.log('PayPal Err:', err)
+
+    })
+
+  }
 
 })
 
@@ -564,37 +596,72 @@ router.get('/prodBuyNow/', verifyLog, cartCounter, (req, res) => {
 
 router.post('/buyNowPlaceOrder', async (req, res) => {
 
-  let product = req.session.prod
-  let price = req.body.totalfinalPrice
+
+  var price = req.body.totalfinalPrice
+  req.session.refId = uuidv4()
+  req.session.orderData = req.body
+
+
 
   if (req.body.saveAddress == 'on') {
     await userHelper.addNewAddress(req.body, req.session.user._id)
   }
 
-  userHelper.buyNowPlaceOrder(req.body, product).then((orderId) => {
+  if (req.body.Pay_Method == 'COD') {
 
-    req.session.orderId = orderId
-    req.session.prod = false
+    userHelper.buyNowPlaceOrder(req.body, req.session.prod, req.session.refId).then((orderId) => {
 
-    if (req.body['Pay_Method'] == 'COD') {
+      req.session.orderId = orderId
+      productHelper.buyNowStockUpdate(req.session.prod._id).then(() => {
+        req.session.refId=false
+        req.session.prod=false
+        req.session.orderData=false
 
-      res.json({ codSuccess: true })
-
-    } else if (req.body['Pay_Method'] == "Online") {
-
-      userHelper.generateRazorpay(orderId, price).then((result) => {
-        res.json(result)
+        res.json({ codSuccess: true })
       })
 
-    } else {
+    })
 
-      console.log("error");
+  } else if (req.body.Pay_Method == "Razorpay") {
+    userHelper.generateRazorpay(req.session.refId, price).then((result) => {
 
-    }
+      let userData = {
+        Name: req.session.user.Username,
+        Phone: req.session.user.Pnum,
+        Email: req.session.user.Email
+      }
 
-    productHelper.buyNowStockUpdate(product._id)
+      res.json({ result, userData })
+    })
 
-  })
+  } else if (req.body.Pay_Method == "PayPal") {
+
+    userHelper.generatePaypal(req.session.refId, req.body.usdToInr).then((paySuccess) => {
+
+      userHelper.buyNowPlaceOrder(req.body, req.session.prod, req.session.refId).then((orderId) => {
+        req.session.orderId = orderId
+
+        productHelper.buyNowStockUpdate(req.session.prod._id).then(() => {
+          
+          req.session.prod = false
+          req.session.refId = false
+          req.session.orderData=false
+          
+          res.json(paySuccess)
+          
+        })
+
+      })
+
+    }).catch((err) => {
+
+      console.log('PayPal Err:', err)
+
+    })
+
+  }
+
+
 
 })
 
@@ -618,6 +685,7 @@ router.get('/cartOrder-success', verifyLog, (req, res) => {
 router.get('/view-orderSummary', verifyLog, cartCounter, (req, res) => {
   userHelper.getSpecificOrder(req.session.orderId).then((order) => {
     res.render('user/order-summary', { title: 'Order Summary', isUser: true, user: req.session.user, cartCount: req.session.cartCount, order })
+    req.session.orderId = false
 
   })
 
@@ -626,20 +694,49 @@ router.get('/view-orderSummary', verifyLog, cartCounter, (req, res) => {
 router.post('/verify-payment', (req, res) => {
 
   userHelper.verifyPayment(req.body).then(() => {
-
-    userHelper.changePaymentStatus(req.body['order[receipt]']).then(() => {
-
-      res.json({ status: true })
-
-    })
+    res.json({ status: true })
 
   }).catch((err) => {
 
-    console.log(err)
+    console.log('RazorPayErr:', err)
     res.json({ status: false })
 
   })
 
+})
+
+router.get('/placeOrderBuyNow', verifyLog, (req, res) => {
+  userHelper.buyNowPlaceOrder(req.session.orderData, req.session.prod, req.session.refId).then((orderId) => {
+    req.session.orderId = orderId
+  
+    productHelper.buyNowStockUpdate(req.session.prod._id).then(() => {
+      req.session.orderData = false
+      req.session.prod = false
+      req.session.refId = false
+      res.redirect('/buyNowOrder-success')
+      
+    })
+
+
+  })
+})
+
+router.get('/placeOrderCart', verifyLog, (req, res) => {
+  userHelper.placeOrder(req.session.orderData, req.session.products, req.session.totalPrice, req.session.refId).then((orderId) => {
+    req.session.orderId = orderId
+
+    req.session.products.map((data) => {
+      productHelper.cartStockUpdate(data)
+    })
+
+    req.session.orderData = false
+    req.session.products = false
+    req.session.refId = false
+    req.session.totalPrice = false
+
+    res.redirect('/cartOrder-success')
+
+  })
 })
 
 
@@ -826,18 +923,18 @@ router.get('/shop', cartCounter, async (req, res) => {
 
 router.get('/addToWishlist/', verifyLog, cartCounter, (req, res) => {
   userHelper.addToWishlist(req.session.user._id, req.query.prodId).then((result) => {
-    if(req.session.guestToAddWishlist){
+    if (req.session.guestToAddWishlist) {
 
-      res.redirect('/view-product?id='+req.session.wishlistProdId)
-      req.session.guestToAddWishlist=false
-      req.session.wishlistProdId=false
+      res.redirect('/view-product?id=' + req.session.wishlistProdId)
+      req.session.guestToAddWishlist = false
+      req.session.wishlistProdId = false
 
-    }else{
+    } else {
 
       res.json(result)
 
     }
-    
+
   })
 })
 

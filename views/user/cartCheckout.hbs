@@ -164,23 +164,37 @@
                         <div class="pcb-content">
                             <p>Select your payment method</p>
                             <div class="pcb-cuppon-input clearfix">
-                                <input type="radio" value="COD" name="Pay_Method">
+
                                 <label
                                     style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
+                                <input type="radio" value="COD" name="Pay_Method" id="PaymethodCod"
+                                    onclick="showPlaceOrderBtn()">
                             </div>
                             <div class="pcb-cuppon-input clearfix">
-                                <input type="radio" value="Online" name="Pay_Method">
-                                <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online
-                                    Payment</label>
+
+                                <label
+                                    style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razorpay</label>
+                                <input type="radio" value="Razorpay" name="Pay_Method" id="PaymethodRazpay"
+                                    onclick="showPlaceOrderBtn()">
 
                             </div>
+                            <div class="pcb-cuppon-input clearfix">
+
+                                <label
+                                    style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
+                                <input type="radio" value="PayPal" name="Pay_Method" id="PaymethodPayPal"
+                                    onclick="hidePayPalBtn()">
+
+                            </div>
+
                             <div class="pcb-cuppon-input clearfix" id="paypal-button">
 
                             </div>
 
                             <div class="create-account-checkout-method">
-                                <div class="place-order">
-                                    <button class="checkout-page-button hvr-bs" type="submit">Place order</button>
+                                <div class="place-order" style="text-align: left;">
+                                    <button class="checkout-page-button hvr-bs" type="submit" id="submit-btn">Place
+                                        order</button>
                                 </div>
                             </div>
                         </div>
@@ -193,6 +207,9 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
 
 <script>
 
@@ -297,23 +314,109 @@
             },
 
             submitHandler: function () {
-                $.ajax({
-                    url: '/cartPlaceOrder',
-                    method: 'post',
-                    data: $('#checkout-form').serialize(),
-                    success: (response) => {
-                        if (response.codSuccess) {
 
-                            location.href = '/cartOrder-success'
+                if (document.getElementById('PaymethodPayPal').checked == true) {
 
-                        } else {
-                            razorpayPayment(response)
+                    document.getElementById('submit-btn').style.display = 'none'
+                    document.getElementById('paypal-button').style.display = 'block'
+
+                    $.ajax({
+                        url: '/currencycoverter/?amount=' + document.getElementById('totalfinalPrice').value,
+                        method: 'post',
+                        success: (convertedAmount) => {
+                            document.getElementById('usdToInr').value = parseFloat(convertedAmount).toFixed(2)
+                        }
+                    })
+
+
+                    paypal.Button.render({
+                        // Configure environment
+                        env: 'sandbox',
+                        client: {
+                            sandbox: 'demo_sandbox_client_id',
+                            production: 'demo_production_client_id'
+                        },
+                        // Customize button (optional)
+                        locale: 'en_US',
+                        style: {
+                            size: 'small',
+                            color: 'blue',
+                            shape: 'rect',
+                        },
+                        // Enable Pay Now checkout flow (optional)
+                        commit: true,
+                        // Set up a payment
+                        payment: function (data, actions) {
+
+
+                            price = document.getElementById('usdToInr').value
+
+
+                            return actions.payment.create({
+                                transactions: [{
+                                    amount: {
+                                        total: price,
+                                        currency: 'USD',
+                                    }
+                                }]
+                            });
+                        },
+
+                        // Execute the payment
+
+                        onAuthorize: function (data, actions) {
+
+                            return actions.payment.execute().then(function () {
+                                // Show a confirmation message to the buyer
+                                $.ajax({
+
+                                    url: '/cartPlaceOrder',
+                                    method: 'post',
+                                    data: $('#checkout-form').serialize(),
+                                    success: (response) => {
+
+                                        if (response) {
+
+                                            location.href = '/cartOrder-success'
+
+                                        } else {
+
+                                            alert('PayPal Error')
+
+                                        }
+
+                                    }
+
+                                })
+
+                            });
+
                         }
 
+                    }, '#paypal-button');
 
+                } else {
+                    $.ajax({
 
-                    }
-                })
+                        url: '/cartPlaceOrder',
+                        method: 'post',
+                        data: $('#checkout-form').serialize(),
+                        success: (response) => {
+
+                            if (response.codSuccess) {
+
+                                location.href = '/cartOrder-success'
+
+                            } else {
+                                razorpayPayment(response.result, response.userData)
+                            }
+
+                        }
+
+                    })
+                }
+
+               
             }
         })
     })
@@ -322,7 +425,20 @@
 
 <script>
 
-    function razorpayPayment(order) {
+    function hidePayPalBtn() {
+
+        document.getElementById('paypal-button').style.display = 'none'
+        document.getElementById('paypal-button').innerHTML = ''
+    }
+
+    function showPlaceOrderBtn() {
+        document.getElementById('submit-btn').style.display = 'block'
+        document.getElementById('paypal-button').style.display = 'none'
+
+    }
+
+
+    function razorpayPayment(order, userData) {
 
         var options = {
             "key": "rzp_test_BR5CAu00Vuru3P", // Enter the Key ID generated from the Dashboard
@@ -337,9 +453,9 @@
                 verifyPayment(response, order)
             },
             "prefill": {
-                "name": "Gaurav Kumar",
-                "email": "gaurav.kumar@example.com",
-                "contact": "9999999999"
+                "name": userData.Name,
+                "email": userData.Email,
+                "contact": userData.Phone
             },
             "notes": {
                 "address": "Razorpay Corporate Office"
@@ -366,7 +482,7 @@
             method: 'post',
             success: (response) => {
                 if (response.status) {
-                    location.href = '/cartOrder-success'
+                    location.href = '/placeOrderCart'
                 } else {
                     alert('Payment Failed')
                 }
@@ -453,66 +569,6 @@
         })
 
     }
-
-</script>
-
-<script src="https://www.paypalobjects.com/api/checkout.js"></script>
-
-
-<script>
-
-    paypal.Button.render({
-        // Configure environment
-        env: 'sandbox',
-        client: {
-            sandbox: 'demo_sandbox_client_id',
-            production: 'demo_production_client_id'
-        },
-        // Customize button (optional)
-        locale: 'en_US',
-        style: {
-            size: 'small',
-            color: 'blue',
-            shape: 'rect',
-        },
-        // Enable Pay Now checkout flow (optional)
-        commit: true,
-        // Set up a payment
-        payment: function (data, actions) {
-
-            $.ajax({
-                url: '/currencycoverter/?amount=' + document.getElementById('totalfinalPrice').value,
-                method: 'post',
-                success: (convertedAmount) => {
-                    document.getElementById('usdToInr').value = convertedAmount
-                }
-            })
-            price = document.getElementById('usdToInr').value
-
-
-            return actions.payment.create({
-                transactions: [{
-                    amount: {
-                        total: parseFloat(price).toFixed(2),
-                        currency: 'USD',
-                    }
-                }]
-            });
-        },
-
-        // Execute the payment
-
-        onAuthorize: function (data, actions) {
-
-            return actions.payment.execute().then(function () {
-                // Show a confirmation message to the buyer
-                location.href = '/cartOrder-success'
-
-            });
-
-        }
-
-    }, '#paypal-button');
 
 </script>
 

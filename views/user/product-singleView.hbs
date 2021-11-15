@@ -85,7 +85,7 @@
                 <hr class="mt-30 mb-30">
                 <div class="product-action">
                     <div class="product-cta text-right text-center-xs">
-
+                        {{#gt product.Stock '0'}}
                         {{#if user}}
 
                         {{#hello cart product._id product.Price product.Product_Name}}
@@ -102,6 +102,9 @@
                             href="/login?prodId={{product._id}}&token=guestToBuyNow&guestRedirect=true">Buy now</a>
 
                         {{/if}}
+                        {{else}}
+                        <h4 style="color: red;">Item out of stock</h4>
+                        {{/gt}}
 
                     </div>
                 </div>

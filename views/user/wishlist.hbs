@@ -30,16 +30,18 @@
                             </p>
                             {{#gt this.prodStock '0'}}
                             <p class="card-text" style="font-size: 15px;">Stock : Available</p>
-                            {{else}}
-                            <p class="card-text" style="font-size: 15px;">Stock : Sold Out</p>
-                            {{/gt}}
-
                             {{#hello ../cart this.item this.prodPrice this.prodName}}
 
                             {{/hello}}
 
+                            
+                            {{else}}
+                            <p class="card-text" style="font-size: 15px;">Stock : Sold Out</p>
+                            {{/gt}}
                             <a style="margin-top:8px" onclick="removeFromWish('{{this.item}}')"
                                 class="btn btn-primary">Remove</a>
+
+                            
                         </div>
                     </div>
                 </div>

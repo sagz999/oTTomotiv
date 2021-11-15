@@ -137,7 +137,7 @@
                                             id="totalPrice">{{product.Price}}</span></span></li>
                                 <input type="hidden" name="totalfinalPrice" id="totalfinalPrice"
                                     value="{{product.Price}}">
-                                    <input type="hidden" name="usdToInr" id="usdToInr">
+                                <input type="hidden" name="usdToInr" id="usdToInr">
                             </ul>
                         </div>
                     </div>
@@ -150,22 +150,34 @@
 
                                 <label
                                     style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
-                                <input type="radio" value="COD" name="Pay_Method">
+                                <input type="radio" value="COD" name="Pay_Method" id="PaymethodCod"
+                                    onclick="showPlaceOrderBtn()">
                             </div>
                             <div class="pcb-cuppon-input clearfix">
 
-                                <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online
-                                    Payment</label>
-                                <input type="radio" value="Online" name="Pay_Method">
+                                <label
+                                    style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razorpay</label>
+                                <input type="radio" value="Razorpay" name="Pay_Method" id="PaymethodRazpay"
+                                    onclick="showPlaceOrderBtn()">
 
                             </div>
+                            <div class="pcb-cuppon-input clearfix">
+
+                                <label
+                                    style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
+                                <input type="radio" value="PayPal" name="Pay_Method" id="PaymethodPayPal"
+                                    onclick="hidePayPalBtn()">
+
+                            </div>
+
                             <div class="pcb-cuppon-input clearfix" id="paypal-button">
 
                             </div>
 
                             <div class="create-account-checkout-method">
-                                <div class="place-order">
-                                    <button class="checkout-page-button hvr-bs" type="submit">Place order</button>
+                                <div class="place-order" style="text-align: left;">
+                                    <button class="checkout-page-button hvr-bs" type="submit" id="submit-btn">Place
+                                        order</button>
                                 </div>
                             </div>
                         </div>
@@ -295,25 +307,106 @@
 
             submitHandler: function () {
 
-                $.ajax({
+                if (document.getElementById('PaymethodPayPal').checked == true) {
 
-                    url: '/buyNowPlaceOrder',
-                    method: 'post',
-                    data: $('#checkout-form').serialize(),
-                    success: (response) => {
-                        if (response.codSuccess) {
+                    document.getElementById('submit-btn').style.display = 'none'
+                    document.getElementById('paypal-button').style.display = 'block'
 
-                            location.href = '/buyNowOrder-success'
+                    $.ajax({
+                        url: '/currencycoverter/?amount=' + document.getElementById('totalfinalPrice').value,
+                        method: 'post',
+                        success: (convertedAmount) => {
+                            document.getElementById('usdToInr').value = parseFloat(convertedAmount).toFixed(2)
+                        }
+                    })
 
-                        } else {
-                            razorpayPayment(response)
+
+                    paypal.Button.render({
+                        // Configure environment
+                        env: 'sandbox',
+                        client: {
+                            sandbox: 'demo_sandbox_client_id',
+                            production: 'demo_production_client_id'
+                        },
+                        // Customize button (optional)
+                        locale: 'en_US',
+                        style: {
+                            size: 'small',
+                            color: 'blue',
+                            shape: 'rect',
+                        },
+                        // Enable Pay Now checkout flow (optional)
+                        commit: true,
+                        // Set up a payment
+                        payment: function (data, actions) {
+
+
+                            price = document.getElementById('usdToInr').value
+
+
+                            return actions.payment.create({
+                                transactions: [{
+                                    amount: {
+                                        total: price,
+                                        currency: 'USD',
+                                    }
+                                }]
+                            });
+                        },
+
+                        // Execute the payment
+
+                        onAuthorize: function (data, actions) {
+
+                            return actions.payment.execute().then(function () {
+                                // Show a confirmation message to the buyer
+                                $.ajax({
+
+                                    url: '/buyNowPlaceOrder',
+                                    method: 'post',
+                                    data: $('#checkout-form').serialize(),
+                                    success: (response) => {
+
+                                        if (response) {
+
+                                            location.href = '/buyNowOrder-success'
+
+                                        } else {
+
+                                            alert('PayPal Error')
+
+                                        }
+
+                                    }
+
+                                })
+
+                            });
+
                         }
 
+                    }, '#paypal-button');
 
+                } else {
+                    $.ajax({
 
-                    }
+                        url: '/buyNowPlaceOrder',
+                        method: 'post',
+                        data: $('#checkout-form').serialize(),
+                        success: (response) => {
 
-                })
+                            if (response.codSuccess) {
+
+                                location.href = '/buyNowOrder-success'
+
+                            } else {
+                                razorpayPayment(response.result, response.userData)
+                            }
+
+                        }
+
+                    })
+                }
 
             }
 
@@ -324,9 +417,21 @@
 
 <script>
 
+    function hidePayPalBtn() {
+
+        document.getElementById('paypal-button').style.display = 'none'
+        document.getElementById('paypal-button').innerHTML = ''
+    }
+
+    function showPlaceOrderBtn() {
+        document.getElementById('submit-btn').style.display = 'block'
+        document.getElementById('paypal-button').style.display = 'none'
+
+    }
 
 
-    function razorpayPayment(order) {
+
+    function razorpayPayment(order, userData) {
 
         var options = {
             "key": "rzp_test_BR5CAu00Vuru3P", // Enter the Key ID generated from the Dashboard
@@ -341,9 +446,9 @@
                 verifyPayment(response, order)
             },
             "prefill": {
-                "name": "Gaurav Kumar",
-                "email": "gaurav.kumar@example.com",
-                "contact": "9999999999"
+                "name": userData.Name,
+                "email": userData.Email,
+                "contact": userData.Phone
             },
             "notes": {
                 "address": "Razorpay Corporate Office"
@@ -370,7 +475,7 @@
             method: 'post',
             success: (response) => {
                 if (response.status) {
-                    location.href = '/buyNowOrder-success'
+                    location.href = '/placeOrderBuyNow'
                 } else {
                     alert('Payment Failed')
                 }
@@ -465,62 +570,7 @@
 <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
 
-<script>
 
-    paypal.Button.render({
-        // Configure environment
-        env: 'sandbox',
-        client: {
-            sandbox: 'demo_sandbox_client_id',
-            production: 'demo_production_client_id'
-        },
-        // Customize button (optional)
-        locale: 'en_US',
-        style: {
-            size: 'small',
-            color: 'blue',
-            shape: 'rect',
-        },
-        // Enable Pay Now checkout flow (optional)
-        commit: true,
-        // Set up a payment
-        payment: function (data, actions) {
-
-            $.ajax({
-                url: '/currencycoverter/?amount=' + document.getElementById('totalfinalPrice').value,
-                method: 'post',
-                success: (convertedAmount) => {
-                    document.getElementById('usdToInr').value = convertedAmount
-                }
-            })
-            price = document.getElementById('usdToInr').value
-
-
-            return actions.payment.create({
-                transactions: [{
-                    amount: {
-                        total: parseFloat(price).toFixed(2),
-                        currency: 'USD',
-                    }
-                }]
-            });
-        },
-
-        // Execute the payment
-
-        onAuthorize: function (data, actions) {
-
-            return actions.payment.execute().then(function () {
-                // Show a confirmation message to the buyer
-                location.href = '/buyNowOrder-success'
-
-            });
-
-        }
-
-    }, '#paypal-button');
-
-</script>
 
 <style>
     .error {
