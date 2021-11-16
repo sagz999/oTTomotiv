@@ -248,6 +248,41 @@ router.get('/change-userstats/', verifyLog, (req, res) => {
   })
 })
 
+router.get('/ad-management',verifyLog,async(req,res)=>{
+
+  let offers= await userHelper.fetchOffers()
+  let Ads= await productHelper.fetchAllAds()
+
+  res.render('admin/ad-management',{title:'Ad Managemnet',isAdmin:true,offers,Ads,Msg:req.session.addMsg,Err:req.session.delMsg})
+  req.session.addMsg=false
+  req.session.delMsg=false
+
+})
+
+router.post('/add-newAd',verifyLog,(req,res)=>{
+ 
+  productHelper.addNewAd(req.body).then((id)=>{
+
+    let img = req.files.Img1
+
+    img.mv('./public/Ad-Images/'+id+'Ad_img.jpg')
+    req.session.addMsg = 'ADDED NEW ADVERTISEMENT'
+    res.redirect('/admin/ad-management')
+
+  })
+})
+
+router.get('/delete-Ad/',verifyLog,(req,res)=>{
+
+  productHelper.delAd(req.query.adId).then(()=>{
+
+    req.session.delMsg="DELETED AD"
+    res.redirect('/admin/ad-management')
+    
+  })
+
+})
+
 
 router.post('/Change-orderStat/', (req, res) => {
 
@@ -502,6 +537,41 @@ router.post('/delete-offer/', (req, res) => {
 
   })
 
+})
+
+router.get('/All-orderReport',verifyLog,(req,res)=>{
+
+  userHelper.getAllOrders().then((Allorders)=>{
+    console.log('Allorders:',Allorders)
+    res.render('admin/all-orderReport',{title:'All-Orders Report',isAdmin:true,Allorders})
+  })
+
+})
+
+router.get('/Placed-orderReport',verifyLog,(req,res)=>{
+
+  userHelper.fetchAllPlacedOrders().then((AllPlacedOrders)=>{
+    res.render('admin/placed-orderReport',{title:'Placed-Orders Report',isAdmin:true,AllPlacedOrders})
+  })
+  
+})
+
+router.get('/Shipped-orderReport',verifyLog,(req,res)=>{
+userHelper.fetchAllShippedOrders().then((AllShippedOrders)=>{
+  res.render('admin/shipped-orderReport',{title:'Shipped-Orders Report',isAdmin:true,AllShippedOrders})
+  })
+})
+
+router.get('/Delivered-orderReport',verifyLog,(req,res)=>{
+  userHelper.fetchAllDeliveredOrders().then((AllDeliveredOrders)=>{
+    res.render('admin/delivered-orderReport',{title:'Delivered-Orders Report',isAdmin:true,AllDeliveredOrders})
+  })
+})
+
+router.get('/Cancelled-orderReport',verifyLog,(req,res)=>{
+  userHelper.fetchAllCancelledOrders().then((AllCancelledOrders)=>{
+    res.render('admin/cancelled-orderReport',{title:'Cancelled-Orders Report',isAdmin:true,AllCancelledOrders})
+  })
 })
 
 

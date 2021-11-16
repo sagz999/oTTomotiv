@@ -293,7 +293,7 @@ module.exports = {
 
             let subCat = await db.get().collection(collection.CATEGORY_COLLECTION).aggregate([
                 {
-                    $match: { Main_Cat:{$regex:MainCat }}
+                    $match: { Main_Cat: { $regex: MainCat } }
                 },
                 {
                     $unwind: "$Sub_Cat"
@@ -304,7 +304,7 @@ module.exports = {
                     }
                 }
             ]).toArray()
-            
+
             resolve(subCat)
 
         })
@@ -315,7 +315,7 @@ module.exports = {
 
             let carModels = await db.get().collection(collection.CAR_BRAND_COLLECTION).aggregate([
                 {
-                    $match: { Car_Brand:{$regex:carBrand }}
+                    $match: { Car_Brand: { $regex: carBrand } }
                 },
                 {
                     $unwind: "$Car_Model"
@@ -327,8 +327,8 @@ module.exports = {
                 }
             ]).toArray()
 
-            
-            
+
+
             resolve(carModels)
 
         })
@@ -357,7 +357,58 @@ module.exports = {
 
         return new Promise(async (resolve, reject) => {
 
-            db.get().collection(collection.PRODUCT_COLLECTION).find({ Car_Model: carModel }).toArray().then((products)=>{
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ Car_Model: carModel }).toArray().then((products) => {
+
+                resolve(products)
+
+            })
+
+        })
+
+    },
+
+    fetchAllAds: () => {
+
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.AD_COLLECTION).find().toArray().then((ads) => {
+                resolve(ads)
+            })
+        })
+
+    },
+
+    addNewAd:(adData)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            db.get().collection(collection.AD_COLLECTION).insertOne(adData).then((result)=>{
+
+                resolve(result.insertedId)
+
+            })
+
+        })
+
+    },
+
+    delAd:(adId)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            db.get().collection(collection.AD_COLLECTION).deleteOne({_id:objectId(adId)}).then(()=>{
+
+                resolve()
+
+            })
+        })
+
+    },
+
+    fetchProdsUnderSpecificOffer:(offerName)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            db.get().collection(collection.PRODUCT_COLLECTION).find({offerName:offerName}).toArray().then((products)=>{
 
                 resolve(products)
                 
@@ -366,6 +417,7 @@ module.exports = {
         })
 
     }
+
 
 
 }

@@ -8,7 +8,7 @@
                     <div class="col-md-12">
                         <div class="card text-center">
                             <div class="card-header card-header-primary">
-                                <h4 class="card-title " style="font-weight: bold;">All Orders</h4>
+                                <h4 class="card-title " style="font-weight: bold;">Placed Orders</h4>
                             </div>
                             <div class="card-body">
 
@@ -25,25 +25,26 @@
                                                 User Id
                                             </th>
                                             <th style="font-weight: bold;">
+                                                Order Id
+                                            </th>
+                                            <th style="font-weight: bold;">
                                                 Pay Method
                                             </th>
-                                            {{!-- <th style="font-weight: bold;">
-                                                Pay Stats
-                                            </th> --}}
+
+                                             <th style="font-weight: bold;">
+                                                Destination
+                                            </th>
+                                
                                             <th style="font-weight: bold;">
                                                 Amount (₹)
                                             </th>
 
-                                            <th style="font-weight: bold;">
-                                                Destination
-                                            </th>
-                                            <th style="font-weight: bold;">
-                                                Action
-                                            </th>
+                                           
+                                            
 
                                         </thead>
                                         <tbody>
-                                            {{#each orders}}
+                                            {{#each AllPlacedOrders}}
                                             <tr>
                                                 <td>
                                                     {{add @index '1'}}
@@ -57,22 +58,20 @@
                                                 </td>
 
                                                 <td>
-                                                    {{this.Pay_Method}}
+                                                    {{this._id}}
                                                 </td>
-                                                {{!-- <td>
-                                                    {{this.Payment_Stats}}
-                                                </td> --}}
+
                                                 <td>
-                                                    {{this.Total_Amount}}
+                                                    {{this.Pay_Method}}
                                                 </td>
 
                                                 <td>
                                                     {{this.Address.Town_City}}
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-danger btn-sm"
-                                                        href="/admin/order-details?id={{this._id}}">View order</a>
+                                                    {{this.Total_Amount}}
                                                 </td>
+
                                             </tr>
                                             {{/each}}
 

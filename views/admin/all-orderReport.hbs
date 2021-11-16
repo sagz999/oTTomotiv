@@ -25,25 +25,23 @@
                                                 User Id
                                             </th>
                                             <th style="font-weight: bold;">
-                                                Pay Method
+                                                Order Id
                                             </th>
-                                            {{!-- <th style="font-weight: bold;">
-                                                Pay Stats
-                                            </th> --}}
                                             <th style="font-weight: bold;">
-                                                Amount (₹)
+                                                Pay Method
                                             </th>
 
                                             <th style="font-weight: bold;">
                                                 Destination
                                             </th>
+
                                             <th style="font-weight: bold;">
-                                                Action
+                                                Amount (₹)
                                             </th>
 
                                         </thead>
                                         <tbody>
-                                            {{#each orders}}
+                                            {{#each Allorders}}
                                             <tr>
                                                 <td>
                                                     {{add @index '1'}}
@@ -57,22 +55,20 @@
                                                 </td>
 
                                                 <td>
-                                                    {{this.Pay_Method}}
+                                                    {{this._id}}
                                                 </td>
-                                                {{!-- <td>
-                                                    {{this.Payment_Stats}}
-                                                </td> --}}
+
                                                 <td>
-                                                    {{this.Total_Amount}}
+                                                    {{this.Pay_Method}}
                                                 </td>
 
                                                 <td>
                                                     {{this.Address.Town_City}}
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-danger btn-sm"
-                                                        href="/admin/order-details?id={{this._id}}">View order</a>
+                                                    {{this.Total_Amount}}
                                                 </td>
+
                                             </tr>
                                             {{/each}}
 
@@ -86,6 +82,6 @@
             </div>
         </div>
         {{>admin-footer}}
-       
+
     </div>
 </div>

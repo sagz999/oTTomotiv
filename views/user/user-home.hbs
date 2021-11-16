@@ -3,108 +3,56 @@
 <section id="hero" class="hero">
     <div id="hero-slider" class="hero-slider">
 
-        <div class="slide bg-overlay">
+        {{#each Ads}}
+        <a href="/shop-by-offer?offerName={{this.Offer}}">
+            <div class="slide">
 
-            <div class="bg-section">
+                <div class="bg-section">
 
-                <img src="images/sliders/1.jpg" alt="Background" />
-
-            </div>
-
-            <div class="container vertical-center">
-
-                <div class="row">
-
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
-
-                        <div class="slide-content">
-
-                            <div class="slide-icon">
-                                <i class="icon icon-Settings"></i>
-                            </div>
-
-                            <div class="slide-heading"> The Best Theme For Auto Shops </div>
-
-                            <div class="slide-title">
-                                <h2>Say Hello To <span class="color-theme">Car Shop !</span></h2>
-                            </div>
-
-                            <div class="slide-desc"> Car Shop is a business theme. Perfectly suited for Auto Mechanic,
-                                Car Repair
-                                Shops, Car Wash, Garages, Automobile Mechanicals, Mechanic Workshops, Auto Painting,
-                                Auto Centres.
-                            </div>
-
-                            <div class="slide-action">
-                                <a class="btn btn-primary" href="#">Check It Now</a>
-                                <a class="btn btn-primary btn-white" href="#">Purchase Now</a>
-                            </div>
-
-                        </div>
-                    </div>
+                    <img src="/Ad-Images/{{this._id}}Ad_img.jpg" alt="Background" />
 
                 </div>
 
-            </div>
+                {{!-- <div class="container vertical-center">
 
-        </div>
+                    <div class="row">
 
+                        <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
 
-        <div class="slide bg-overlay">
-            <div class="bg-section">
-                <img src="images/sliders/8.jpg" alt="Background" />
-            </div>
-            <div class="container vertical-center">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="slide-content">
-                            <div class="slide-heading"> The Best product in market </div>
-                            <div class="slide-title">
-                                <h2>get all you need easily</h2>
-                            </div>
-                            <div class="slide-desc"> Car Shop is a business theme. Perfectly suited for Auto Mechanic,
-                                Car Repair
-                                Shops, Car Wash, Garages, Automobile Mechanicals, Mechanic Workshops, Auto Painting,
-                                Auto Centres.
-                            </div>
-                            <div class="slide-action">
-                                <a class="btn btn-primary" href="#">Check It Now</a>
-                            </div>
-                        </div>
-                    </div>
+                            <div class="slide-content">
 
-                </div>
+                                <div class="slide-icon">
+                                    <i class="icon icon-Settings"></i>
+                                </div>
 
-            </div>
+                                <div class="slide-heading"> The Best Theme For Auto Shops </div>
 
-        </div>
+                                <div class="slide-title">
+                                    <h2>Say Hello To <span class="color-theme">Car Shop !</span></h2>
+                                </div>
 
+                                <div class="slide-desc"> Car Shop is a business theme. Perfectly suited for Auto
+                                    Mechanic,
+                                    Car Repair
+                                    Shops, Car Wash, Garages, Automobile Mechanicals, Mechanic Workshops, Auto Painting,
+                                    Auto Centres.
+                                </div>
 
-        <div class="slide bg-overlay">
-            <div class="bg-section">
-                <img src="images/sliders/6.jpg" alt="Background" />
-            </div>
-            <div class="container vertical-center">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="slide-content">
-                            <div class="slide-heading"> product start from $40 </div>
-                            <div class="slide-title">
-                                <h2>get by largest <span class="color-theme">brands</span></h2>
-                            </div>
-                            <div class="slide-desc"> Car Shop is a business theme. Perfectly suited for Auto Mechanic,
-                                Car Repair
-                                Shops, Car Wash, Garages, Automobile Mechanicals, Mechanic Workshops, Auto Painting,
-                                Auto Centres.
+                                <div class="slide-action">
+                                    <a class="btn btn-primary" href="#">Check It Now</a>
+                                    <a class="btn btn-primary btn-white" href="#">Purchase Now</a>
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
 
-                </div>
+                </div> --}}
 
             </div>
-
-        </div>
+        </a>
+        {{/each}}
 
     </div>
 
@@ -224,16 +172,94 @@
 
     </div>
 
+</section>
 
-    {{!-- <div class="container">
-        <div class="row product-boxes">
-
-
+<section id="newItems" class="shop" style="padding-top: 8px;">
+    <div class="container heading">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <p class="subheading">HURRY GRAB THEM QUICKLY</p>
+                <h2>ON OFFER</h2>
+            </div>
 
         </div>
 
-    </div> --}}
+    </div>
 
+    <div class="container">
+        <div class="row product-carousel text-center">
+
+            {{#each product}}
+            <div class="product">
+                <div class="product-img">
+                    <img src="/product-images/{{this._id}}_1.jpg" alt="Product" />
+                    <div class="product-hover">
+                        <div class="product-action">
+                            {{#gt this.Stock '0'}}
+                            {{#if ../user}}
+
+                            <a class="btn btn-primary" href="/prodBuyNow?prodId={{this._id}}">Buy now</a>
+
+
+
+                            {{#hello ../cart this._id this.Price this.Product_Name}}
+
+                            {{/hello}}
+
+                            {{else}}
+
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&token=guestToBuyNow&guestRedirect=true">Buy now</a>
+
+
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&prodPrice={{this.Price}}&prodName={{this.Product_Name}}&token=guestToCart&guestRedirect=true">Add
+                                to cart</a>
+
+                            {{/if}}
+                            {{else}}
+                            <img src="/product-images/sold_out2.png" alt="Product" />
+                            {{/gt}}
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="product-bio">
+                    <div class="prodcut-cat">
+                        <a href="/shopByProdBrand?prodBrand={{this.Product_Brand}}">{{this.Product_Brand}}</a>
+                    </div>
+
+                    <div class="prodcut-title">
+                        <h3>
+                            <a href="/view-product?id={{this._id}}">{{this.Product_Name}}</a><br>
+                        </h3>
+                    </div>
+
+                    <div class="product-price">
+
+                        <span class="symbole">₹</span><span>{{this.Price}}</span>
+                        {{#if this.offer}}
+                        <br><span style="font-size: small;">MRP : ₹<s>{{this.tempPrice}}</s><span style="color: green;">
+                                {{this.offer}}%
+                                OFF</span></span>
+
+                        {{/if}}
+                    </div>
+
+                </div>
+
+            </div>
+            {{/each}}
+
+        </div>
+
+    </div>
+
+</section>
+
+<section id="featuredItems" class="shop" style="padding-top: 8px;">
     <div class="container heading">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -266,10 +292,13 @@
 
                             {{else}}
 
-                            <a class="btn btn-primary" href="/login?prodId={{this._id}}&token=guestToBuyNow&guestRedirect=true">Buy now</a>
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&token=guestToBuyNow&guestRedirect=true">Buy now</a>
 
 
-                            <a class="btn btn-primary" href="/login?prodId={{this._id}}&prodPrice={{this.Price}}&prodName={{this.Product_Name}}&token=guestToCart&guestRedirect=true">Add to cart</a>
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&prodPrice={{this.Price}}&prodName={{this.Product_Name}}&token=guestToCart&guestRedirect=true">Add
+                                to cart</a>
 
                             {{/if}}
                             {{else}}
@@ -296,7 +325,8 @@
 
                         <span class="symbole">₹</span><span>{{this.Price}}</span>
                         {{#if this.offer}}
-                        <br><span style="font-size: small;">MRP : ₹<s>{{this.tempPrice}}</s><span style="color: green;"> {{this.offer}}%
+                        <br><span style="font-size: small;">MRP : ₹<s>{{this.tempPrice}}</s><span style="color: green;">
+                                {{this.offer}}%
                                 OFF</span></span>
 
                         {{/if}}
@@ -320,57 +350,7 @@
 
 
 
-<section id="newItems" class="shop">
-    <div class="container heading">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <p class="subheading">our hot selling</p>
-                <h2>Featured Products</h2>
-            </div>
 
-        </div>
-
-    </div>
-
-    <div class="container">
-        <div class="row product-carousel text-center">
-
-            <div class="product">
-                <div class="product-img">
-                    <img src="images/shop/grid/1.jpg" alt="Product" />
-                    <div class="product-hover">
-                        <div class="product-action">
-                            <a class="btn btn-primary" href="#">Add To Cart</a>
-                            <a class="btn btn-primary" href="#">Item Details</a>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="product-bio">
-                    <div class="prodcut-cat">
-                        <a href="#">Opel</a>
-                    </div>
-
-                    <div class="prodcut-title">
-                        <h3>
-                            <a href="#">Brake Discs</a>
-                        </h3>
-                    </div>
-
-                    <div class="product-price">
-                        <span class="symbole">$</span><span>68.00</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
 
 {{>userfooter}}
 
@@ -399,5 +379,5 @@
         })
     }
 
-    
+
 </script>

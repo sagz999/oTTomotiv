@@ -61,6 +61,7 @@ router.get('/', cartCounter, async (req, res) => {
   let product = await productHelper.getAllproducts()
   let carBrands = await productHelper.fetchCarBrands()
   let categories = await productHelper.fetchCategories()
+  let Ads= await productHelper.fetchAllAds()
 
   if (req.session.user) {
 
@@ -73,7 +74,7 @@ router.get('/', cartCounter, async (req, res) => {
 
   }
 
-  res.render('user/user-home', { title: 'Homepage', isUser: true, user: req.session.user, product, cartCount: req.session.cartCount, cart, carBrands, categories });
+  res.render('user/user-home', { title: 'Homepage', isUser: true, user: req.session.user, product, cartCount: req.session.cartCount, cart, carBrands, categories,Ads });
 
 
 
@@ -516,7 +517,7 @@ router.get('/cartCheckout', verifyLog, cartCounter, async (req, res) => {
 
 router.post('/cartPlaceOrder', async (req, res) => {
 
-  req.session.products = await userHelper.getCartProductList(req.session.user._id)
+  var products = await userHelper.getCartProductList(req.session.user._id)
   req.session.totalPrice = req.body.totalfinalPrice
   req.session.refId = uuidv4()
   req.session.orderData = req.body
@@ -527,13 +528,12 @@ router.post('/cartPlaceOrder', async (req, res) => {
 
   if (req.body.Pay_Method == 'COD') {
 
-    userHelper.placeOrder(req.body, req.session.products, req.body.totalfinalPrice, req.session.refId).then((orderId) => {
+    userHelper.placeOrder(req.body, products, req.body.totalfinalPrice, req.session.refId).then((orderId) => {
       req.session.orderId = orderId
-      req.session.products.map((data) => {
+      products.map((data) => {
         productHelper.cartStockUpdate(data)
       })
 
-      req.session.products = false
       req.session.totalPrice = false
       req.session.refId = false
       req.session.orderData = false
@@ -542,6 +542,7 @@ router.post('/cartPlaceOrder', async (req, res) => {
     })
 
   } else if (req.body.Pay_Method == "Razorpay") {
+    
     userHelper.generateRazorpay(req.session.refId, req.body.totalfinalPrice).then((result) => {
 
       let userData = {
@@ -557,14 +558,13 @@ router.post('/cartPlaceOrder', async (req, res) => {
 
     userHelper.generatePaypal(req.session.refId, req.body.usdToInr).then((paySuccess) => {
 
-      userHelper.placeOrder(req.body, req.session.products, req.body.totalfinalPrice, req.session.refId).then((orderId) => {
+      userHelper.placeOrder(req.body, products, req.body.totalfinalPrice, req.session.refId).then((orderId) => {
         req.session.orderId = orderId
 
-        req.session.products.map((data) => {
+        products.map((data) => {
           productHelper.cartStockUpdate(data)
         })
 
-        req.session.products = false
         req.session.refId = false
         req.session.orderData = false
         req.session.totalPrice = false
@@ -600,8 +600,6 @@ router.post('/buyNowPlaceOrder', async (req, res) => {
   var price = req.body.totalfinalPrice
   req.session.refId = uuidv4()
   req.session.orderData = req.body
-
-
 
   if (req.body.saveAddress == 'on') {
     await userHelper.addNewAddress(req.body, req.session.user._id)
@@ -721,16 +719,17 @@ router.get('/placeOrderBuyNow', verifyLog, (req, res) => {
   })
 })
 
-router.get('/placeOrderCart', verifyLog, (req, res) => {
-  userHelper.placeOrder(req.session.orderData, req.session.products, req.session.totalPrice, req.session.refId).then((orderId) => {
+router.get('/placeOrderCart', verifyLog,async (req, res) => {
+
+  var products = await userHelper.getCartProductList(req.session.user._id)
+  userHelper.placeOrder(req.session.orderData,products, req.session.totalPrice, req.session.refId).then((orderId) => {
     req.session.orderId = orderId
 
-    req.session.products.map((data) => {
+    products.map((data) => {
       productHelper.cartStockUpdate(data)
     })
 
     req.session.orderData = false
-    req.session.products = false
     req.session.refId = false
     req.session.totalPrice = false
 
@@ -981,13 +980,13 @@ router.post('/search', (req, res) => {
   })
 })
 
-router.get('/all-brands', (req, res) => {
+router.get('/all-brands',cartCounter, (req, res) => {
   productHelper.fetchCarBrands().then((carBrands) => {
     res.render('user/select-car-brand', { title: 'Select car brand', isUser: true, user: req.session.user, cartCount: req.session.cartCount, carBrands })
   })
 })
 
-router.get('/shopByCat/', verifyLog, (req, res) => {
+router.get('/shopByCat/', verifyLog,cartCounter, (req, res) => {
 
   productHelper.getRelproducts(req.query.subCat).then(async (products) => {
     let cart = await userHelper.fetchCartProd(req.session.user._id)
@@ -997,7 +996,7 @@ router.get('/shopByCat/', verifyLog, (req, res) => {
 
 })
 
-router.get('/shopByProdBrand/', verifyLog, (req, res) => {
+router.get('/shopByProdBrand/', verifyLog,cartCounter, (req, res) => {
   productHelper.fetchProdsUnderBrand(req.query.prodBrand).then(async (resultObj) => {
     let prodBrandData = resultObj.prodBrandData
     let products = resultObj.products
@@ -1007,7 +1006,7 @@ router.get('/shopByProdBrand/', verifyLog, (req, res) => {
   })
 })
 
-router.get('/shop-by-car-model/', verifyLog, (req, res) => {
+router.get('/shop-by-car-model/', verifyLog,cartCounter, (req, res) => {
 
   productHelper.fetchProdsUnderCarModel(req.query.carModel).then(async (products) => {
     let cart = await userHelper.fetchCartProd(req.session.user._id)
@@ -1018,7 +1017,16 @@ router.get('/shop-by-car-model/', verifyLog, (req, res) => {
   })
 })
 
-router.get('/choose-category', async (req, res) => {
+router.get('/shop-by-offer/',verifyLog,cartCounter,(req,res)=>{
+
+  productHelper.fetchProdsUnderSpecificOffer(req.query.offerName).then(async(products)=>{
+    let cart = await userHelper.fetchCartProd(req.session.user._id)
+    res.render('user/shop-by-offer',{title:'Shop by Offer',isUser:true,user:req.session.user,cartCount: req.session.cartCount, products, cart,offerName:req.query.offerName})
+  })
+
+})
+
+router.get('/choose-category',cartCounter, async (req, res) => {
 
   let category = await productHelper.fetchCategories()
   res.render('user/choose-category', { title: 'Choose category', isUser: true, user: req.session.user, cartCount: req.session.cartCount, category })

@@ -10,6 +10,7 @@ module.exports={
     COUPON_COLLECTION:'coupon',
     WISHLIST_COLLECTION:'wishlist',
     OFFER_COLLECTION:'offer',
-    REVIEW_COLLECTION:'product-reviews'
+    REVIEW_COLLECTION:'product-reviews',
+    AD_COLLECTION:'Advertisement'
     
 }

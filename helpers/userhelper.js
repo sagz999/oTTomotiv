@@ -22,7 +22,7 @@ paypal.configure({
     'mode': 'sandbox', //sandbox or live
     'client_id': 'AQqrMNJgHgz4dQumhvZ3hZOfPHEuBDxdSl531wQTEtEwTcLf27yX77QJc2ZIz2M94npHb7v9h4T7WuBP',
     'client_secret': 'ED787-HyrIAalWO3hXIQpXREyYskVn0au2MchD0QURnRC1GnHrzkXtsC6S_RQDjeimtlzrP1sVXXIhMA'
-  });
+});
 
 module.exports = {
 
@@ -407,15 +407,15 @@ module.exports = {
     },
 
 
-    placeOrder: (order, products, total,refId) => {
+    placeOrder: (order, products, total, refId) => {
         return new Promise((resolve, reject) => {
 
-            let payStatus = order.Pay_Method === 'COD' ? 'Pending' : 'Completed'
+            // let payStatus = order.Pay_Method === 'COD' ? 'Completed' : 'Completed'
 
             let orderObj = {
 
                 Name: order.First_Name + ' ' + order.Last_Name,
-                RefId:refId,
+                RefId: refId,
 
                 Address: {
                     Company_Name: order.Company_Name,
@@ -436,7 +436,7 @@ module.exports = {
                 UserId: objectId(order.userId),
                 Products: products,
                 Total_Amount: total,
-                Payment_Stats: payStatus,
+                // Payment_Stats: payStatus,
                 Date: new Date().toLocaleString('en-US').slice(0, 9),
                 Time: new Date().toLocaleString('en-US').slice(11, 21),
                 Mode: 'cart'
@@ -451,16 +451,16 @@ module.exports = {
         })
     },
 
-    buyNowPlaceOrder: (order, product,refId) => {
+    buyNowPlaceOrder: (order, product, refId) => {
         return new Promise((resolve, reject) => {
 
-            let payStatus = order.Pay_Method === 'COD' ? 'Pending' : 'Completed'
+            // let payStatus = order.Pay_Method === 'COD' ? 'Completed' : 'Completed'
 
 
             let orderObj = {
 
                 Name: order.First_Name + ' ' + order.Last_Name,
-                RefId:refId,
+                RefId: refId,
 
                 Address: {
                     First_Name: order.First_Name,
@@ -488,7 +488,7 @@ module.exports = {
                 Price: product.Price,
                 quantity: 1,
                 Total_Amount: parseInt(order.totalfinalPrice),
-                Payment_Stats: payStatus,
+                // Payment_Stats: payStatus,
                 Date: new Date().toLocaleString('en-US').slice(0, 9),
                 Time: new Date().toLocaleString('en-US').slice(11, 21),
                 Mode: 'buynow',
@@ -596,7 +596,7 @@ module.exports = {
             instance.orders.create(options, function (err, order) {
 
                 resolve(order)
-                
+
             });
 
 
@@ -627,7 +627,7 @@ module.exports = {
     },
 
     generatePaypal: (orderId, totalPrice) => {
-        
+
         return new Promise(async (resolve, reject) => {
             var create_payment_json = {
                 "intent": "sale",
@@ -657,11 +657,11 @@ module.exports = {
             };
             paypal.payment.create(create_payment_json, function (error, payment) {
                 if (error) {
-                    
+
                     reject(false);
 
                 } else {
-                    
+
                     resolve(true)
                 }
             });
@@ -731,9 +731,38 @@ module.exports = {
 
     changeOrderStats: (orderId, prodId, statusUpdate, quantity) => {
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
 
             quantity = parseInt(quantity)
+
+            // if (statusUpdate == 'Delivered') {
+
+            //     var delOrderCount=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+            //         {
+            //             $match:{_id:objectId(orderId)}
+            //         },
+            //         {
+            //             $unwind:'$Products'
+            //         },
+            //         {
+            //             $match:{
+            //                 'Products.status':'Delivered'
+            //             }
+            //         }
+            //     ]).toArray()
+
+            //     console.log(delOrderCount)
+
+            //     // await db.get().collection(collection.ORDER_COLLECTION)
+            //     //     .updateOne({ _id: objectId(orderId) },
+            //     //         {
+            //     //             $set: {
+            //     //                 Payment_Stats: 'Completed'
+            //     //             }
+            //     //         })
+
+            // }
+
 
             db.get().collection(collection.ORDER_COLLECTION)
                 .updateOne({ _id: objectId(orderId), Products: { $elemMatch: { item: objectId(prodId) } } },
@@ -744,14 +773,20 @@ module.exports = {
 
                     }).then(() => {
 
-                        db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) },
-                            {
-                                $inc: { Stock: quantity }
-                            }).then(() => {
-                                resolve()
-                            })
+                        if (statusUpdate == 'Cancelled') {
 
+                            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) },
+                                {
+                                    $inc: { Stock: quantity }
+                                }).then(() => {
+                                    resolve()
+                                })
 
+                        } else {
+
+                            resolve()
+
+                        }
 
                     })
 
@@ -763,18 +798,16 @@ module.exports = {
     changebuyNowOrderStat: (orderId, statusUpdate, prodId) => {
 
 
-        return new Promise((resolve, reject) => {
-            if(statusUpdate=='Delivered'){
-                db.get().collection(collection.ORDER_COLLECTION)
-                .updateOne({ _id: objectId(orderId) },
-                    {
-                        $set: {
-                            Payment_Stats: 'Completed'
-                        }
-                    }).then(() => {
-                        resolve()
-                    })
-            }
+        return new Promise(async (resolve, reject) => {
+            // if (statusUpdate == 'Delivered') {
+            //     await db.get().collection(collection.ORDER_COLLECTION)
+            //         .updateOne({ _id: objectId(orderId) },
+            //             {
+            //                 $set: {
+            //                     Payment_Stats: 'Completed'
+            //                 }
+            //             })
+            // }
 
             db.get().collection(collection.ORDER_COLLECTION)
                 .updateOne({ _id: objectId(orderId) },
@@ -787,18 +820,24 @@ module.exports = {
 
                     }).then(() => {
 
-                        db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) },
-                            {
+                        if (statusUpdate == 'Cancelled') {
 
-                                $inc: { Stock: 1 }
+                            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) },
+                                {
 
-                            }).then(() => {
+                                    $inc: { Stock: 1 }
 
-                                resolve()
+                                }).then(() => {
 
-                            })
+                                    resolve()
 
+                                })
 
+                        } else {
+
+                            resolve()
+
+                        }
 
                     })
 
@@ -1699,7 +1738,8 @@ module.exports = {
                     { Sub_Category: offerData.subCategory },
                     {
                         $set: {
-                            offer: offerData.offerDiscount
+                            offer: offerData.offerDiscount,
+                            offerName:offerData.offerName
                         }
                     }
                 ).then(() => {
@@ -1767,7 +1807,7 @@ module.exports = {
                 db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
                     { _id: objectId(SingleProd._id) },
                     {
-                        $unset: { tempPrice: "", offer: "" }
+                        $unset: { tempPrice: "", offer: "", offerName:"" }
                     }
                 ).then(() => {
 
@@ -1972,7 +2012,107 @@ module.exports = {
 
         })
 
-    }
+    },
+
+    fetchAllPlacedOrders:()=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            let buyNowPlaced = await db.get().collection(collection.ORDER_COLLECTION).find({Mode:'buynow',Status:'Placed'}).toArray()
+
+            let cartPlaced = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match:{Mode:'cart'}
+                },
+                {
+                    $unwind:'$Products'
+                },
+                {
+                    $match:{'Products.status':'Placed'}
+                }
+            ]).toArray()
+
+            let allPlacedOrders= await buyNowPlaced.concat(cartPlaced)
+            resolve(allPlacedOrders)
+
+        })
+
+    },
+
+    fetchAllShippedOrders:()=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            let buyNowShipped = await db.get().collection(collection.ORDER_COLLECTION).find({Mode:'buynow',Status:'Shipped'}).toArray()
+
+            let cartShipped = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match:{Mode:'cart'}
+                },
+                {
+                    $unwind:'$Products'
+                },
+                {
+                    $match:{'Products.status':'Shipped'}
+                }
+            ]).toArray()
+
+            let allShippedOrders= await buyNowShipped.concat(cartShipped)
+            resolve(allShippedOrders)
+
+        })
+
+    },
+
+    fetchAllDeliveredOrders:()=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            let buyNowDelivered = await db.get().collection(collection.ORDER_COLLECTION).find({Mode:'buynow',Status:'Delivered'}).toArray()
+
+            let cartDelivered = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match:{Mode:'cart'}
+                },
+                {
+                    $unwind:'$Products'
+                },
+                {
+                    $match:{'Products.status':'Delivered'}
+                }
+            ]).toArray()
+
+            let allDeliveredOrders= await buyNowDelivered.concat(cartDelivered)
+            resolve(allDeliveredOrders)
+
+        })
+
+    },
+
+    fetchAllCancelledOrders:()=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            let buyNowCancelled = await db.get().collection(collection.ORDER_COLLECTION).find({Mode:'buynow',Status:'Cancelled'}).toArray()
+
+            let cartCancelled = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match:{Mode:'cart'}
+                },
+                {
+                    $unwind:'$Products'
+                },
+                {
+                    $match:{'Products.status':'Cancelled'}
+                }
+            ]).toArray()
+
+            let allCancelledOrders= await buyNowCancelled.concat(cartCancelled)
+            resolve(allCancelledOrders)
+
+        })
+
+    },
 
 }
 
