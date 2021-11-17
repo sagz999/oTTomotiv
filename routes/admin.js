@@ -541,7 +541,7 @@ router.post('/delete-offer/', (req, res) => {
 
 router.get('/All-orderReport', verifyLog, (req, res) => {
 
-  userHelper.getAllOrders().then((Allorders) => {
+  userHelper.fetchTotalOrders().then((Allorders) => {
     let todayDate = new Date().toISOString().slice(0, 10)
     res.render('admin/all-orderReport', { title: 'All-Orders Report', isAdmin: true, Allorders, todayDate })
   })
@@ -551,6 +551,7 @@ router.get('/All-orderReport', verifyLog, (req, res) => {
 router.get('/Placed-orderReport', verifyLog, (req, res) => {
 
   userHelper.fetchAllPlacedOrders().then((AllPlacedOrders) => {
+    console.log(AllPlacedOrders)
     let todayDate = new Date().toISOString().slice(0, 10)
     res.render('admin/placed-orderReport', { title: 'Placed-Orders Report', isAdmin: true, AllPlacedOrders, todayDate })
   })
@@ -591,7 +592,7 @@ router.post('/fetchSortedReports', async (req, res) => {
 
   if (req.body.source == 'AllOrders') {
 
-    let allOrders = await userHelper.getAllOrders()
+    let allOrders = await userHelper.fetchTotalOrders()
     let filteredItems = await allOrders.filter((item, index) => item.Date >= startDate && item.Date <= endDate);
 
     let SortedArray = await filteredItems.sort((a, b) => {

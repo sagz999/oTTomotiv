@@ -27,20 +27,21 @@
                                 <div class="col">
 
                                     <div class="d-flex ml-3">
-                                        
-                                        <form action="/admin/add-coupon" style="display: flex;" method="post">
+
+                                        <form action="/admin/add-coupon" style="display: flex;" method="post"
+                                            id="addCoupon">
                                             <input name="Coupon_Code" class="form-control" type="text"
                                                 placeholder="Coupon-code">
                                             <input style="margin-left:10px" name="Coupon_Percentage"
                                                 class="form-control" type="number" placeholder="Percentage">
                                             <button style="margin-left:20px" type="submit" id="confirm-btn"
                                                 class="btn btn-primary btn-sm"><i
-                                                    class="material-icons">add_to_photos</i>  Add new-coupon</button>
+                                                    class="material-icons">add_to_photos</i> Add new-coupon</button>
 
                                         </form>
                                     </div>
 
-                                    <table class="table">
+                                    <table class="table" id="myTable">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
@@ -65,7 +66,7 @@
                                                 </td>
                                                 <td class="text-center">
 
-                                                     <button type="button" rel="tooltip" title="Remove"
+                                                    <button type="button" rel="tooltip" title="Remove"
                                                         class="btn btn-white btn-link btn-sm"
                                                         onclick="return confirm('Do you want to delete coupon - {{this.Coupon_Percentage}} ?')">
                                                         <a href="/admin/delete-coupon?couponId={{this._id}}">
@@ -108,5 +109,75 @@
     .table thead tr th {
         font-weight: bold;
 
+    }
+</style>
+
+{{!-- data tables --}}
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables.css">
+
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">
+
+<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js" defer></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    }); myTable
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+    $(document).ready(function () {
+
+       
+
+        $('#addCoupon').validate({
+
+            rules: {
+
+                Coupon_Code: {
+                    required: true,
+                    minlength: 5,
+                    maxlength:8
+                },
+                Coupon_Percentage: {
+                    required: true,
+                    maxlength:3
+                }
+
+            },
+            messages: {
+                Coupon_Code: {
+                    required: "This field cannot be left blank",
+                    minlength: "Coupon code is too short",
+                    maxlength:"Coupon code too long"
+                },
+                Coupon_Percentage: {
+                    required: "This field cannot be left blank",
+                    maxlength: "Invalid input"
+                }
+            }
+
+        });
+
+
+    })
+
+</script>
+<style>
+    .error {
+        color: red !important;
+        font-size: small !important;
+        margin-left: 10px
     }
 </style>

@@ -787,10 +787,10 @@
     const myChart4 = new Chart(ctx4, {
         type: 'doughnut',
         data: {
-            labels: ['COD', 'Online'],
+            labels: ['COD', 'RazorPay','PayPal'],
             datasets: [{
                 label: 'Pay method',
-                data: [{{ payMethod.COD }}, {{ payMethod.Online }}],
+                data: [{{ payMethod.COD }}, {{ payMethod.RazorPay }},{{ payMethod.PayPal}}],
     backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',

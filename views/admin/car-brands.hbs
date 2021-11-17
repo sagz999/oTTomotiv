@@ -28,7 +28,7 @@
 
                                     <div class="d-flex ml-3">
                                         <form action="/admin/add-carBrand" style="display: flex;" method="post"
-                                            enctype="multipart/form-data">
+                                            enctype="multipart/form-data" id="addCarBrand">
 
                                             <input name="Car_Brand" class="form-control" type="text"
                                                 placeholder="Add car brand">
@@ -101,7 +101,7 @@
                                         </form>
                                     </div>
 
-                                    <table class="table">
+                                    <table class="table" id="myTable">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
@@ -136,7 +136,7 @@
                                                     <ol>
                                                         <div class="d-flex ml-3">
                                                             <form action="/admin/add-carModel" style="display: flex;"
-                                                                method="post" enctype="multipart/form-data">
+                                                                method="post" enctype="multipart/form-data" id="addCarModel">
 
                                                                 <input name="carBrand_Id" class="form-control"
                                                                     type="hidden" value="{{this._id}}">
@@ -386,3 +386,91 @@
 
 
 </script>
+
+{{!-- data tables --}}
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables.css">
+
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">
+
+<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js" defer></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+    $(document).ready(function () {
+
+        $('#addCarBrand').validate({
+
+            rules: {
+
+                Car_Brand: {
+                    required: true,
+                    minlength: 2
+                },
+                Img1:{
+                    required:true
+                }
+
+            },
+            messages:{
+                Main_Cat: {
+                    required: "This field cannot be left blank",
+                    minlength: "Brand name is too short",
+                },
+                Img1:{
+                    required:"Please choose an image"
+                }
+            }
+
+        });
+
+        $('#addCarModel').validate({
+
+            rules: {
+
+                Car_Model: {
+                    required: true,
+                    minlength: 2
+                },
+                Img2:{
+                    required:true
+                }
+
+            },
+
+            messages:{
+                Car_Model: {
+                    required: "This field cannot be left blank",
+                    minlength: "Model name is too short"
+                },
+                Img2:{
+                    required:"This field cannot be left blank"
+                }
+            }
+
+        })
+    })
+
+</script>
+<style>
+    .error {
+        color: red !important;
+        font-size: small !important;
+        margin-left: 10px
+    }
+</style>

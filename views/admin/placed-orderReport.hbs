@@ -4,6 +4,10 @@
         {{>admin-navbar}}
         <div class="content">
             <div class="container-fluid">
+                {{#checkArrayLengthPDF AllPlacedOrders}}
+                {{/checkArrayLengthPDF}}
+                {{#checkArrayLengthXLS AllPlacedOrders}}
+                {{/checkArrayLengthXLS}}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card text-center">
@@ -12,8 +16,18 @@
                             </div>
                             <div class="card-body">
 
+                                <form action="/admin/fetchSortedReports" id="dateValidation" method="post" style="text-align: left;">
+                                    <label for="startDate">From</label>
+                                    <input type="date" oninput="checkStartDate()" max="{{todayDate}}" name="startDate" id="startDate">
+                                    <label for="endDate">To</label>
+                                    <input type="date" oninput="checkEndDate()" max="{{todayDate}}" name="endDate"
+                                        id="endDate">
+                                    <input type="hidden" name="source" value="PlacedOrders" id="">
+                                    <button class="btn btn-success btn-sm" type="submit">Submit</button>
+                                </form>
+
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="table" id="myTable">
                                         <thead class=" text-primary">
                                             <th style="font-weight: bold;">
                                                 Sl.No
@@ -30,6 +44,9 @@
                                             <th style="font-weight: bold;">
                                                 Pay Method
                                             </th>
+                                            <th style="font-weight: bold;">
+                                                Shop Mode
+                                            </th>
 
                                              <th style="font-weight: bold;">
                                                 Destination
@@ -38,9 +55,6 @@
                                             <th style="font-weight: bold;">
                                                 Amount (₹)
                                             </th>
-
-                                           
-                                            
 
                                         </thead>
                                         <tbody>
@@ -63,6 +77,9 @@
 
                                                 <td>
                                                     {{this.Pay_Method}}
+                                                </td>
+                                                <td>
+                                                    {{this.Mode}}
                                                 </td>
 
                                                 <td>
@@ -88,3 +105,60 @@
        
     </div>
 </div>
+
+{{!-- html2pdf --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+    integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+
+<script>
+    function getPdf() {
+        var element = document.getElementById('myTable');
+        html2pdf(element);
+    }
+
+    function getspreadSheet() {
+        $(document).ready(function () {
+            $("#myTable").table2excel({
+                filename: "Order Report.xls"
+            });
+        });
+
+    }
+</script>
+
+{{!-- data tables --}}
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables.css">
+
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">
+
+<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js" defer></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+
+</script>
+
+<script>
+    function checkStartDate() {
+        let todaysDate = new Date().toISOString().slice(0, 10)
+        document.getElementById('startDate').max = todaysDate
+        document.getElementById('endDate').min = document.getElementById('startDate').max
+    }
+    function checkEndDate() {
+        let todaysDate = new Date().toISOString().slice(0, 10)
+        document.getElementById('endDate').max = todaysDate
+        document.getElementById('endDate').min = document.getElementById('startDate').value
+    }
+
+</script>

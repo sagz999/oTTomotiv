@@ -1239,11 +1239,13 @@ module.exports = {
     orderPaymentMethod: () => {
         return new Promise(async (resolve, reject) => {
             let COD = await db.get().collection(collection.ORDER_COLLECTION).count({ Pay_Method: 'COD' })
-            let Online = await db.get().collection(collection.ORDER_COLLECTION).count({ Pay_Method: 'Online' })
+            let RazorPay = await db.get().collection(collection.ORDER_COLLECTION).count({ Pay_Method: 'Razorpay' })
+            let PayPal = await db.get().collection(collection.ORDER_COLLECTION).count({ Pay_Method: 'PayPal' })
 
             let Pay_Method = {
                 COD: COD,
-                Online: Online
+                RazorPay: RazorPay,
+                PayPal:PayPal
             }
 
             resolve(Pay_Method)
@@ -2113,6 +2115,28 @@ module.exports = {
         })
 
     },
+
+    fetchTotalOrders:()=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            let buyNowAllOrders = await db.get().collection(collection.ORDER_COLLECTION).find({Mode:'buynow'}).toArray()
+
+            let cartAllOrders = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match:{Mode:'cart'}
+                },
+                {
+                    $unwind:'$Products'
+                }
+            ]).toArray()
+
+            let allOrders= await buyNowAllOrders.concat(cartAllOrders)
+            resolve(allOrders)
+
+        })
+
+    }
 
 }
 

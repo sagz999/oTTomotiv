@@ -27,7 +27,7 @@
                                 <div class="col">
 
                                     <div class="d-flex ml-3">
-                                        <form action="/admin/add-mainCat" style="display: flex;" method="post">
+                                        <form action="/admin/add-mainCat" style="display: flex;" method="post" id="addMainCat">
 
                                             <input name="Main_Cat" class="form-control" type="text"
                                                 placeholder="Add new main category">
@@ -37,7 +37,7 @@
                                         </form>
                                     </div>
 
-                                    <table class="table">
+                                    <table class="table" id="myTable">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
@@ -66,7 +66,7 @@
                                                 <td>
                                                     <ol>
                                                         <form action="/admin/add-subCat" style="display: flex;"
-                                                            method="post" enctype="multipart/form-data">
+                                                            method="post" enctype="multipart/form-data" id="addSubCat">
                                                             <input name="mainCat_Id" class="form-control" type="hidden"
                                                                 value="{{this._id}}">
                                                             <input name="Sub_Cat" class="form-control" type="text"
@@ -289,5 +289,93 @@
     .table thead tr th {
         font-weight: bold;
 
+    }
+</style>
+
+{{!-- data tables --}}
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables.css">
+
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">
+
+<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js" defer></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    //input field validation
+    $(document).ready(function () {
+
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
+        $('#addMainCat').validate({
+
+            rules: {
+
+                Main_Cat: {
+                    required: true,
+                    minlength: 5,
+                    alpha:true
+                }
+
+            },
+            messages:{
+                Main_Cat: {
+                    required: "This field cannot be left blank",
+                    minlength: "Category name is too short",
+                    alpha:"Category name should only be of alphabets"
+                }
+            }
+        });
+
+        $('#addSubCat').validate({
+
+            rules: {
+
+                Sub_Cat: {
+                    required: true,
+                    minlength: 5,
+                    alpha:true
+                },
+                Img1:{
+                    required:true
+                }
+            },
+
+            messages:{
+                Sub_Cat: {
+                    required: "This field cannot be left blank",
+                    minlength: "Category name is too short",
+                    alpha:"Category name should only be of alphabets"
+                },
+                Img1:{
+                    required:"This field cannot be left blank"
+                }
+            }
+
+        })
+    })
+
+</script>
+<style>
+    .error {
+        color: red !important;
+        font-size: small !important;
+        margin-left: 10px
     }
 </style>
