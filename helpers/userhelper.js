@@ -437,8 +437,8 @@ module.exports = {
                 Products: products,
                 Total_Amount: total,
                 // Payment_Stats: payStatus,
-                Date: new Date().toLocaleString('en-US').slice(0, 9),
-                Time: new Date().toLocaleString('en-US').slice(11, 21),
+                Date: new Date().toISOString().slice(0, 10),
+                Time: new Date().toLocaleString('en-US').slice(11, 23),
                 Mode: 'cart'
 
             }
@@ -489,8 +489,8 @@ module.exports = {
                 quantity: 1,
                 Total_Amount: parseInt(order.totalfinalPrice),
                 // Payment_Stats: payStatus,
-                Date: new Date().toLocaleString('en-US').slice(0, 9),
-                Time: new Date().toLocaleString('en-US').slice(11, 21),
+                Date: new Date().toISOString().slice(0, 10),
+                Time: new Date().toLocaleString('en-US').slice(11, 23),
                 Mode: 'buynow',
                 Status: 'Placed'
 

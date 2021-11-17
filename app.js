@@ -106,6 +106,20 @@ handlebars.registerHelper('printStar', (starCount) => {
   return star;
 })
 
+handlebars.registerHelper('checkArrayLengthPDF',function(array){
+  if(array.length >= 1){
+
+    return data = '<button class="btn btn-success btn-sm" onclick="getPdf()">Download <span class="material-icons">picture_as_pdf</span></button>'
+    
+  }
+})
+
+handlebars.registerHelper('checkArrayLengthXLS',function(array){
+  if(array.length >= 1){
+    return data = '<button style="margin-left:10px" class="btn btn-success btn-sm" onclick="getspreadSheet()">Download <span class="material-icons">description</span></button>'
+  }
+})
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

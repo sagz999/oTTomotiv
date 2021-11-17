@@ -4,25 +4,53 @@
         {{>admin-navbar}}
         <div class="content">
             <div class="container-fluid">
-                {{#checkArrayLengthPDF Allorders}}
+                {{#checkArrayLengthPDF SortedArray}}
                 {{/checkArrayLengthPDF}}
-                {{#checkArrayLengthXLS Allorders}}
+                {{#checkArrayLengthXLS SortedArray}}
                 {{/checkArrayLengthXLS}}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card text-center">
                             <div class="card-header card-header-primary">
+                                {{#if allOrders}}
                                 <h4 class="card-title " style="font-weight: bold;">All Orders</h4>
+                                {{/if}}
+                                {{#if allPlacedOrders}}
+                                <h4 class="card-title " style="font-weight: bold;">Placed Orders</h4>
+                                {{/if}}
+                                {{#if allShippedOrders}}
+                                <h4 class="card-title " style="font-weight: bold;">Shipped Orders</h4>
+                                {{/if}}
+                                {{#if allDeliveredOrders}}
+                                <h4 class="card-title " style="font-weight: bold;">Delivered Orders</h4>
+                                {{/if}}
+                                {{#if allCancelledOrders}}
+                                <h4 class="card-title " style="font-weight: bold;">Cancelled Orders</h4>
+                                {{/if}}
                             </div>
                             <div class="card-body">
 
                                 <form action="/admin/fetchSortedReports" id="dateValidation" method="post" style="text-align: left;">
                                     <label for="startDate">From</label>
-                                    <input type="date" oninput="checkStartDate()" max="{{todayDate}}" name="startDate" id="startDate">
+                                    <input type="date" max="{{todayDate}}" name="startDate" id="startDate">
                                     <label for="endDate">To</label>
                                     <input type="date" oninput="checkEndDate()" max="{{todayDate}}" name="endDate"
                                         id="endDate">
+                                    {{#if allOrders}}
                                     <input type="hidden" name="source" value="AllOrders" id="">
+                                    {{/if}}
+                                    {{#if allPlacedOrders}}
+                                    <input type="hidden" name="source" value="PlacedOrders" id="">
+                                    {{/if}}
+                                    {{#if allShippedOrders}}
+                                    <input type="hidden" name="source" value="ShippedOrders" id="">
+                                    {{/if}}
+                                    {{#if allDeliveredOrders}}
+                                    <input type="hidden" name="source" value="DeliveredOrders" id="">
+                                    {{/if}}
+                                    {{#if allCancelledOrders}}
+                                    <input type="hidden" name="source" value="CancelledOrders" id="">
+                                    {{/if}}
                                     <button class="btn btn-success btn-sm" type="submit">Submit</button>
                                 </form>
 
@@ -55,7 +83,7 @@
 
                                         </thead>
                                         <tbody>
-                                            {{#each Allorders}}
+                                            {{#each SortedArray}}
                                             <tr>
                                                 <td>
                                                     {{add @index '1'}}
@@ -142,19 +170,5 @@
     $(document).ready(function () {
         $('#myTable').DataTable();
     });
-
-</script>
-
-<script>
-    function checkStartDate() {
-        let todaysDate = new Date().toISOString().slice(0, 10)
-        document.getElementById('startDate').max = todaysDate
-        document.getElementById('endDate').min = document.getElementById('startDate').max
-    }
-    function checkEndDate() {
-        let todaysDate = new Date().toISOString().slice(0, 10)
-        document.getElementById('endDate').max = todaysDate
-        document.getElementById('endDate').min = document.getElementById('startDate').value
-    }
 
 </script>

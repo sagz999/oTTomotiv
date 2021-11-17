@@ -30,17 +30,17 @@ router.get('/', verifyLog, async (req, res) => {
   let payMethod = await userHelper.orderPaymentMethod()
   let orderCount = await userHelper.orderCount()
 
-  userHelper.checkOfferExpiry().then((offers)=>{
-    offers.map((eachOffers)=>{
-     
+  userHelper.checkOfferExpiry().then((offers) => {
+    offers.map((eachOffers) => {
+
       userHelper.fetchAllProdInSubCatToUpdate(eachOffers.subCategory).then((products) => {
 
         products.map((SingleProd) => {
           userHelper.updateEachProdBackToOrgPrice(SingleProd)
         })
-    
+
         userHelper.deleteOffer(eachOffers._id)
-    
+
       })
 
     })
@@ -248,37 +248,37 @@ router.get('/change-userstats/', verifyLog, (req, res) => {
   })
 })
 
-router.get('/ad-management',verifyLog,async(req,res)=>{
+router.get('/ad-management', verifyLog, async (req, res) => {
 
-  let offers= await userHelper.fetchOffers()
-  let Ads= await productHelper.fetchAllAds()
+  let offers = await userHelper.fetchOffers()
+  let Ads = await productHelper.fetchAllAds()
 
-  res.render('admin/ad-management',{title:'Ad Managemnet',isAdmin:true,offers,Ads,Msg:req.session.addMsg,Err:req.session.delMsg})
-  req.session.addMsg=false
-  req.session.delMsg=false
+  res.render('admin/ad-management', { title: 'Ad Managemnet', isAdmin: true, offers, Ads, Msg: req.session.addMsg, Err: req.session.delMsg })
+  req.session.addMsg = false
+  req.session.delMsg = false
 
 })
 
-router.post('/add-newAd',verifyLog,(req,res)=>{
- 
-  productHelper.addNewAd(req.body).then((id)=>{
+router.post('/add-newAd', verifyLog, (req, res) => {
+
+  productHelper.addNewAd(req.body).then((id) => {
 
     let img = req.files.Img1
 
-    img.mv('./public/Ad-Images/'+id+'Ad_img.jpg')
+    img.mv('./public/Ad-Images/' + id + 'Ad_img.jpg')
     req.session.addMsg = 'ADDED NEW ADVERTISEMENT'
     res.redirect('/admin/ad-management')
 
   })
 })
 
-router.get('/delete-Ad/',verifyLog,(req,res)=>{
+router.get('/delete-Ad/', verifyLog, (req, res) => {
 
-  productHelper.delAd(req.query.adId).then(()=>{
+  productHelper.delAd(req.query.adId).then(() => {
 
-    req.session.delMsg="DELETED AD"
+    req.session.delMsg = "DELETED AD"
     res.redirect('/admin/ad-management')
-    
+
   })
 
 })
@@ -477,14 +477,14 @@ router.get('/delete-coupon/', verifyLog, (req, res) => {
 
 router.post('/fetchSubCat/', verifyLog, (req, res) => {
   productHelper.fetchSubCatList(req.query.MainCat).then((subCatList) => {
-    
+
     res.json(subCatList)
   })
 })
 
 router.post('/fetchCarModels/', verifyLog, (req, res) => {
   productHelper.fetchCarModelList(req.query.CarBrand).then((carModelList) => {
-    
+
     res.json(carModelList)
   })
 })
@@ -497,18 +497,18 @@ router.get('/offers', verifyLog, async (req, res) => {
 
 })
 
-router.get('/check-offer-exist/',verifyLog,(req,res)=>{
+router.get('/check-offer-exist/', verifyLog, (req, res) => {
 
-  userHelper.checkOfferExist(req.query.subCat).then((response)=>{
+  userHelper.checkOfferExist(req.query.subCat).then((response) => {
 
-    if(response){
+    if (response) {
       res.json(true)
-    }else{
+    } else {
       res.json(false)
     }
-    
+
   })
-  
+
 })
 
 router.post('/add-new-offer', (req, res) => {
@@ -539,40 +539,133 @@ router.post('/delete-offer/', (req, res) => {
 
 })
 
-router.get('/All-orderReport',verifyLog,(req,res)=>{
+router.get('/All-orderReport', verifyLog, (req, res) => {
 
-  userHelper.getAllOrders().then((Allorders)=>{
-    console.log('Allorders:',Allorders)
-    res.render('admin/all-orderReport',{title:'All-Orders Report',isAdmin:true,Allorders})
+  userHelper.getAllOrders().then((Allorders) => {
+    let todayDate = new Date().toISOString().slice(0, 10)
+    res.render('admin/all-orderReport', { title: 'All-Orders Report', isAdmin: true, Allorders, todayDate })
   })
 
 })
 
-router.get('/Placed-orderReport',verifyLog,(req,res)=>{
+router.get('/Placed-orderReport', verifyLog, (req, res) => {
 
-  userHelper.fetchAllPlacedOrders().then((AllPlacedOrders)=>{
-    res.render('admin/placed-orderReport',{title:'Placed-Orders Report',isAdmin:true,AllPlacedOrders})
+  userHelper.fetchAllPlacedOrders().then((AllPlacedOrders) => {
+    let todayDate = new Date().toISOString().slice(0, 10)
+    res.render('admin/placed-orderReport', { title: 'Placed-Orders Report', isAdmin: true, AllPlacedOrders, todayDate })
   })
-  
+
 })
 
-router.get('/Shipped-orderReport',verifyLog,(req,res)=>{
-userHelper.fetchAllShippedOrders().then((AllShippedOrders)=>{
-  res.render('admin/shipped-orderReport',{title:'Shipped-Orders Report',isAdmin:true,AllShippedOrders})
+router.get('/Shipped-orderReport', verifyLog, (req, res) => {
+
+  userHelper.fetchAllShippedOrders().then((AllShippedOrders) => {
+    let todayDate = new Date().toISOString().slice(0, 10)
+    res.render('admin/shipped-orderReport', { title: 'Shipped-Orders Report', isAdmin: true, AllShippedOrders, todayDate })
   })
+
 })
 
-router.get('/Delivered-orderReport',verifyLog,(req,res)=>{
-  userHelper.fetchAllDeliveredOrders().then((AllDeliveredOrders)=>{
-    res.render('admin/delivered-orderReport',{title:'Delivered-Orders Report',isAdmin:true,AllDeliveredOrders})
+router.get('/Delivered-orderReport', verifyLog, (req, res) => {
+
+  userHelper.fetchAllDeliveredOrders().then((AllDeliveredOrders) => {
+    let todayDate = new Date().toISOString().slice(0, 10)
+    res.render('admin/delivered-orderReport', { title: 'Delivered-Orders Report', isAdmin: true, AllDeliveredOrders, todayDate })
   })
+
 })
 
-router.get('/Cancelled-orderReport',verifyLog,(req,res)=>{
-  userHelper.fetchAllCancelledOrders().then((AllCancelledOrders)=>{
-    res.render('admin/cancelled-orderReport',{title:'Cancelled-Orders Report',isAdmin:true,AllCancelledOrders})
+router.get('/Cancelled-orderReport', verifyLog, (req, res) => {
+
+  userHelper.fetchAllCancelledOrders().then((AllCancelledOrders) => {
+    let todayDate = new Date().toISOString().slice(0, 10)
+    res.render('admin/cancelled-orderReport', { title: 'Cancelled-Orders Report', isAdmin: true, AllCancelledOrders, todayDate })
   })
+
 })
 
+router.post('/fetchSortedReports', async (req, res) => {
+
+  var startDate = req.body.startDate
+  var endDate = req.body.endDate
+
+  if (req.body.source == 'AllOrders') {
+
+    let allOrders = await userHelper.getAllOrders()
+    let filteredItems = await allOrders.filter((item, index) => item.Date >= startDate && item.Date <= endDate);
+
+    let SortedArray = await filteredItems.sort((a, b) => {
+
+      return new Date(b.Date) - new Date(a.Date);
+
+    })
+
+    let todaysDate = new Date().toISOString().slice(0, 10)
+
+    res.render('admin/sorted-report',{title:'All-orders Report',isAdmin:true,todaysDate,SortedArray,allOrders:true})
+
+  } else if (req.body.source == 'PlacedOrders') {
+
+    let allPlacedOrders = await userHelper.fetchAllPlacedOrders()
+    let filteredItems = await allPlacedOrders.filter((item, index) => item.Date >= startDate && item.Date <= endDate);
+
+    let SortedArray = await filteredItems.sort((a, b) => {
+
+      return new Date(b.Date) - new Date(a.Date);
+
+    })
+
+    let todaysDate = new Date().toISOString().slice(0, 10)
+
+    res.render('admin/sorted-report',{title:'Placed-orders Report',isAdmin:true,todaysDate,SortedArray,allPlacedOrders:true})
+
+  } else if (req.body.source == 'ShippedOrders') {
+
+    let allShippedOrders = await userHelper.fetchAllShippedOrders()
+    let filteredItems = await allShippedOrders.filter((item, index) => item.Date >= startDate && item.Date <= endDate);
+
+    let SortedArray = await filteredItems.sort((a, b) => {
+
+      return new Date(b.Date) - new Date(a.Date);
+
+    })
+
+    let todaysDate = new Date().toISOString().slice(0, 10)
+
+    res.render('admin/sorted-report',{title:'Shipped-orders Report',isAdmin:true,todaysDate,SortedArray,allShippedOrders:true})
+
+  } else if (req.body.source == 'DeliveredOrders') {
+
+    let allDeliveredOrders = await userHelper.fetchAllDeliveredOrders()
+    let filteredItems = await allDeliveredOrders.filter((item, index) => item.Date >= startDate && item.Date <= endDate);
+
+    let SortedArray = await filteredItems.sort((a, b) => {
+
+      return new Date(b.Date) - new Date(a.Date);
+
+    })
+
+    let todaysDate = new Date().toISOString().slice(0, 10)
+
+    res.render('admin/sorted-report',{title:'Delivered-orders Report',isAdmin:true,todaysDate,SortedArray,allDeliveredOrders:true})
+
+  } else if (req.body.source == 'CancelledOrders') {
+
+    let allCancelledOrders = await userHelper.fetchAllCancelledOrders()
+    let filteredItems = await allCancelledOrders.filter((item, index) => item.Date >= startDate && item.Date <= endDate);
+
+    let SortedArray = await filteredItems.sort((a, b) => {
+
+      return new Date(b.Date) - new Date(a.Date);
+
+    })
+
+    let todaysDate = new Date().toISOString().slice(0, 10)
+
+    res.render('admin/sorted-report',{title:'Cancelled-orders Report',isAdmin:true,todaysDate,SortedArray,allCancelledOrders:true})
+
+  }
+
+})
 
 module.exports = router;
