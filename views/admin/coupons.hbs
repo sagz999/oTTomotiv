@@ -41,7 +41,7 @@
                                         </form>
                                     </div>
 
-                                    <table class="table" id="myTable">
+                                    <table class="table table-dark" id="myTable">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
@@ -53,9 +53,9 @@
                                         <tbody>
 
                                             {{#each coupons}}
-                                            <tr>
+                                            <tr class="bg-dark">
 
-                                                <td class="text-center">{{add @index '1'}}</td>
+                                                <td class="text-center bg-dark">{{add @index '1'}}</td>
 
                                                 <td class="text-center">
                                                     {{this.Coupon_Code}}

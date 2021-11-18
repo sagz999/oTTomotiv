@@ -223,27 +223,7 @@ router.get('/blocked-users', verifyLog, (req, res) => {
 router.get('/change-userstats/', verifyLog, (req, res) => {
   userHelper.changeUserStats(req.query.id).then(() => {
 
-    switch (req.query.origin) {
-
-      case 'main':
-
-        res.redirect('/admin/all-users')
-        break;
-
-      case 'blocked':
-
-        res.redirect('/admin/blocked-users')
-        break;
-
-      case 'active':
-
-        res.redirect('/admin/active-users')
-        break;
-
-      default:
-        console.log("I'm from default")
-
-    }
+    res.json(true)
 
   })
 })

@@ -14,7 +14,7 @@
                             <div class="card-body">
 
                                 <div class="table-responsive">
-                                    <table class="table" id="myTable">
+                                    <table class="table table-dark" id="myTable">
                                         <thead class=" text-primary">
                                             <th style="font-weight: bold;">
                                                 Sl.No
@@ -25,19 +25,19 @@
                                             <th style="font-weight: bold;">
                                                 Email
                                             </th>
-                                            <th style="font-weight: bold;">
+                                            {{!-- <th style="font-weight: bold;">
                                                 View
-                                            </th>
+                                            </th> --}}
                                             <th style="font-weight: bold;">
                                                 Action
                                             </th>
 
                                         </thead>
-                                        
+
                                         <tbody>
                                             {{#each userdata}}
-                                            <tr>
-                                                <td>
+                                            <tr class="bg-dark">
+                                                <td class="bg-dark">
                                                     {{add @index '1'}}
                                                 </td>
                                                 <td>
@@ -48,12 +48,12 @@
                                                     {{this.Email}}
                                                 </td>
 
-                                                <td>
+                                                {{!-- <td>
                                                     <a class="btn btn-primary btn-sm" href="">Orders</a>
-                                                </td>
+                                                </td> --}}
                                                 <td>
                                                     <a class="btn btn-danger btn-sm"
-                                                        href="/admin/change-userstats?id={{this._id}}&origin=active">Block</a>
+                                                        onclick="blockconfirm('{{this._id}}','{{this.Username}}')">Block</a>
                                                 </td>
                                             </tr>
                                             {{/each}}
@@ -68,7 +68,7 @@
             </div>
         </div>
         {{>admin-footer}}
-        
+
     </div>
 </div>
 
@@ -89,5 +89,41 @@
     $(document).ready(function () {
         $('#myTable').DataTable();
     });
+
+</script>
+
+<script>
+    function blockconfirm(userId, userName) {
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to block user: ${userName} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    $.ajax({
+                        url: '/admin/change-userstats?id=' + userId,
+                        method: 'get',
+                        success: (result) => {
+                            if (result) {
+                                swal("Blocked!", "The user is blocked!", "success", {
+                                    button: "OK",
+                                }).then(() => {
+
+                                    location.reload()
+                                })
+
+                            } else {
+                                console.log('Failed to block user')
+                            }
+                        }
+                    })
+
+                }
+            });
+    }
 
 </script>

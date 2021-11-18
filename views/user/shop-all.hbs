@@ -3,7 +3,7 @@
 <section id="shopgrid" class="shop shop-grid">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-3 sidebar">
+            {{!-- <div class="col-xs-12 col-sm-12 col-md-3 sidebar">
 
                 <div class="widget widget-categories">
                     <div class="widget-title">
@@ -52,10 +52,10 @@
 
 
 
-            </div>
+            </div> change to col-md-9 --}}
 
-            <div class="col-xs-12 col-sm-12 col-md-9">
-                <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                {{!-- <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="product-num pull-left pull-none-xs">
                             <h3>Showing 1 : 16 of <span class="color-theme">245</span> product</h3>
@@ -75,13 +75,13 @@
 
                     </div>
 
-                </div>
+                </div> --}}
 
                 <div class="row">
 
                     {{#each products }}
 
-                    <div class="col-xs-12 col-sm-6 col-md-4 product">
+                    <div class="col-xs-12 col-sm-6 col-md-3 product">
                         <div class="product-img">
                             <img src="/product-images/{{this._id}}_1.jpg" alt="Product" />
                             <div class="product-hover">
@@ -130,7 +130,7 @@
 
                 </div>
 
-                <div class="row">
+                {{!-- <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <ul class="pagination">
                             <li class="active">
@@ -150,7 +150,7 @@
                         </ul>
                     </div>
 
-                </div>
+                </div> --}}
             </div>
 
         </div>

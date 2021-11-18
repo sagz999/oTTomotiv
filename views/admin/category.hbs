@@ -27,7 +27,7 @@
                                 <div class="col">
 
                                     <div class="d-flex ml-3">
-                                        <form action="/admin/add-mainCat" style="display: flex;" method="post" id="addMainCat">
+                                        <form action="/admin/add-mainCat" style="display:flex;" method="post" id="addMainCat">
 
                                             <input name="Main_Cat" class="form-control" type="text"
                                                 placeholder="Add new main category">
@@ -37,7 +37,7 @@
                                         </form>
                                     </div>
 
-                                    <table class="table" id="myTable">
+                                    <table class="table table-dark" id="myTable">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
@@ -48,9 +48,9 @@
                                         <tbody>
 
                                             {{#each Categories}}
-                                            <tr>
+                                            <tr class="bg-dark">
 
-                                                <td class="text-center">{{add @index '1'}}</td>
+                                                <td class="text-center bg-dark">{{add @index '1'}}</td>
 
                                                 <td class="text-left">
                                                     <button type="button" rel="tooltip" title="Remove Category"
