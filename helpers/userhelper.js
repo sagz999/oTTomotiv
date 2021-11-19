@@ -365,7 +365,7 @@ module.exports = {
                         $pull: { products: { item: objectId(prodId) } }
                     }).then(() => {
 
-                        resolve({ removeItem: true })
+                        resolve()
                     })
         })
     },

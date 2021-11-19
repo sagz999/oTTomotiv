@@ -1,0 +1,474 @@
+<section id="shopgrid" class="shop shop-grid">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-3 sidebar">
+
+                <div class="widget widget-categories">
+                    <div class="widget-title">
+                        <h5>categories</h5>
+                    </div>
+
+                    {{!-- Categories --}}
+                    <div class="widget-content">
+                        <ul class="list-unstyled">
+                            <li>
+                                <a onclick="getAllPro()" style="cursor: pointer;"><i
+                                        class="fa fa-angle-double-right"></i>All Products</a>
+                            </li>
+                            {{#each allCategories}}
+
+                            <li>
+                                <a onclick="mainCategory('{{this.mainCategory}}')" style="cursor: pointer;"><i
+                                        class="fa fa-angle-double-right"></i>{{this.mainCategory}}</a>
+                            </li>
+
+                            {{/each}}
+                        </ul>
+                    </div>
+                    {{!-- Categories Ends --}}
+                </div>
+
+
+
+
+                <div class="widget widget-filter">
+                    <div class="widget-title">
+                        <h5>Filter By Price</h5>
+                    </div>
+                    <div class="widget-content">
+                        <div id="slider-range"></div>
+                        <p>
+                            <label for="amount">Price: </label>
+                            <input type="text" id="amount" readonly>
+                        </p>
+                        <a class="btn btn-secondary" onclick="filterApply()">filter</a>
+                    </div>
+                </div>
+
+
+
+
+                <div class="widget widget-brands">
+                    <div class="widget-title">
+                        <h5>Brands</h5>
+                    </div>
+                    <div class="widget-content">
+                        <form>
+                            {{#each allBikeBrands}}
+                            <div class="check-option">
+                                <input type="radio" class="checkbox-style" name="brands" id="{{this._id}}"
+                                    value="{{this._id}}" onchange="brandFilter('{{this.bikeBrand}}','{{this._id}}')">
+                                <label for="{{this._id}}" class="checkbox-label">{{this.bikeBrand}}</label>
+                            </div>
+                            {{/each}}
+                        </form>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+            <div class="col-xs-12 col-sm-12 col-md-9">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{!-- <div class="product-num pull-left pull-none-xs">
+                            <h3>Showing 1 : 16 of <span class="color-theme">245</span> product</h3>
+                        </div> --}}
+
+                        {{!-- <div class="product-options pull-right text-right pull-none-xs">
+                            <i class="fa fa-angle-down"></i>
+                            <select>
+                                <option selected="" value="Default">Default Sorting</option>
+                                <option value="Larger">Newest Items</option>
+                                <option value="Larger">oldest Items</option>
+                                <option value="Larger">Hot Items</option>
+                                <option value="Small">Highest Price</option>
+                                <option value="Medium">Lowest Price</option>
+                            </select>
+                        </div> --}}
+
+                    </div>
+
+                </div>
+
+                {{#if brandPro}}
+                <div class="row">
+                    {{#each brandPro }}
+                    <div class="col-xs-12 col-sm-6 col-md-4 product">
+                        <div class="product-img">
+                            {{#lte this.productquantity '0'}}
+                            <img id="" src="/uploads/{{this.id}}_1.jpg" alt="Product" style="height: 430px;" />
+                            <img src="/images/Sold Out.png" alt=""
+                                style="display: inline; top: -440px; margin-bottom: -270px;">
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{else}}
+                            <img src="/uploads/{{this.id}}_1.jpg" alt="Product" />
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{/lte}}
+
+                            <div class="product-hover " style="cursor: pointer;">
+                                <div class="product-action">
+                                    {{!-- To hide and display the add to cart and buy now related to the quantity --}}
+                                    {{#gt this.productquantity '0'}}
+
+                                    <a id="" class="btn btn-primary payment">Buy Now</a>
+
+                                    {{else}}
+                                    <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
+                                    {{/gt}}
+
+                                    {{#gt this.productquantity '0'}}
+                                    {{#if ../logStatus}}
+                                    {{#hello ../items this._id this.productprice this.productname}}
+                                    {{/hello}}
+                                    {{else}}
+                                    <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
+                                    {{/if}}
+
+                                    {{/gt}}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="product-bio">
+                            <div class="prodcut-cat">
+                                <a href="/productview/{{this._id}}">{{this.productbrand}}</a>
+                            </div>
+
+                            <div class="prodcut-title">
+                                <h3>
+                                    <a href="/productview/{{this._id}}">{{this.productname}}</a>
+                                </h3>
+                            </div>
+
+                            <div class="product-price">
+                                <span class="symbole">₹ </span><span>{{this.productprice}}</span>
+                            </div>
+                            {{#if this.offer}}
+                            <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} %
+                                    OFF</span></span>
+
+                            {{/if}}
+                        </div>
+
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+
+                {{#if priceFilter}}
+                <div class="row">
+                    {{#each priceFilter }}
+                    <div class="col-xs-12 col-sm-6 col-md-4 product">
+                        <div class="product-img">
+                            {{#lte this.productquantity '0'}}
+                            <img id="" src="/uploads/{{this.id}}_1.jpg" alt="Product" style="height: 430px;" />
+                            <img src="/images/Sold Out.png" alt=""
+                                style="display: inline; top: -440px; margin-bottom: -270px;">
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{else}}
+                            <img src="/uploads/{{this.id}}_1.jpg" alt="Product" />
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{/lte}}
+
+                            <div class="product-hover " style="cursor: pointer;">
+                                <div class="product-action">
+                                    {{!-- To hide and display the add to cart and buy now related to the quantity --}}
+                                    {{#gt this.productquantity '0'}}
+
+                                    <a id="" class="btn btn-primary payment">Buy Now</a>
+
+                                    {{else}}
+                                    <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
+                                    {{/gt}}
+
+                                    {{#gt this.productquantity '0'}}
+                                    {{#if ../logStatus}}
+                                    {{#hello ../items this._id this.productprice this.productname}}
+                                    {{/hello}}
+                                    {{else}}
+                                    <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
+                                    {{/if}}
+
+                                    {{/gt}}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="product-bio">
+                            <div class="prodcut-cat">
+                                <a href="/productview/{{this._id}}">{{this.productbrand}}</a>
+                            </div>
+
+                            <div class="prodcut-title">
+                                <h3>
+                                    <a href="/productview/{{this._id}}">{{this.productname}}</a>
+                                </h3>
+                            </div>
+
+                            <div class="product-price">
+                                <span class="symbole">₹ </span><span>{{this.productprice}}</span>
+                            </div>
+                            {{#if this.offer}}
+                            <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} %
+                                    OFF</span></span>
+                            {{/if}}
+                        </div>
+
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+
+
+                {{#if catPro}}
+                <div class="row">
+                    {{#each catPro}}
+                    <div class="col-xs-12 col-sm-6 col-md-4 product">
+                        <div class="product-img">
+                            {{#lte this.productquantity '0'}}
+                            <img id="" src="/uploads/{{this.id}}_1.jpg" alt="Product" style="height: 430px;" />
+                            <img src="/images/Sold Out.png" alt=""
+                                style="display: inline; top: -440px; margin-bottom: -270px;">
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{else}}
+                            <img src="/uploads/{{this.id}}_1.jpg" alt="Product" />
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{/lte}}
+
+                            <div class="product-hover " style="cursor: pointer;">
+                                <div class="product-action">
+                                    {{!-- To hide and display the add to cart and buy now related to the quantity --}}
+                                    {{#gt this.productquantity '0'}}
+
+                                    <a id="" class="btn btn-primary payment">Buy Now</a>
+
+                                    {{else}}
+                                    <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
+                                    {{/gt}}
+
+                                    {{#gt this.productquantity '0'}}
+                                    {{#if ../logStatus}}
+                                    {{#hello ../items this._id this.productprice this.productname}}
+                                    {{/hello}}
+                                    {{else}}
+                                    <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
+                                    {{/if}}
+
+                                    {{/gt}}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="product-bio">
+                            <div class="prodcut-cat">
+                                <a href="/productview/{{this._id}}">{{this.productbrand}}</a>
+                            </div>
+
+                            <div class="prodcut-title">
+                                <h3>
+                                    <a href="/productview/{{this._id}}">{{this.productname}}</a>
+                                </h3>
+                            </div>
+
+                            <div class="product-price">
+                                <span class="symbole">₹ </span><span>{{this.productprice}}</span>
+                            </div>
+                            {{#if this.offer}}
+                            <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} %
+                                    OFF</span></span>
+
+                            {{/if}}
+                        </div>
+
+                    </div>
+                    {{/each}}
+                </div>
+
+                {{!-- Category products ends --}}
+
+                {{else}}
+                {{!-- All products Starts --}}
+                <div class="row">
+                    {{#each products}}
+                    <div class="col-xs-12 col-sm-6 col-md-4 product">
+                        <div class="product-img">
+                            {{#lte this.productquantity '0'}}
+                            <img id="" src="/uploads/{{this.id}}_1.jpg" alt="Product" style="height: 430px;" />
+                            <img src="/images/Sold Out.png" alt=""
+                                style="display: inline; top: -440px; margin-bottom: -270px;">
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{else}}
+                            <img src="/uploads/{{this.id}}_1.jpg" alt="Product" />
+                            <input type="text" hidden class="product-id" value="{{this._id}}">
+                            {{/lte}}
+
+                            <div class="product-hover " style="cursor: pointer;">
+                                <div class="product-action">
+                                    {{!-- To hide and display the add to cart and buy now related to the quantity --}}
+                                    {{#gt this.productquantity '0'}}
+
+                                    <a id="" class="btn btn-primary payment">Buy Now</a>
+
+                                    {{else}}
+                                    <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
+                                    {{/gt}}
+
+                                    {{#gt this.productquantity '0'}}
+                                    {{#if ../logStatus}}
+                                    {{#hello ../items this._id this.productprice this.productname}}
+                                    {{/hello}}
+                                    {{else}}
+                                    <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
+                                    {{/if}}
+
+                                    {{/gt}}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="product-bio">
+                            <div class="prodcut-cat">
+                                <a href="/productview/{{this._id}}">{{this.productbrand}}</a>
+                            </div>
+
+                            <div class="prodcut-title">
+                                <h3>
+                                    <a href="/productview/{{this._id}}">{{this.productname}}</a>
+                                </h3>
+                            </div>
+
+                            <div class="product-price">
+                                <span class="symbole">₹ </span><span>{{this.productprice}}</span>
+                            </div>
+                            {{#if this.offer}}
+                            <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} %
+                                    OFF</span></span>
+
+                            {{/if}}
+                        </div>
+
+                    </div>
+                    {{/each}}
+                </div>
+                {{/if}}
+                {{/if}}
+                {{/if}}
+
+
+
+                <script>
+                    window.onclick = (event) => {
+                        var payment = document.getElementsByClassName('payment')
+                        var addToCart = document.getElementsByClassName('add-to-cart')
+                        var hover = document.getElementsByClassName('product-hover')
+                        var product_id = document.getElementsByClassName('product-id')
+
+
+
+                        for (var i = 0; i < hover.length; i++) {
+
+                            if (event.target === payment[i]) {
+                                location.href = '/checkoutbuynow/' + product_id[i].value
+                                break;
+                            } else if (event.target === addToCart[i]) {
+                                break;
+                            }
+                            else if (event.target === hover[i]) {
+                                location.href = "/productview/" + product_id[i].value
+                                break;
+                            }
+                        }
+
+
+                    }
+                </script>
+
+                {{!-- <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <ul class="pagination">
+                            <li class="active">
+                                <a href="#">1</a>
+                            </li>
+                            <li>
+                                <a href="#">2</a>
+                            </li>
+                            <li>
+                                <a href="#">3</a>
+                            </li>
+                            <li>
+                                <a href="#" aria-label="Next">
+                                    <span aria-hidden="true"><i class="fa fa-angle-right"></i></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div> --}}
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+    function brandFilter(brandName, id) {
+        if (document.getElementById(id).checked == true) {
+            $.ajax({
+                url: '/shopbrand/' + brandName,
+                method: 'get',
+                success: (response) => {
+                    location.reload()
+                }
+            })
+        } else {
+            getAllPro()
+        }
+    }
+
+    function filterApply() {
+        var price = document.getElementById('amount').value
+        var price = price.split('-')
+        var minAmount = parseInt(price[0])
+        var maxAmount = parseInt(price[1])
+
+        $.ajax({
+            url: '/shopprice/' + minAmount + '/' + maxAmount,
+            method: 'get',
+            success: (products) => {
+                location.reload()
+            }
+        })
+    }
+
+    function mainCategory(catName) {
+        $.ajax({
+            url: '/shopcat/?catName=' + catName,
+            method: 'get',
+            success: (product) => {
+                if (product) {
+                    location.reload()
+                }
+            }
+        })
+    }
+
+    function getAllPro() {
+        $.ajax({
+            url: '/shopcat',
+            method: 'get',
+            success: () => {
+                location.reload()
+            }
+        })
+    }
+</script>

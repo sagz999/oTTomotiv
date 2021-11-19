@@ -395,55 +395,6 @@
 
 <script>
 
-    function addToWishList(prodId) {
-
-        $.ajax({
-            url: '/addToWishlist?prodId=' + prodId,
-            method: 'get',
-            success: (result) => {
-                swal("Success!", "Product added to wishlist!", "success", {
-                    button: "OK",
-                }).then(() => {
-                    location.reload()
-                })
-            }
-        })
-    }
-
-
-    function removeFromWish(prodId) {
-        $.ajax({
-            url: '/removeFromWish?prodId=' + prodId,
-            method: 'get',
-            success: (result) => {
-                swal("Removed!", "Product removed from wishlist!", "warning", {
-                    button: "OK",
-                }).then(() => {
-                    location.reload()
-                })
-            }
-        })
-    }
-
-    function addToCart(prodId, price, prodName) {
-        $.ajax({
-            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
-            method: 'get',
-            success: (response) => {
-                if (response.status) {
-                    let count = $('#cart-count').html()
-                    count = parseInt(count) + 1
-                    $("#cart-count").html(count)
-                    swal("Success!", "Product added to cart!", "success", {
-                        button: "OK",
-                    }).then(() => {
-                        location.reload()
-                    })
-                }
-            }
-        })
-    }
-
     function postReview(prodId, prodName, userId, userName) {
 
         let ratingCheck = document.querySelector('input[name="rating1"]:checked')
@@ -506,10 +457,10 @@
     }
 
     function editReview(rating, review) {
+
         document.getElementById('editreviewBtn').dataset.target = '#reviewModalEdit'
         document.getElementById('reviewToEdit').value = review
         document.getElementById(rating).checked = true
-
 
     }
 

@@ -1,7 +1,7 @@
 {{>userheader}}
 
 <section id="hero" class="hero">
-    <div id="hero-slider" class="hero-slider">
+    <div id="hero-slider" class="hero-slider" data-ride="carousel">
 
         {{#each Ads}}
         <a href="/shop-by-offer?offerName={{this.Offer}}">
@@ -106,9 +106,9 @@
 </section>
 
 
-<section id="featuredItems" class="shop" style="padding-top: 8px;">
+<section id="featuredItems" class="shop" style="padding-top: 8px;padding-bottom:0px;">
 
-    <div class="container heading">
+    <div class="container heading" style="padding-bottom:0;margin-bottom:0"> 
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -122,60 +122,67 @@
 
     <div class="container">
 
-
         <ul style="width:100%" class="nav  nav-tabs navbar-nav navbar-left">
             {{#each categories}}
+
+            {{#eq @index 0}}
+            <li class="active">
+                {{else}}
             <li>
+                {{/eq}}
                 <a style="color:black" data-toggle="tab" href="#{{this._id}}">{{this.Main_Cat}}</a>
             </li>
+
             {{/each}}
 
         </ul>
 
-
         <div class="tab-content">
             {{#each categories}}
-            <div class="tab-pane" id="{{this._id}}">
-                <div class="row product-boxes">
+            {{#eq @index 0}}
+            <div class="tab-pane active" id="{{this._id}}">
+                {{else}}
+                <div class="tab-pane" id="{{this._id}}">
+                    {{/eq}}
+                    <div class="row product-boxes">
 
-                    {{#each this.Sub_Cat}}
-                    <div class="col-md-3 product-box">
+                        {{#each this.Sub_Cat}}
+                        <div class="col-md-3 product-box">
 
-                        <a href="/shopByCat?subCat={{this.Sub_Cat}}">
+                            <a href="/shopByCat?subCat={{this.Sub_Cat}}">
 
-                            <div class="product-img" style="display:flex; justify-content:center;">
-                                <img src="sub-category-images/{{this.subCatId}}SCI.jpg" style="height:150px;width:150px"
-                                    alt="Product" />
-                            </div>
+                                <div class="product-img" style="display:flex; justify-content:center;">
+                                    <img src="sub-category-images/{{this.subCatId}}SCI.jpg"
+                                        style="height:150px;width:150px" alt="Product" />
+                                </div>
 
-                            <div class="text-center" style="margin-top:12px;">
-                                <h6>{{this.Sub_Cat}}</h6>
-                            </div>
+                                <div class="text-center" style="margin-top:12px;">
+                                    <h6>{{this.Sub_Cat}}</h6>
+                                </div>
 
-                        </a>
+                            </a>
+
+                        </div>
+                        {{/each}}
 
                     </div>
-                    {{/each}}
-
-
                 </div>
+
+                {{/each}}
+
+
             </div>
 
-            {{/each}}
+
+
 
 
         </div>
 
-
-
-
-
-    </div>
-
 </section>
 
-<section id="newItems" class="shop" style="padding-top: 8px;">
-    <div class="container heading">
+<section id="newItems" class="shop" style="padding-top: 8px;padding-bottom:18px">
+    <div class="container heading" style="padding-bottom:20px;margin-bottom:0">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <p class="subheading">HURRY GRAB THEM QUICKLY</p>
@@ -189,7 +196,7 @@
     <div class="container">
         <div class="row product-carousel text-center">
 
-            {{#each product}}
+            {{#each offerProds}}
             <div class="product">
                 <div class="product-img">
                     <img src="/product-images/{{this._id}}_1.jpg" alt="Product" />
@@ -240,12 +247,12 @@
                     <div class="product-price">
 
                         <span class="symbole">₹</span><span>{{this.Price}}</span>
-                        {{#if this.offer}}
+
                         <br><span style="font-size: small;">MRP : ₹<s>{{this.tempPrice}}</s><span style="color: green;">
                                 {{this.offer}}%
                                 OFF</span></span>
 
-                        {{/if}}
+
                     </div>
 
                 </div>
@@ -259,8 +266,9 @@
 
 </section>
 
-<section id="featuredItems" class="shop" style="padding-top: 8px;">
-    <div class="container heading">
+<section id="featuredItems" class="shop" style="padding-top: 8px;padding-bottom:18px">
+    <div class="container heading" style="padding-bottom:20px;margin-bottom:0">
+
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <p class="subheading">introducing</p>
@@ -346,38 +354,92 @@
 
 </section>
 
+<section id="featuredItems" class="shop" style="padding-top: 8px;padding-bottom:18px">
+    <div class="container heading" style="padding-bottom:20px;margin-bottom:0">
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <p class="subheading">introducing</p>
+                <h2>New Items</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div class="row product-carousel text-center">
+            {{#each product}}
+            <div class="product">
+                <div class="product-img">
+                    <img src="/product-images/{{this._id}}_1.jpg" alt="Product" />
+                    <div class="product-hover">
+                        <div class="product-action">
+                            {{#gt this.Stock '0'}}
+                            {{#if ../user}}
+
+                            <a class="btn btn-primary" href="/prodBuyNow?prodId={{this._id}}">Buy now</a>
+
+
+
+                            {{#hello ../cart this._id this.Price this.Product_Name}}
+
+                            {{/hello}}
+
+                            {{else}}
+
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&token=guestToBuyNow&guestRedirect=true">Buy now</a>
+
+
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&prodPrice={{this.Price}}&prodName={{this.Product_Name}}&token=guestToCart&guestRedirect=true">Add
+                                to cart</a>
+
+                            {{/if}}
+                            {{else}}
+                            <img src="/product-images/sold_out2.png" alt="Product" />
+                            {{/gt}}
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="product-bio">
+                    <div class="prodcut-cat">
+                        <a href="/shopByProdBrand?prodBrand={{this.Product_Brand}}">{{this.Product_Brand}}</a>
+                    </div>
+
+                    <div class="prodcut-title">
+                        <h3>
+                            <a href="/view-product?id={{this._id}}">{{this.Product_Name}}</a><br>
+                        </h3>
+                    </div>
+
+                    <div class="product-price">
+
+                        <span class="symbole">₹</span><span>{{this.Price}}</span>
+                        {{#if this.offer}}
+                        <br><span style="font-size: small;">MRP : ₹<s>{{this.tempPrice}}</s><span style="color: green;">
+                                {{this.offer}}%
+                                OFF</span></span>
+
+                        {{/if}}
+                    </div>
+
+                </div>
+
+            </div>
+            {{/each}}
 
 
 
 
+        </div>
 
+    </div>
+
+</section>
 
 {{>userfooter}}
-
-<script>
-
-    function addToCart(prodId, price, prodName) {
-        $.ajax({
-
-            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
-            method: 'get',
-            success: (response) => {
-
-                if (response.status) {
-                    let count = $('#cart-count').html()
-                    count = parseInt(count) + 1
-                    $("#cart-count").html(count)
-                    swal("Success!", "Product added to cart!", "success", {
-                        button: "OK",
-                    }).then(() => {
-                        location.reload()
-                    })
-
-                }
-
-            }
-        })
-    }
-
-
-</script>

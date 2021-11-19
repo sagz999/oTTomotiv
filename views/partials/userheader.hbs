@@ -154,12 +154,14 @@
 
           <div class="cart-icon">
             {{#if user}}
-            <a href="/cart" style="color: #fff;"><i class="fa fa-shopping-cart"></i></a>
+            <a href="/cart" style="color: #fff;"><i class="fa fa-shopping-cart"></i>
             <span class="title">shop cart</span>
+            </a>
             <span class="cart-label" id="cart-count">{{cartCount}}</span>
             {{else}}
-            <a href="/login?token=guestToCartPage&guestRedirect=true" style="color: #fff;"><i class="fa fa-shopping-cart"></i></a>
+            <a href="/login?token=guestToCartPage&guestRedirect=true" style="color: #fff;"><i class="fa fa-shopping-cart"></i>
             <span class="title">shop cart</span>
+            </a>
             {{/if}}
 
           </div>
@@ -171,13 +173,13 @@
             {{#if user}}
             <a href="/wishlist" style="color: #fff;">
               <i class="fa fa-heart"></i>
-            </a>
             <span class="title">Wishlist</span>
+            </a>
             {{else}}
             <a href="/login?token=guestToWishlist&guestRedirect=true" style="color: #fff;">
               <i class="fa fa-heart"></i>
-            </a>
             <span class="title">Wishlist</span>
+             </a>
             {{/if}}
           </div>
 

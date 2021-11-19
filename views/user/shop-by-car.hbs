@@ -29,6 +29,7 @@
                     <img src="/product-images/{{this._id}}_1.jpg" alt="Product" />
                     <div class="product-hover">
                         <div class="product-action">
+                            {{#gt this.Stock '0'}}
                             {{#if ../user}}
 
                             <a class="btn btn-primary" href="/prodBuyNow?prodId={{this._id}}">Buy now</a>
@@ -41,12 +42,19 @@
 
                             {{else}}
 
-                            <a class="btn btn-primary" href="/login">Buy now</a>
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&token=guestToBuyNow&guestRedirect=true">Buy now</a>
 
 
-                            <a class="btn btn-primary" href="/login">Add to cart</a>
+                            <a class="btn btn-primary"
+                                href="/login?prodId={{this._id}}&prodPrice={{this.Price}}&prodName={{this.Product_Name}}&token=guestToCart&guestRedirect=true">Add
+                                to cart</a>
 
                             {{/if}}
+                            {{else}}
+                            <img src="/product-images/sold_out2.png" alt="Product" />
+                            {{/gt}}
+
                         </div>
                     </div>
 
@@ -59,12 +67,19 @@
 
                     <div class="prodcut-title">
                         <h3>
-                            <a href="/view-product?id={{this._id}}">{{this.Product_Name}}</a>
+                            <a href="/view-product?id={{this._id}}">{{this.Product_Name}}</a><br>
                         </h3>
                     </div>
 
                     <div class="product-price">
+
                         <span class="symbole">₹</span><span>{{this.Price}}</span>
+                        {{#if this.offer}}
+                        <br><span style="font-size: small;">MRP : ₹<s>{{this.tempPrice}}</s><span style="color: green;">
+                                {{this.offer}}%
+                                OFF</span></span>
+
+                        {{/if}}
                     </div>
 
                 </div>
@@ -102,29 +117,3 @@
 
 {{>userfooter}}
 
-<script>
-
-    function addToCart(prodId, price, prodName) {
-        $.ajax({
-
-            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
-            method: 'get',
-            success: (response) => {
-
-                if (response.status) {
-                    let count = $('#cart-count').html()
-                    count = parseInt(count) + 1
-                    $("#cart-count").html(count)
-                    swal("Success!", "Product added to cart!", "success", {
-                        button: "OK",
-                    }).then(() => {
-                        location.reload()
-                    })
-
-                }
-
-            }
-        })
-    }
-
-</script>

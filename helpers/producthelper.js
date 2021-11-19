@@ -416,6 +416,19 @@ module.exports = {
 
         })
 
+    },
+
+    fetchAllProdsUnderOffer:()=>{
+
+        return new Promise((resolve,reject)=>{
+
+            db.get().collection(collection.PRODUCT_COLLECTION).find({offer:{$exists:true}}).toArray().then((products)=>{
+
+                resolve(products)
+
+            })
+
+        })
     }
 
 

@@ -102,29 +102,3 @@
 
 {{>userfooter}}
 
-<script>
-
-    function addToCart(prodId, price, prodName) {
-        $.ajax({
-
-            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
-            method: 'get',
-            success: (response) => {
-
-                if (response.status) {
-                    let count = $('#cart-count').html()
-                    count = parseInt(count) + 1
-                    $("#cart-count").html(count)
-                    swal("Success!", "Product added to cart!", "success", {
-                        button: "OK",
-                    }).then(() => {
-                        location.reload()
-                    })
-
-                }
-
-            }
-        })
-    }
-
-</script>

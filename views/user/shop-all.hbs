@@ -3,29 +3,21 @@
 <section id="shopgrid" class="shop shop-grid">
     <div class="container">
         <div class="row">
-            {{!-- <div class="col-xs-12 col-sm-12 col-md-3 sidebar">
+            <div class="col-xs-12 col-sm-12 col-md-3 sidebar">
 
                 <div class="widget widget-categories">
                     <div class="widget-title">
                         <h5>categories</h5>
                     </div>
                     <div class="widget-content">
-                        <ul class="list-unstyled nav">
+                        <ul class="list-unstyled">
+                            
+                            <li>
+                                <a onclick="getAllPro()" style="cursor: pointer;"><i class="fa fa-angle-double-right"></i>All products</a>
+                            </li>
                             {{#each categories}}
-                            <li class="has-dropdown">
-                                <a style="cursor: pointer;" data-toggle="dropdown" class="dropdown-toggle"><i
-                                        class="fa fa-angle-double-right"></i>{{this.Main_Cat}}</a>
-
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    {{#each this.Sub_Cat}}
-                                    <li>
-                                        <a href="Sub"><i
-                                            class="fa fa-angle-double-right"></i>{{this.Sub_Cat}} </a>
-                                    </li>
-                                    
-                                    {{/each}}
-                                </ul>
-
+                            <li>
+                                 <a onclick="filterByCat('{{this.Main_Cat}}')" style="cursor: pointer;"><i class="fa fa-angle-double-right"></i>{{this.Main_Cat}}</a>    
                             </li>
                             {{/each}}
 
@@ -38,11 +30,11 @@
                         <h5>Brands</h5>
                     </div>
                     <div class="widget-content">
-                        <ul class="list-unstyled nav">
+                        <ul class="list-unstyled">
+
                             {{#each prodBrands}}
                             <li>
-                                <a href=""><i
-                                        class="fa fa-angle-double-right"></i>{{this.Prod_Brand}}</a>
+                                <a onclick="filterByProdBrand('{{this.Prod_Brand}}')" style="cursor: pointer;"><i class="fa fa-angle-double-right"></i>{{this.Prod_Brand}}</a>
                             </li>
                             {{/each}}
 
@@ -52,12 +44,13 @@
 
 
 
-            </div> change to col-md-9 --}}
+            </div>
 
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                {{!-- <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-9">
+                <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="product-num pull-left pull-none-xs">
+
+                        {{!-- <div class="product-num pull-left pull-none-xs">
                             <h3>Showing 1 : 16 of <span class="color-theme">245</span> product</h3>
                         </div>
 
@@ -71,17 +64,17 @@
                                 <option value="Small">Highest Price</option>
                                 <option value="Medium">Lowest Price</option>
                             </select>
-                        </div>
+                        </div> --}}
 
                     </div>
 
-                </div> --}}
+                </div>
 
                 <div class="row">
 
                     {{#each products }}
 
-                    <div class="col-xs-12 col-sm-6 col-md-3 product">
+                    <div class="col-xs-12 col-sm-6 col-md-4 product">
                         <div class="product-img">
                             <img src="/product-images/{{this._id}}_1.jpg" alt="Product" />
                             <div class="product-hover">
@@ -130,9 +123,9 @@
 
                 </div>
 
-                {{!-- <div class="row">
+                <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12">
-                        <ul class="pagination">
+                        {{!-- <ul class="pagination">
                             <li class="active">
                                 <a href="#">1</a>
                             </li>
@@ -147,10 +140,10 @@
                                     <span aria-hidden="true"><i class="fa fa-angle-right"></i></span>
                                 </a>
                             </li>
-                        </ul>
+                        </ul> --}}
                     </div>
 
-                </div> --}}
+                </div>
             </div>
 
         </div>
@@ -161,29 +154,3 @@
 
 {{>userfooter}}
 
-<script>
-
-    function addToCart(prodId, price, prodName) {
-        $.ajax({
-
-            url: '/add-to-cart?id=' + prodId + '&price=' + price + '&prodName=' + prodName,
-            method: 'get',
-            success: (response) => {
-
-                if (response.status) {
-                    let count = $('#cart-count').html()
-                    count = parseInt(count) + 1
-                    $("#cart-count").html(count)
-                    swal("Success!", "Product added to cart!", "success", {
-                        button: "OK",
-                    }).then(() => {
-                        location.reload()
-                    })
-
-                }
-
-            }
-        })
-    }
-
-</script>

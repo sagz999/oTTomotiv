@@ -300,9 +300,8 @@ router.get('/category', verifyLog, (req, res) => {
 
   productHelper.fetchCategories().then((Categories) => {
 
-    res.render('admin/category', { title: 'Main Category', isAdmin: true, Msg: req.session.addMsg, Err: req.session.delMsg, Categories })
+    res.render('admin/category', { title: 'Main Category', isAdmin: true, Msg: req.session.addMsg, Categories })
     req.session.addMsg = false
-    req.session.delMsg = false
 
   })
 
@@ -336,16 +335,14 @@ router.post('/add-subCat', (req, res) => {
 
 router.get('/delete-category/', verifyLog, (req, res) => {
   productHelper.deleteCategory(req.query.id).then(() => {
-    req.session.delMsg = 'MAIN-CATEGORY DELETED'
-    res.redirect('/admin/category')
+    res.json(true)
   })
 })
 
 router.get('/delete-subCategory/', verifyLog, (req, res) => {
 
   productHelper.deleteSubCategory(req.query.catId, req.query.subCatId).then(() => {
-    req.session.delMsg = 'SUB-CATEGORY DELETED'
-    res.redirect('/admin/category')
+    res.json(true)
   })
 })
 

@@ -16,18 +16,14 @@
                             <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
                         </div>
                         {{/if}}
-                        {{#if Err}}
-                        <div>
-                            <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
-                        </div>
-                        {{/if}}
                         <div class="card-body text-left">
 
                             <div class="row">
                                 <div class="col">
 
                                     <div class="d-flex ml-3">
-                                        <form action="/admin/add-mainCat" style="display:flex;" method="post" id="addMainCat">
+                                        <form action="/admin/add-mainCat" style="display:flex;" method="post"
+                                            id="addMainCat">
 
                                             <input name="Main_Cat" class="form-control" type="text"
                                                 placeholder="Add new main category">
@@ -55,10 +51,8 @@
                                                 <td class="text-left">
                                                     <button type="button" rel="tooltip" title="Remove Category"
                                                         class="btn btn-white btn-link btn-sm p-0 pb-1"
-                                                        onclick="return confirm('Do you want to delete product - {{this.Main_Cat}} ?')">
-                                                        <a href="/admin/delete-category?id={{this._id}}">
-                                                            <i class="material-icons">delete</i>
-                                                        </a>
+                                                        onclick="confirmMainCatDelete('{{this._id}}','{{this.Main_Cat}}')">
+                                                        <i class="material-icons">delete</i>
                                                     </button>
                                                     {{this.Main_Cat}}
                                                 </td>
@@ -83,13 +77,15 @@
 
                                                                 <label data-toggle="modal"
                                                                     data-target="#exampleModalCenter"
-                                                                    class="btn btn-primary btn-sm" for="{{this._id}}file1">Logo
+                                                                    class="btn btn-primary btn-sm"
+                                                                    for="{{this._id}}file1">Logo
                                                                     Image</label>
 
 
 
                                                                 <input style="display:none" name="Img1" type="file"
-                                                                    class="my-2 form-control-file" id="{{this._id}}file1"
+                                                                    class="my-2 form-control-file"
+                                                                    id="{{this._id}}file1"
                                                                     onchange="return fileValidation1('{{this._id}}')">
                                                                 <div id="{{this._id}}errMsg1"></div>
 
@@ -149,25 +145,18 @@
 
                                                         <div class="d-flex" style="margin-top: 10px;">
 
-
                                                             <button type="button" rel="tooltip"
                                                                 title="Remove Sub-Category"
                                                                 class="btn btn-white btn-link btn-sm p-0 pb-1 mr-4"
-                                                                onclick="return confirm('Do you want to delete product - {{this.Sub_Cat}} ?')">
-                                                                <a
-                                                                    href="/admin/delete-subCategory?catId={{../this._id}}&subCatId={{this.subCatId}}">
+                                                                onclick="confirmSubcatDelete('{{../this._id}}','{{this.subCatId}}','{{this.Sub_Cat}}')">
                                                                     <i class="material-icons">delete</i>
-                                                                </a>
                                                             </button>
-
-                                                            {{!-- <li>{{this}}</li> --}}
 
                                                             <li><span><img style="width:50px;height:50px"
                                                                         src="/sub-category-images/{{this.subCatId}}SCI.jpg"
                                                                         alt=""></span><span
                                                                     style="margin-left: 10px;">{{this.Sub_Cat}}</span>
                                                             </li>
-
 
                                                         </div>
 
@@ -204,6 +193,75 @@
     </div>
 </div>
 
+<script>
+    function confirmMainCatDelete(catId, catName) {
+
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the category ${catName} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/delete-category?id=' + catId,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            swal("Done", "The category is deleted!", "success", {
+                                button: "OK",
+                            }).then(() => {
+
+                                location.reload()
+                            })
+
+                        } else {
+                            console.log('Failed to delete category')
+                        }
+                    }
+                })
+
+            }
+        });
+
+    }
+
+    function confirmSubcatDelete(mainCatId, subCatId, subCatName) {
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the category ${subCatName} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/delete-subCategory?catId='+mainCatId+'&subCatId='+subCatId,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            swal("Done", "The category is deleted!", "success", {
+                                button: "OK",
+                            }).then(() => {
+
+                                location.reload()
+                            })
+
+                        } else {
+                            console.log('Failed to delete category')
+                        }
+                    }
+                })
+
+            }
+        });
+    }
+
+</script>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
@@ -220,21 +278,21 @@
 
         const imagebox = document.getElementById('image-box')
         const crop_btn = document.getElementById('crop-btn')
-        var fileInput = document.getElementById(id+'file1');
+        var fileInput = document.getElementById(id + 'file1');
 
         var filePath = fileInput.value;
         var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
-            document.getElementById(id+'errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
+            document.getElementById(id + 'errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
             fileInput.value = '';
             return false;
 
         } else {
 
             //Image preview
-            document.getElementById(id+'errMsg1').innerHTML = ''
+            document.getElementById(id + 'errMsg1').innerHTML = ''
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
             imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
@@ -261,7 +319,7 @@
 
                 cropper.getCroppedCanvas().toBlob((blob) => {
 
-                    let fileInputElement = document.getElementById(id+'file1');
+                    let fileInputElement = document.getElementById(id + 'file1');
                     let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
                     let container = new DataTransfer();
 
@@ -269,7 +327,7 @@
                     const img = container.files[0]
                     var url = URL.createObjectURL(img)
                     fileInputElement.files = container.files;
-                    document.getElementById(id+'imgview1').src = url
+                    document.getElementById(id + 'imgview1').src = url
                     document.getElementById('image-box').style.display = 'none'
                     document.getElementById('crop-btn').style.display = 'none'
                     document.getElementById('confirm-btn').style.display = 'block'
@@ -330,16 +388,19 @@
                 Main_Cat: {
                     required: true,
                     minlength: 5,
-                    alpha:true
+                    alpha: true
                 }
 
             },
-            messages:{
+            messages: {
                 Main_Cat: {
                     required: "This field cannot be left blank",
                     minlength: "Category name is too short",
-                    alpha:"Category name should only be of alphabets"
+                    alpha: "Category name should only be of alphabets"
                 }
+            },
+            submitHandler: function () {
+                alert(hi)
             }
         });
 
@@ -350,21 +411,21 @@
                 Sub_Cat: {
                     required: true,
                     minlength: 5,
-                    alpha:true
+                    alpha: true
                 },
-                Img1:{
-                    required:true
+                Img1: {
+                    required: true
                 }
             },
 
-            messages:{
+            messages: {
                 Sub_Cat: {
                     required: "This field cannot be left blank",
                     minlength: "Category name is too short",
-                    alpha:"Category name should only be of alphabets"
+                    alpha: "Category name should only be of alphabets"
                 },
-                Img1:{
-                    required:"This field cannot be left blank"
+                Img1: {
+                    required: "This field cannot be left blank"
                 }
             }
 
