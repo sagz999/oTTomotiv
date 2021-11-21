@@ -19,12 +19,6 @@
                             </div>
                             {{/if}}
 
-                            {{#if Err}}
-                            <div>
-                                <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
-                            </div>
-                            {{/if}}
-
                             <form method="POST" action="/admin/add-prodBrand" enctype="multipart/form-data"
                                 id="addProdBrand">
 
@@ -52,14 +46,11 @@
 
                                         <div class="row d-flex justify-content-center">
 
-                                            <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                class="btn btn-primary btn-sm" for="file1">Add Image</label>
-
                                             <div id="errMsg1"></div>
 
-                                            <input style="display:none" name="Img1" type="file"
+                                            <input name="Img1" type="file"
                                                 class="my-2 form-control-file" id="file1"
-                                                onchange="return fileValidation1()">
+                                                onchange="return fileValidation1()" data-toggle="modal" data-target="#exampleModalCenter">
 
                                         </div>
 
@@ -170,10 +161,10 @@
 
                                             <button type="button" rel="tooltip" title="Remove Car Brand"
                                                 class="btn btn-white btn-link btn-sm"
-                                                onclick="return confirm('Do you want to delete product - {{this.Prod_Brand}} ?')">
-                                                <a href="/admin/delete-prodBrand?id={{this._id}}">
+                                                onclick="confirmProdBrandDelete('{{this._id}}','{{this.Prod_Brand}}')">
+                                                
                                                     <i class="material-icons">delete</i>
-                                                </a>
+                                                
                                             </button>
                                         </td>
                                     </tr>
@@ -200,6 +191,39 @@
 
     </div>
 </div>
+
+<script>
+
+    function confirmProdBrandDelete(id,prodBrand){
+
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the brand ${prodBrand} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/delete-prodBrand?id=' + id,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            sessionStorage.setItem("prodBrandDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete category')
+                        }
+                    }
+                })
+
+            }
+        });
+
+    }
+
+</script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
@@ -314,7 +338,7 @@
 
                 Prod_Brand: {
                     required: true,
-                    minlength: 3
+                    minlength: 2
                 },
                 Img1:{
                     required:true
@@ -324,7 +348,7 @@
 
             messages:{
 
-                Sub_Cat: {
+                Prod_Brand: {
                     required: "This field cannot be left blank",
                     minlength: "Brand name is too short"
                 },

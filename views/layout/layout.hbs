@@ -15,7 +15,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="construction html5 template">
   <link href="/images/favicon/favicon.ico" rel="icon">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
   <script src="/javascripts/zoomsl.js" type="text/javascript" defer></script>
@@ -72,7 +72,9 @@
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../admin-assets/demo/demo.css" rel="stylesheet" />
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
- 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel='stylesheet'
+    type='text/css'>
+
 
   {{/if}}
 </head>
@@ -87,6 +89,7 @@
   <script src="javascripts/user-reloader.js"></script>
   <script src="javascripts/user-functions.js"></script>
   <script src="javascripts/plugins.js"></script>
+
   <script src="javascripts/functions.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 </body>
@@ -99,9 +102,10 @@
 
   {{{body}}}
   <!--   Core JS Files   -->
+  <script src="../admin-assets/js/admin-reloader.js"></script>
+  <script src="../admin-assets/js/admin-functions.js"></script>
 
   <script src="../admin-assets/js/validation.js"></script>
-
 
   <script src="../admin-assets/js/core/popper.min.js"></script>
   <script src="../admin-assets/js/core/bootstrap-material-design.min.js"></script>
@@ -120,6 +124,7 @@
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="../admin-assets/demo/demo.js"></script>
   <script src="../admin-assets/js/animation.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
   <script>
     $(document).ready(function () {
       // Javascript method's body can be found in admin-assets/js/demos.js

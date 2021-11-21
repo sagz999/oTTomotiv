@@ -58,12 +58,12 @@
 
                                         <div class="row d-flex justify-content-center">
 
-                                            <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                class="btn btn-primary btn-sm" for="file1">Add Image</label>
+                                            {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                class="btn btn-primary btn-sm" for="file1">Add Image</label> --}}
 
                                             <div id="errMsg1"></div>
 
-                                            <input style="display:none" name="Img1" type="file"
+                                            <input  name="Img1" type="file" data-toggle="modal" data-target="#exampleModalCenter"
                                                 class="my-2 form-control-file" id="file1"
                                                 onchange="return fileValidation1()">
 

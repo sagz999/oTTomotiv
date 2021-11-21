@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
     addProduct: (newProduct) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
 
             newProduct.Stock = parseInt(newProduct.Stock)
             newProduct.Price = parseInt(newProduct.Price)
@@ -20,14 +20,14 @@ module.exports = {
     },
 
     getRelproducts: (Sub_Cat) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             let Products = await db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: Sub_Cat }).toArray()
             resolve(Products)
         })
     },
 
     getAllproducts: () => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             let product = await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray()
             resolve(product)
         })
@@ -53,22 +53,21 @@ module.exports = {
 
     updateProduct: (prodId, prodData) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) },
-                {
-                    $set: {
-                        Product_Name: prodData.Product_Name,
-                        Main_Category: prodData.Main_Category,
-                        Sub_Category: prodData.Sub_Category,
-                        Product_Brand: prodData.Product_Brand,
-                        Car_Brand: prodData.Car_Brand,
-                        Car_Model: prodData.Car_Model,
-                        Price: parseInt(prodData.Price),
-                        Description: prodData.Description,
-                        Stock: parseInt(prodData.Stock)
-                    }
-                }).then(() => {
-                    resolve()
-                })
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(prodId) }, {
+                $set: {
+                    Product_Name: prodData.Product_Name,
+                    Main_Category: prodData.Main_Category,
+                    Sub_Category: prodData.Sub_Category,
+                    Product_Brand: prodData.Product_Brand,
+                    Car_Brand: prodData.Car_Brand,
+                    Car_Model: prodData.Car_Model,
+                    Price: parseInt(prodData.Price),
+                    Description: prodData.Description,
+                    Stock: parseInt(prodData.Stock)
+                }
+            }).then(() => {
+                resolve()
+            })
         })
 
     },
@@ -96,6 +95,8 @@ module.exports = {
 
     addSubCategory: (catData) => {
 
+        console.log('dasf:', catData)
+
         let catObj = {
             subCatId: uuidv4(),
             Sub_Cat: catData.Sub_Cat
@@ -103,13 +104,12 @@ module.exports = {
         }
 
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.CATEGORY_COLLECTION).updateOne({ _id: objectId(catData.mainCat_Id) },
-                {
-                    $push: { Sub_Cat: catObj }
+            db.get().collection(collection.CATEGORY_COLLECTION).updateOne({ _id: objectId(catData.mainCat_Id) }, {
+                $push: { Sub_Cat: catObj }
 
-                }).then(() => {
-                    resolve(catObj.subCatId)
-                })
+            }).then(() => {
+                resolve(catObj.subCatId)
+            })
 
         })
 
@@ -135,8 +135,8 @@ module.exports = {
                     }
 
                 }).then(() => {
-                    resolve()
-                })
+                resolve()
+            })
         })
     },
 
@@ -151,7 +151,7 @@ module.exports = {
         })
     },
     fetchProdBrands: () => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             let prodBrands = await db.get().collection(collection.PROD_BRAND_COLLECTION).find().toArray()
             resolve(prodBrands)
         })
@@ -178,7 +178,7 @@ module.exports = {
 
     fetchCarBrands: () => {
 
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
 
             let carBrands = await db.get().collection(collection.CAR_BRAND_COLLECTION).find().toArray()
             resolve(carBrands)
@@ -206,14 +206,13 @@ module.exports = {
 
         return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(carData.carBrand_Id) },
-                {
-                    $push: { Car_Model: newCarModel }
+            db.get().collection(collection.CAR_BRAND_COLLECTION).updateOne({ _id: objectId(carData.carBrand_Id) }, {
+                $push: { Car_Model: newCarModel }
 
 
-                }).then(() => {
-                    resolve(newCarModel.modelId)
-                })
+            }).then(() => {
+                resolve(newCarModel.modelId)
+            })
 
         })
 
@@ -231,8 +230,8 @@ module.exports = {
 
 
                 }).then(() => {
-                    resolve()
-                })
+                resolve()
+            })
         })
     },
 
@@ -246,12 +245,11 @@ module.exports = {
 
     cartStockUpdate: (product) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(product.item) },
-                {
-                    $inc: { Stock: -product.quantity }
-                }).then(() => {
-                    resolve()
-                })
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(product.item) }, {
+                $inc: { Stock: -product.quantity }
+            }).then(() => {
+                resolve()
+            })
 
         })
     },
@@ -289,10 +287,9 @@ module.exports = {
     },
 
     fetchSubCatList: (MainCat) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
 
-            let subCat = await db.get().collection(collection.CATEGORY_COLLECTION).aggregate([
-                {
+            let subCat = await db.get().collection(collection.CATEGORY_COLLECTION).aggregate([{
                     $match: { Main_Cat: { $regex: MainCat } }
                 },
                 {
@@ -311,10 +308,9 @@ module.exports = {
     },
 
     fetchCarModelList: (carBrand) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
 
-            let carModels = await db.get().collection(collection.CAR_BRAND_COLLECTION).aggregate([
-                {
+            let carModels = await db.get().collection(collection.CAR_BRAND_COLLECTION).aggregate([{
                     $match: { Car_Brand: { $regex: carBrand } }
                 },
                 {
@@ -336,7 +332,7 @@ module.exports = {
 
     fetchProdsUnderBrand: (prodBrand) => {
 
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
 
             let prodBrandData = await db.get().collection(collection.PROD_BRAND_COLLECTION).findOne({ Prod_Brand: prodBrand })
             let products = await db.get().collection(collection.PRODUCT_COLLECTION).find({ Product_Brand: prodBrand }).toArray()
@@ -355,7 +351,7 @@ module.exports = {
 
     fetchProdsUnderCarModel: (carModel) => {
 
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
 
             db.get().collection(collection.PRODUCT_COLLECTION).find({ Car_Model: carModel }).toArray().then((products) => {
 
@@ -377,11 +373,11 @@ module.exports = {
 
     },
 
-    addNewAd:(adData)=>{
+    addNewAd: (adData) => {
 
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.AD_COLLECTION).insertOne(adData).then((result)=>{
+            db.get().collection(collection.AD_COLLECTION).insertOne(adData).then((result) => {
 
                 resolve(result.insertedId)
 
@@ -391,11 +387,11 @@ module.exports = {
 
     },
 
-    delAd:(adId)=>{
+    delAd: (adId) => {
 
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.AD_COLLECTION).deleteOne({_id:objectId(adId)}).then(()=>{
+            db.get().collection(collection.AD_COLLECTION).deleteOne({ _id: objectId(adId) }).then(() => {
 
                 resolve()
 
@@ -404,31 +400,43 @@ module.exports = {
 
     },
 
-    fetchProdsUnderSpecificOffer:(offerName)=>{
+    fetchProdsUnderSpecificOffer: (offerName) => {
 
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.PRODUCT_COLLECTION).find({offerName:offerName}).toArray().then((products)=>{
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ offerName: offerName }).toArray().then((products) => {
 
                 resolve(products)
-                
+
             })
 
         })
 
     },
 
-    fetchAllProdsUnderOffer:()=>{
+    fetchAllProdsUnderOffer: () => {
 
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.PRODUCT_COLLECTION).find({offer:{$exists:true}}).toArray().then((products)=>{
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ offer: { $exists: true } }).toArray().then((products) => {
 
                 resolve(products)
 
             })
 
         })
+    },
+
+    fetchProdsUnderCat: (catName) => {
+
+        return new Promise((resolve, reject) => {
+
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ Main_Category: catName }).toArray().then((products) => {
+                resolve(products)
+            })
+
+        })
+
     }
 
 

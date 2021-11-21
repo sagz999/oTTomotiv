@@ -192,7 +192,7 @@ h2,
 }
 h3,
 .h3 {
-  font-size: 25px;
+  font-size: 2px;
   line-height: 1;
 }
 h4,
@@ -207,8 +207,9 @@ h5,
 }
 h6,
 .h6 {
-  font-size: 14px;
+  /* font-size: 14px; */
   line-height: 1;
+  text-transform: uppercase;
 }
 p {
   font-family: open sans, sans-serif;
@@ -4003,20 +4004,22 @@ td.cart-product-quantity {
   color: #d22e2e;
 }
 .product .product-bio .prodcut-title h3 {
-  margin-bottom: 13px;
+  margin-bottom: 12px;
   line-height: 1;
 }
 .product .product-bio .prodcut-title h3 a {
   color: #373636;
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: bold;
   line-height: 1;
   text-transform: uppercase;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
 }
 .product .product-bio .prodcut-title h3 a:hover {
   color: #d22e2e;
 }
+
+
 .product-num {
   margin-bottom: 70px;
 }

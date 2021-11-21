@@ -18,20 +18,107 @@
                         {{/if}}
                         <div class="card-body text-left">
 
-                            <div class="row">
-                                <div class="col">
+                            <div class="row container">
+                                <div class="col-md-5">
+                                    <label style="font-weight: bold;color:#fff">Add Main-category</label>
+                                    <form action="/admin/add-mainCat" method="post" id="addMainCat">
 
-                                    <div class="d-flex ml-3">
-                                        <form action="/admin/add-mainCat" style="display:flex;" method="post"
-                                            id="addMainCat">
+                                        <div class="row">
 
                                             <input name="Main_Cat" class="form-control" type="text"
-                                                placeholder="Add new main category">
-                                            <button type="submit" id="confirm-btn" class="btn btn-primary btn-sm"><i
-                                                    class="material-icons">add_to_photos</i></button>
+                                                placeholder="Category name">
 
-                                        </form>
+                                        </div>
+                                        <div class="row text-center">
+
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="material-icons">add_to_photos</i> Add Category</button>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                                <div class="col-md-7 text-center">
+                                    <label style="font-weight: bold;color:#fff">Add Sub-category</label>
+                                    <form action="/admin/add-subCat" method="post" enctype="multipart/form-data"
+                                        id="addSubCat">
+
+                                        <div class="row">
+
+                                            <div class="col-md-8">
+                                                <input name="Sub_Cat" class="form-control" type="text"
+                                                    placeholder="Sub-category name">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <select name="mainCat_Id"
+                                                    style="background:#202940;color:#8b92a9;border:none">
+                                                    <option value="" selected disabled>Choose a category</option>
+                                                    {{#each Categories}}
+                                                    <option value="{{this._id}}">{{this.Main_Cat}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
+
+                                                <div id="errMsg1"></div>
+                                                <input name="Img1" type="file" class="my-2 form-control-file" id="file1"
+                                                    onchange="return fileValidation1()" data-toggle="modal"
+                                                    data-target="#exampleModalCenter">
+                                            </div>
+                                            <div class="col-md-4" style="display: flex;align-items: center;">
+                                                <button type="submit" class="btn btn-primary btn-sm" id="confirm-btn">
+                                                    <i class="material-icons">add_to_photos</i> Add subcategory</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+
+                                            <div class="modal-content">
+
+                                                <div class="modal-header">
+
+                                                    <h4 class="modal-title" style="font-weight: bold;"
+                                                        id="exampleModalLongTitle">Crop Image</h4>
+
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <div id="image-box" style="display:none;">
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+
+                                                    <button onclick="buttonDisplay()" type="button"
+                                                        class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button id="crop-btn" data-dismiss="modal" type="button"
+                                                        class="btn btn-primary">Crop</button>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
                                     </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 30px;">
+
+                                <div class="col-md-12">
 
                                     <table class="table table-dark" id="myTable">
                                         <thead>
@@ -59,87 +146,6 @@
 
                                                 <td>
                                                     <ol>
-                                                        <form action="/admin/add-subCat" style="display: flex;"
-                                                            method="post" enctype="multipart/form-data" id="addSubCat">
-                                                            <input name="mainCat_Id" class="form-control" type="hidden"
-                                                                value="{{this._id}}">
-                                                            <input name="Sub_Cat" class="form-control" type="text"
-                                                                placeholder="Add new sub category">
-
-                                                            <div class="mx-2">
-
-                                                                <img src="" alt="" style="width: 50px; height:auto"
-                                                                    id="{{this._id}}imgview1">
-
-                                                            </div>
-
-                                                            <div>
-
-                                                                <label data-toggle="modal"
-                                                                    data-target="#exampleModalCenter"
-                                                                    class="btn btn-primary btn-sm"
-                                                                    for="{{this._id}}file1">Logo
-                                                                    Image</label>
-
-
-
-                                                                <input style="display:none" name="Img1" type="file"
-                                                                    class="my-2 form-control-file"
-                                                                    id="{{this._id}}file1"
-                                                                    onchange="return fileValidation1('{{this._id}}')">
-                                                                <div id="{{this._id}}errMsg1"></div>
-
-                                                            </div>
-
-                                                            <button type="submit" id="confirm-btn"
-                                                                class="btn btn-primary btn-sm"><i
-                                                                    class="material-icons">add_to_photos</i></button>
-
-
-                                                            <div class="modal fade" id="exampleModalCenter"
-                                                                tabindex="-1" role="dialog"
-                                                                aria-labelledby="exampleModalCenterTitle"
-                                                                aria-hidden="true">
-
-                                                                <div class="modal-dialog modal-dialog-centered"
-                                                                    role="document">
-
-                                                                    <div class="modal-content">
-
-                                                                        <div class="modal-header">
-
-                                                                            <h4 class="modal-title"
-                                                                                style="font-weight: bold;"
-                                                                                id="exampleModalLongTitle">Crop
-                                                                                Image</h4>
-
-
-
-                                                                        </div>
-
-                                                                        <div class="modal-body">
-                                                                            <div id="image-box" style="display:none;">
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="modal-footer">
-
-                                                                            <button onclick="buttonDisplay()"
-                                                                                type="button" class="btn btn-secondary"
-                                                                                data-dismiss="modal">Close</button>
-                                                                            <button id="crop-btn" data-dismiss="modal"
-                                                                                type="button"
-                                                                                class="btn btn-primary">Crop</button>
-
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                </div>
-
-                                                            </div>
-
-                                                        </form>
 
                                                         {{#each this.Sub_Cat}}
 
@@ -149,7 +155,7 @@
                                                                 title="Remove Sub-Category"
                                                                 class="btn btn-white btn-link btn-sm p-0 pb-1 mr-4"
                                                                 onclick="confirmSubcatDelete('{{../this._id}}','{{this.subCatId}}','{{this.Sub_Cat}}')">
-                                                                    <i class="material-icons">delete</i>
+                                                                <i class="material-icons">delete</i>
                                                             </button>
 
                                                             <li><span><img style="width:50px;height:50px"
@@ -161,6 +167,7 @@
                                                         </div>
 
                                                         {{/each}}
+
                                                     </ol>
                                                 </td>
 
@@ -210,13 +217,8 @@
                     method: 'get',
                     success: (result) => {
                         if (result) {
-                            swal("Done", "The category is deleted!", "success", {
-                                button: "OK",
-                            }).then(() => {
-
-                                location.reload()
-                            })
-
+                            sessionStorage.setItem("mainCatDeleted", "true");
+                            location.reload()
                         } else {
                             console.log('Failed to delete category')
                         }
@@ -239,17 +241,12 @@
             if (willDelete) {
 
                 $.ajax({
-                    url: '/admin/delete-subCategory?catId='+mainCatId+'&subCatId='+subCatId,
+                    url: '/admin/delete-subCategory?catId=' + mainCatId + '&subCatId=' + subCatId,
                     method: 'get',
                     success: (result) => {
                         if (result) {
-                            swal("Done", "The category is deleted!", "success", {
-                                button: "OK",
-                            }).then(() => {
-
-                                location.reload()
-                            })
-
+                            sessionStorage.setItem("subCatDeleted", "true");
+                            location.reload()
                         } else {
                             console.log('Failed to delete category')
                         }
@@ -274,25 +271,25 @@
 
 
 
-    function fileValidation1(id) {
+    function fileValidation1() {
 
         const imagebox = document.getElementById('image-box')
         const crop_btn = document.getElementById('crop-btn')
-        var fileInput = document.getElementById(id + 'file1');
+        var fileInput = document.getElementById('file1');
 
         var filePath = fileInput.value;
         var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
-            document.getElementById(id + 'errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
+            document.getElementById('errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
             fileInput.value = '';
             return false;
 
         } else {
 
             //Image preview
-            document.getElementById(id + 'errMsg1').innerHTML = ''
+            document.getElementById('errMsg1').innerHTML = ''
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
             imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
@@ -319,7 +316,7 @@
 
                 cropper.getCroppedCanvas().toBlob((blob) => {
 
-                    let fileInputElement = document.getElementById(id + 'file1');
+                    let fileInputElement = document.getElementById('file1');
                     let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
                     let container = new DataTransfer();
 
@@ -327,7 +324,7 @@
                     const img = container.files[0]
                     var url = URL.createObjectURL(img)
                     fileInputElement.files = container.files;
-                    document.getElementById(id + 'imgview1').src = url
+                    document.getElementById('imgview1').src = url
                     document.getElementById('image-box').style.display = 'none'
                     document.getElementById('crop-btn').style.display = 'none'
                     document.getElementById('confirm-btn').style.display = 'block'
@@ -367,6 +364,19 @@
     $(document).ready(function () {
         $('#myTable').DataTable();
     });
+    <form action="/admin/add-subCat" method="post" enctype="multipart/form-data"
+        id="addSubCat">
+
+        <div class="row">
+
+            <div class="col-md-8">
+                <input name="Sub_Cat" class="form-control" type="text"
+                    placeholder="Sub-category name">
+            </div>
+
+            <div class="col-md-4">
+                <select name="mainCat_Id"
+                    style
 
 </script>
 
@@ -374,58 +384,63 @@
 
 <script>
 
-    //input field validation
-    $(document).ready(function () {
+                    //input field validation
+                    $(document).ready(function () {
 
-        $.validator.addMethod("alpha", function (value, element) {
-            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
-        });
+                    $.validator.addMethod("alpha", function (value, element) {
+                        return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+                    });
 
-        $('#addMainCat').validate({
+                $('#addMainCat').validate({
 
-            rules: {
+                    rules: {
 
-                Main_Cat: {
+                    Main_Cat: {
                     required: true,
-                    minlength: 5,
-                    alpha: true
+                minlength: 5,
+                alpha: true
                 }
 
             },
-            messages: {
-                Main_Cat: {
+                messages: {
+                    Main_Cat: {
                     required: "This field cannot be left blank",
-                    minlength: "Category name is too short",
-                    alpha: "Category name should only be of alphabets"
+                minlength: "Category name is too short",
+                alpha: "Category name should only be of alphabets"
                 }
-            },
-            submitHandler: function () {
-                alert(hi)
             }
+
         });
 
-        $('#addSubCat').validate({
+                $('#addSubCat').validate({
 
-            rules: {
+                    rules: {
 
-                Sub_Cat: {
+                    Sub_Cat: {
                     required: true,
-                    minlength: 5,
-                    alpha: true
+                minlength: 5,
+                alpha: true
                 },
                 Img1: {
                     required: true
+                },
+                mainCat_Id: {
+                    required: true
                 }
+
             },
 
-            messages: {
-                Sub_Cat: {
+                messages: {
+                    Sub_Cat: {
                     required: "This field cannot be left blank",
-                    minlength: "Category name is too short",
-                    alpha: "Category name should only be of alphabets"
+                minlength: "Category name is too short",
+                alpha: "Category name should only be of alphabets"
                 },
                 Img1: {
-                    required: "This field cannot be left blank"
+                    required: "Choose an image"
+                },
+                mainCat_Id: {
+                    required: "Select a main category"
                 }
             }
 

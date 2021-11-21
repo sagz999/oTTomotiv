@@ -1,60 +1,22 @@
 {{>userheader}}
 
 <section id="hero" class="hero">
-    <div id="hero-slider" class="hero-slider" data-ride="carousel">
 
-        {{#each Ads}}
-        <a href="/shop-by-offer?offerName={{this.Offer}}">
-            <div class="slide">
+  <div id="hero-slider" class="hero-slider">
 
-                <div class="bg-section">
+    {{#each Ads}}
+    
+    <a href="/shop-by-offer?offerName={{this.Offer}}">
+      <div class="slide">
+        <div class="bg-section">
+          <img src="/Ad-Images/{{this._id}}Ad_img.jpg" alt="Background" />
+        </div>
+      </div>
+    </a>
+    
+    {{/each}}
 
-                    <img src="/Ad-Images/{{this._id}}Ad_img.jpg" alt="Background" />
-
-                </div>
-
-                {{!-- <div class="container vertical-center">
-
-                    <div class="row">
-
-                        <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
-
-                            <div class="slide-content">
-
-                                <div class="slide-icon">
-                                    <i class="icon icon-Settings"></i>
-                                </div>
-
-                                <div class="slide-heading"> The Best Theme For Auto Shops </div>
-
-                                <div class="slide-title">
-                                    <h2>Say Hello To <span class="color-theme">Car Shop !</span></h2>
-                                </div>
-
-                                <div class="slide-desc"> Car Shop is a business theme. Perfectly suited for Auto
-                                    Mechanic,
-                                    Car Repair
-                                    Shops, Car Wash, Garages, Automobile Mechanicals, Mechanic Workshops, Auto Painting,
-                                    Auto Centres.
-                                </div>
-
-                                <div class="slide-action">
-                                    <a class="btn btn-primary" href="#">Check It Now</a>
-                                    <a class="btn btn-primary btn-white" href="#">Purchase Now</a>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div> --}}
-
-            </div>
-        </a>
-        {{/each}}
-
-    </div>
+  </div>
 
 </section>
 
@@ -185,7 +147,7 @@
     <div class="container heading" style="padding-bottom:20px;margin-bottom:0">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
-                <p class="subheading">HURRY GRAB THEM QUICKLY</p>
+                <p class="subheading">GRAB'EM BEFORE IT GETS VANISHED</p>
                 <h2>ON OFFER</h2>
             </div>
 
@@ -359,8 +321,8 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
-                <p class="subheading">introducing</p>
-                <h2>New Items</h2>
+                <p class="subheading">feel free to explore</p>
+                <h2>All Items</h2>
             </div>
 
         </div>
