@@ -107,9 +107,9 @@
                                                     placeholder="Car-brand name">
                                             </div>
                                             <div class="col-md-6">
-                                                <input name="Img1" type="file" data-toggle="modal"
-                                                    data-target="#exampleModalCenter" class="my-2 form-control-file"
-                                                    id="file1" onchange="return fileValidation1()">
+                                                <label class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter" for="file1">Brand logo</label>
+                                                <input name="Img1" type="file" class="my-2 form-control-file"
+                                                    id="file1" onchange="return fileValidation1()" hidden>
                                             </div>
                                         </div>
 
@@ -117,7 +117,7 @@
 
                                             <div class="col-md-6">
                                                 <button type="submit" id="confirm-btn"
-                                                    class="btn btn-primary btn-sm ml-2">
+                                                    class="btn btn-success ml-2">
                                                     <i class="material-icons">add_to_photos</i> Add car-brand</button>
                                             </div>
 
@@ -200,8 +200,8 @@
                                         <div class="row">
 
                                             <div class="col-md-6">
-
-                                                <input name="Img2" type="file" class="my-2 form-control-file" id="file2" onchange="return fileValidation2()" data-toggle="modal" data-target="#exampleModalCenter">
+                                                <label class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Modal logo</label>
+                                                <input name="Img2" type="file" class="my-2 form-control-file" id="file2" onchange="return fileValidation2()" hidden>
                                                     
                                             </div>
 
@@ -209,7 +209,7 @@
 
                                                 
                                                 <button type="submit" id="confirm-btn"
-                                                    class="btn btn-primary btn-sm ml-2">
+                                                    class="btn btn-success ml-2">
                                                     <i class="material-icons">add_to_photos</i> Add car-model</button>
                                                 
                                             </div>
@@ -413,10 +413,7 @@
         var filePath = fileInput.value;
         var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
-        if (!allowedExtensions.exec(filePath)) {
-
-            document.getElementById('errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
-            fileInput.value = '';
+        if (!allowedExtensions.exec(filePath)) {{{this._id}}
             return false;
 
         } else {
@@ -505,7 +502,7 @@
                 zoomable: false,
                 movable: false,
                 aspectRatio: 157 / 155,
-                //preview: '.preview',
+                //preview: '.preview',{{this._id}}
                 minCropBoxWidth: 180,
                 minCropBoxHeight: 240,
 
@@ -567,7 +564,7 @@
     $(document).ready(function () {
 
         $('#addCarBrand').validate({
-
+            ignore:"",
             rules: {
 
                 Car_Brand: {
@@ -592,7 +589,7 @@
         });
 
         $('#addCarModel').validate({
-
+            ignore:"",
             rules: {
 
                 Car_Model: {

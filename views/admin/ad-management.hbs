@@ -19,62 +19,58 @@
                             </div>
                             {{/if}}
 
-                            {{#if Err}}
-                            <div>
-                                <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
-                            </div>
-                            {{/if}}
+                            <form method="POST" action="/admin/add-newAd" enctype="multipart/form-data" id="addNewAd">
 
-                            <form method="POST" action="/admin/add-newAd" enctype="multipart/form-data"
-                                id="addNewAd">
+                                <div class="row container">
 
-                                <div class="row">
-
-                                    <div class="col-4">
-                                        <label class="d-flex justify-content-center" style="font-weight: bold;">Choose offer to which Ad belongs to</label>
-                                        <select  style="background:#202940;color:#8b92a9;border:none"
-                                            name="Offer" class="custom-select">
-                                            <option selected disabled>Choose...</option>
-                                            {{#each offers}}
-                                            <option>{{this.offerName}}</option>
-                                            {{/each}}
-
-                                        </select>
+                                    <div class="col-md-4 text-center">
+                                        <div class="row">
+                                            <label style="font-weight: bold;">Choose offer to which Ad belongs
+                                                to</label>
+                                        </div>
+                                        <div class="row">
+                                            <select style="background:#202940;color:#8b92a9;border:none" name="Offer"
+                                                class="custom-select">
+                                                <option value="" selected disabled>Choose...</option>
+                                                {{#each offers}}
+                                                <option value="{{this.offerName}}">{{this.offerName}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
                                     </div>
 
-                                    <div class="col-4">
+                                    <div class="col-md-4 text-center">
 
-                                        <div class="row d-flex justify-content-center">
+                                        <div class="row">
+                                            <div class="col-md-12">
 
-                                            <label style="font-weight:bold;">Ad-Image</label>
-
+                                                <label style="font-weight:bold;">Ad-Image</label>
+                                            </div>
                                         </div>
 
-                                        <div class="row d-flex justify-content-center">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                    class="btn btn-primary btn-sm" for="file1">Add Image</label>
+                                                <input name="Img1" type="file" class="my-2 form-control-file" id="file1"
+                                                    onchange="return fileValidation1()" hidden>
 
-                                            <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
-
+                                            </div>
                                         </div>
 
-                                        <div class="row d-flex justify-content-center">
-
-                                            {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                class="btn btn-primary btn-sm" for="file1">Add Image</label> --}}
-
-                                            <div id="errMsg1"></div>
-
-                                            <input  name="Img1" type="file" data-toggle="modal" data-target="#exampleModalCenter"
-                                                class="my-2 form-control-file" id="file1"
-                                                onchange="return fileValidation1()">
-
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <img src="" alt="" style="width: 200px; height:auto" id="imgview1">
+                                                <div id="errMsg1"></div>
+                                            </div>
                                         </div>
 
                                     </div>
 
-                                    <div class="col-4 d-flex justify-content-center">
+                                    <div class="col-md-4" style="display:flex;align-items: center;">
 
-                                        <button type="submit" id="confirm-btn" class="btn btn-primary btn-sm"><i
-                                                class="material-icons">add_to_photos</i></button>
+                                        <button type="submit" id="confirm-btn" class="btn btn-success btn-sm"><i
+                                                class="material-icons">add_to_photos</i> Add new ad</button>
 
                                     </div>
 
@@ -168,18 +164,18 @@
                                             {{this.Offer}}
                                         </td>
                                         <td>
-                                            <img style="width:50px;height:50px"
-                                                src="/Ad-Images/{{this._id}}Ad_img.jpg" alt="">
+                                            <img style="width:50px;height:50px" src="/Ad-Images/{{this._id}}Ad_img.jpg"
+                                                alt="">
                                         </td>
 
                                         <td>
 
                                             <button type="button" rel="tooltip" title="Remove Car Brand"
                                                 class="btn btn-white btn-link btn-sm"
-                                                onclick="return confirm('Do you want to this Ad for {{this.Offer}}?')">
-                                                <a href="/admin/delete-Ad?adId={{this._id}}">
+                                                onclick="confirmAdDelete('{{this.Offer}}','{{this._id}}')">
+                                                
                                                     <i class="material-icons">delete</i>
-                                                </a>
+                                               
                                             </button>
                                         </td>
                                     </tr>
@@ -302,7 +298,7 @@
 
     $(document).ready(function () {
         $('#myTable').DataTable();
-    });myTable
+    }); myTable
 
 </script>
 
@@ -314,23 +310,23 @@
     $(document).ready(function () {
 
         $('#addNewAd').validate({
-
+            ignore: "",
             rules: {
 
                 Offer: {
                     required: true
                 },
-                Img1:{
-                    required:true
+                Img1: {
+                    required: true
                 }
             },
 
-            messages:{
+            messages: {
                 Offer: {
                     required: "Choose an offer"
                 },
-                Img1:{
-                    required:"Choose an Ad image"
+                Img1: {
+                    required: "Choose an Ad image"
                 }
             }
 
@@ -345,3 +341,31 @@
         margin-left: 10px
     }
 </style>
+<script>
+    function confirmAdDelete(offerName, offerId) {
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the Ad for ${offerName} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/delete-Ad?adId='+offerId,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            sessionStorage.setItem("adDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete Ad')
+                        }
+                    }
+                })
+
+            }
+        });
+    }
+</script>

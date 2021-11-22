@@ -234,9 +234,9 @@ router.get('/ad-management', verifyLog, async(req, res) => {
     let offers = await userHelper.fetchOffers()
     let Ads = await productHelper.fetchAllAds()
 
-    res.render('admin/ad-management', { title: 'Ad Managemnet', isAdmin: true, offers, Ads, Msg: req.session.addMsg, Err: req.session.delMsg })
+    res.render('admin/ad-management', { title: 'Ad Managemnet', isAdmin: true, offers, Ads, Msg: req.session.addMsg})
     req.session.addMsg = false
-    req.session.delMsg = false
+    
 
 })
 
@@ -257,8 +257,7 @@ router.get('/delete-Ad/', verifyLog, (req, res) => {
 
     productHelper.delAd(req.query.adId).then(() => {
 
-        req.session.delMsg = "DELETED AD"
-        res.redirect('/admin/ad-management')
+        res.json(true)
 
     })
 

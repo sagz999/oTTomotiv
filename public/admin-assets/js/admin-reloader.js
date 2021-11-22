@@ -14,5 +14,8 @@ window.onload = function() {
     }else if (sessionStorage.getItem("carModelDeleted")) {
         sessionStorage.removeItem("carModelDeleted");
         carModelDeleteNotification();
+    }else if (sessionStorage.getItem("adDeleted")) {
+        sessionStorage.removeItem("adDeleted");
+        adDeleteNotification();
     }
 }

@@ -51,6 +51,7 @@
                                                 <div class="modal-body d-flex justify-content-center">
 
                                                     <form class="text-center" id="offer-form">
+                                                        
                                                         <label for="offerName" style="color: black;">Offer Name</label>
                                                         <input id="offerName" class="form-control" name="offerName"
                                                             type="text" placeholder="Enter The offer Name"
@@ -76,6 +77,7 @@
                                                         <label for="expiryDate" class="mt-4"
                                                             style="color: black;">Expiry
                                                             Date</label>
+                                                           
                                                         <input id="expiryDate" class="form-control " name="expiryDate"
                                                             type="date" style="display: block;color: black;">
 
@@ -231,7 +233,7 @@
     $(document).ready(function () {
 
         $('#offer-form').validate({
-
+           
             rules: {
 
                 offerName: {

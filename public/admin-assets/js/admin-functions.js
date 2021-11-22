@@ -102,3 +102,24 @@ function carModelDeleteNotification() {
     }
     toastr["success"]("Deleted car model")
 }
+
+function adDeleteNotification() {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": false,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "show",
+        "hideMethod": "hide"
+    }
+    toastr["success"]("Ad deleted")
+}
