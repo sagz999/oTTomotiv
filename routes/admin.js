@@ -373,8 +373,7 @@ router.post('/add-carBrand', (req, res) => {
 
 router.get('/delete-carBrand/', verifyLog, (req, res) => {
     productHelper.deleteCarBrand(req.query.id).then(() => {
-        req.session.delMsg = 'BRAND DELETED'
-        res.redirect('/admin/car-brands')
+        res.json(true)
     })
 })
 
@@ -393,9 +392,7 @@ router.post('/add-carModel', (req, res) => {
 
 router.get('/delete-carModel/', (req, res) => {
     productHelper.deleteCarModel(req.query.brandId, req.query.modelId).then(() => {
-        req.session.delMsg = 'CAR-MODEL DELETED'
-        res.redirect('/admin/car-brands')
-
+        res.json(true)
     })
 })
 

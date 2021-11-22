@@ -171,6 +171,7 @@ module.exports = {
 
             db.get().collection(collection.CAR_BRAND_COLLECTION).insertOne(newCarBrand).then((data) => {
                 resolve(data.insertedId)
+
             })
 
         })

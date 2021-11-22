@@ -31,7 +31,7 @@
                                         </div>
                                         <div class="row text-center">
 
-                                            <button type="submit" class="btn btn-primary btn-sm">
+                                            <button type="submit" class="btn btn-success">
                                                 <i class="material-icons">add_to_photos</i> Add Category</button>
 
                                         </div>
@@ -63,19 +63,27 @@
 
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-8">
-                                                <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
+                                            <div class="col-md-3">
 
-                                                <div id="errMsg1"></div>
+                                                <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                    class="btn btn-primary btn-sm" for="file1">Add Image</label>
+
                                                 <input name="Img1" type="file" class="my-2 form-control-file" id="file1"
-                                                    onchange="return fileValidation1()" data-toggle="modal"
-                                                    data-target="#exampleModalCenter">
+                                                    onchange="return fileValidation1()" hidden>
+
                                             </div>
-                                            <div class="col-md-4" style="display: flex;align-items: center;">
-                                                <button type="submit" class="btn btn-primary btn-sm" id="confirm-btn">
-                                                    <i class="material-icons">add_to_photos</i> Add subcategory</button>
+
+                                            <div class="col-md-3">
+                                                <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
+                                                <div id="errMsg1"></div>
+                                            </div>
+
+                                            <div class="col-md-6" >
+                                                <button type="submit" class="btn btn-success" id="confirm-btn">
+                                                    <i class="material-icons">add_to_photos</i> Add sub-category</button>
                                             </div>
                                         </div>
+
 
                                     </form>
 
@@ -364,19 +372,7 @@
     $(document).ready(function () {
         $('#myTable').DataTable();
     });
-    <form action="/admin/add-subCat" method="post" enctype="multipart/form-data"
-        id="addSubCat">
 
-        <div class="row">
-
-            <div class="col-md-8">
-                <input name="Sub_Cat" class="form-control" type="text"
-                    placeholder="Sub-category name">
-            </div>
-
-            <div class="col-md-4">
-                <select name="mainCat_Id"
-                    style
 
 </script>
 
@@ -384,42 +380,44 @@
 
 <script>
 
-                    //input field validation
-                    $(document).ready(function () {
+    //input field validation
+    $(document).ready(function () {
 
-                    $.validator.addMethod("alpha", function (value, element) {
-                        return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
-                    });
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
 
-                $('#addMainCat').validate({
+        $('#addMainCat').validate({
 
-                    rules: {
+            rules: {
 
-                    Main_Cat: {
+                Main_Cat: {
                     required: true,
-                minlength: 5,
-                alpha: true
+                    minlength: 5,
+                    alpha: true
                 }
 
             },
-                messages: {
-                    Main_Cat: {
+            messages: {
+                Main_Cat: {
                     required: "This field cannot be left blank",
-                minlength: "Category name is too short",
-                alpha: "Category name should only be of alphabets"
+                    minlength: "Category name is too short",
+                    alpha: "Category name should only be of alphabets"
                 }
             }
 
         });
 
-                $('#addSubCat').validate({
+        $('#addSubCat').validate({
 
-                    rules: {
+            ignore:"",
 
-                    Sub_Cat: {
+            rules: {
+
+                Sub_Cat: {
                     required: true,
-                minlength: 5,
-                alpha: true
+                    minlength: 5,
+                    alpha: true
                 },
                 Img1: {
                     required: true
@@ -430,11 +428,11 @@
 
             },
 
-                messages: {
-                    Sub_Cat: {
+            messages: {
+                Sub_Cat: {
                     required: "This field cannot be left blank",
-                minlength: "Category name is too short",
-                alpha: "Category name should only be of alphabets"
+                    minlength: "Category name is too short",
+                    alpha: "Category name should only be of alphabets"
                 },
                 Img1: {
                     required: "Choose an image"

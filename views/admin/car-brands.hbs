@@ -23,8 +23,8 @@
                         {{/if}}
                         <div class="card-body text-left">
 
-                            <div class="row">
-                                <div class="col">
+                            {{!-- <div class="row">
+                                <div class="col-md-12">
 
                                     <div class="d-flex ml-3">
                                         <form action="/admin/add-carBrand" style="display: flex;" method="post"
@@ -41,14 +41,9 @@
 
                                             <div>
 
-                                                <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                    class="btn btn-primary btn-sm" for="file1">Logo Image</label>
-
-
-
-                                                <input style="display:none" name="Img1" type="file"
-                                                    class="my-2 form-control-file" id="file1"
-                                                    onchange="return fileValidation1()">
+                                                <input name="Img1" type="file" data-toggle="modal"
+                                                    data-target="#exampleModalCenter" class="my-2 form-control-file"
+                                                    id="file1" onchange="return fileValidation1()">
                                                 <div id="errMsg1"></div>
 
                                             </div>
@@ -72,9 +67,6 @@
                                                             <h4 class="modal-title" style="font-weight: bold;"
                                                                 id="exampleModalLongTitle">Crop
                                                                 Image</h4>
-
-
-
                                                         </div>
 
                                                         <div class="modal-body">
@@ -100,7 +92,148 @@
 
                                         </form>
                                     </div>
+                                </div>
+                            </div> --}}
 
+                            <div class="row">
+                                <div class="col-md-6 text-center">
+                                    <label style="font-weight: bold;color:#fff">Add car-brand</label>
+                                    <form action="/admin/add-carBrand" method="post" enctype="multipart/form-data"
+                                        id="addCarBrand">
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input name="Car_Brand" class="form-control" type="text"
+                                                    placeholder="Car-brand name">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input name="Img1" type="file" data-toggle="modal"
+                                                    data-target="#exampleModalCenter" class="my-2 form-control-file"
+                                                    id="file1" onchange="return fileValidation1()">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+                                                <button type="submit" id="confirm-btn"
+                                                    class="btn btn-primary btn-sm ml-2">
+                                                    <i class="material-icons">add_to_photos</i> Add car-brand</button>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
+                                                <div id="errMsg1"></div>
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Modal for cropping-->
+
+                                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+
+                                                        <h4 class="modal-title" style="font-weight: bold;"
+                                                            id="exampleModalLongTitle">Crop
+                                                            Image</h4>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <div id="image-box" style="display:none;"></div>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+
+                                                        <button onclick="buttonDisplay()" type="button"
+                                                            class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                        <button id="crop-btn" data-dismiss="modal" type="button"
+                                                            class="btn btn-primary">Crop</button>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                                <div class="col-md-6 text-center">
+
+                                    <label style="font-weight: bold;color:#fff">Add car-model</label>
+
+                                    <form action="/admin/add-carModel" method="post"
+                                        enctype="multipart/form-data" id="addCarModel">
+
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+
+                                                <select name="carBrand_Id"
+                                                    style="background:#202940;color:#8b92a9;border:none">
+                                                    <option value="" selected disabled>Choose a brand</option>
+                                                    {{#each carBrands}}
+                                                    <option value="{{this._id}}">{{this.Car_Brand}}</option>
+                                                    {{/each}}
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <input name="Car_Model" class="form-control" type="text"
+                                                    placeholder="Car-model name">
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+
+                                                <input name="Img2" type="file" class="my-2 form-control-file" id="file2" onchange="return fileValidation2()" data-toggle="modal" data-target="#exampleModalCenter">
+                                                    
+                                            </div>
+
+                                            <div class="col-md-6">
+
+                                                
+                                                <button type="submit" id="confirm-btn"
+                                                    class="btn btn-primary btn-sm ml-2">
+                                                    <i class="material-icons">add_to_photos</i> Add car-model</button>
+                                                
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+
+                                            
+
+                                                <img src="" alt="" style="width:50px; height:auto;margin-left:15px" id="imgview2">
+                                                <div id="errMsg2"></div>
+
+                                            
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 30px;">
+                                <div class="col-md-12">
                                     <table class="table table-dark" id="myTable">
                                         <thead>
                                             <tr>
@@ -121,10 +254,10 @@
 
                                                     <span><button type="button" rel="tooltip" title="Remove car-brand"
                                                             class="btn btn-white btn-link btn-sm p-0 pb-1"
-                                                            onclick="return confirm('Do you want to delete - {{this.Car_Brand}} ?')">
-                                                            <a href="/admin/delete-carBrand?id={{this._id}}">
-                                                                <i class="material-icons">delete</i>
-                                                            </a>
+                                                            onclick="confirmcarBrandDelete('{{this.Car_Brand}}','{{this._id}}')">
+
+                                                            <i class="material-icons">delete</i>
+
                                                         </button></span>
                                                     <span><img style="width:50px;height:50px"
                                                             src="/car-brand-logos/{{this._id}}CBL.jpg" alt=""></span>
@@ -134,47 +267,6 @@
 
                                                 <td>
                                                     <ol>
-                                                        <div class="d-flex ml-3">
-                                                            <form action="/admin/add-carModel" style="display: flex;"
-                                                                method="post" enctype="multipart/form-data" id="addCarModel">
-
-                                                                <input name="carBrand_Id" class="form-control"
-                                                                    type="hidden" value="{{this._id}}">
-
-                                                                <input name="Car_Model" class="form-control" type="text"
-                                                                    placeholder="Add car model">
-
-                                                                <div class="mx-2">
-
-                                                                    <img src="" alt="" style="width: 50px; height:auto"
-                                                                        id="{{this._id}}imgview2">
-
-                                                                </div>
-
-                                                                <div>
-
-                                                                    <label data-toggle="modal"
-                                                                        data-target="#exampleModalCenter"
-                                                                        class="btn btn-primary btn-sm" for="{{this._id}}file2">Logo
-                                                                        Image</label>
-
-
-
-                                                                    <input style="display:none" name="Img2" type="file"
-                                                                        class="my-2 form-control-file" id="{{this._id}}file2"
-                                                                        onchange="return fileValidation2('{{this._id}}')">
-                                                                    <div id="{{this._id}}errMsg2"></div>
-
-                                                                </div>
-
-
-                                                                <button type="submit" id="confirm-btn"
-                                                                    class="btn btn-primary btn-sm ml-2">
-                                                                    <i class="material-icons">add_to_photos</i>
-                                                                </button>
-
-                                                            </form>
-                                                        </div>
 
                                                         {{#each this.Car_Model}}
 
@@ -183,11 +275,10 @@
 
                                                             <button type="button" rel="tooltip" title="Remove car-model"
                                                                 class="btn btn-white btn-link btn-sm p-0 pb-1 mr-4"
-                                                                onclick="return confirm('Do you want to delete- {{this.Model_Name}} ?')">
-                                                                <a
-                                                                    href="/admin/delete-carModel?brandId={{../this._id}}&modelId={{this.modelId}}">
+                                                                onclick="confirmcarModelDelete('{{this.Model_Name}}','{{../this._id}}','{{this.modelId}}')">
+                                                                
                                                                     <i class="material-icons">delete</i>
-                                                                </a>
+                                                               
                                                             </button>
 
                                                             <li><span><img style="width:50px;height:50px"
@@ -240,6 +331,67 @@
 
     }
 </style>
+<script>
+
+    function confirmcarBrandDelete(carBrand, id) {
+
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the brand ${carBrand} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/delete-carBrand?id=' + id,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            sessionStorage.setItem("carBrandDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete category')
+                        }
+                    }
+                })
+
+            }
+        });
+
+    }
+
+    function confirmcarModelDelete(modelName,carBrandId,carModelId) {
+
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the brand ${modelName} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url:'/admin/delete-carModel?brandId='+carBrandId+'&modelId='+carModelId,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            sessionStorage.setItem("carModelDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete category')
+                        }
+                    }
+                })
+
+            }
+        });
+
+    }
+
+</script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
@@ -318,25 +470,25 @@
 
     }
 
-    function fileValidation2(id) {
+    function fileValidation2() {
 
         const imagebox = document.getElementById('image-box')
         const crop_btn = document.getElementById('crop-btn')
-        var fileInput = document.getElementById(id+'file2');
+        var fileInput = document.getElementById('file2');
 
         var filePath = fileInput.value;
         var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
 
-            document.getElementById(id+'errMsg2').innerHTML = '<p style="color:red;">Unsupported file type</p>'
+            document.getElementById('errMsg2').innerHTML = '<p style="color:red;">Unsupported file type</p>'
             fileInput.value = '';
             return false;
 
         } else {
 
             //Image preview
-            document.getElementById(id+'errMsg2').innerHTML = ''
+            document.getElementById('errMsg2').innerHTML = ''
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
             imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
@@ -363,7 +515,7 @@
 
                 cropper.getCroppedCanvas().toBlob((blob) => {
 
-                    let fileInputElement = document.getElementById(id+'file2');
+                    let fileInputElement = document.getElementById('file2');
                     let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
                     let container = new DataTransfer();
 
@@ -371,7 +523,7 @@
                     const img = container.files[0]
                     var url = URL.createObjectURL(img)
                     fileInputElement.files = container.files;
-                    document.getElementById(id+'imgview2').src = url
+                    document.getElementById('imgview2').src = url
                     document.getElementById('image-box').style.display = 'none'
                     document.getElementById('crop-btn').style.display = 'none'
                     document.getElementById('confirm-btn').style.display = 'block'
@@ -422,18 +574,18 @@
                     required: true,
                     minlength: 2
                 },
-                Img1:{
-                    required:true
+                Img1: {
+                    required: true
                 }
 
             },
-            messages:{
+            messages: {
                 Main_Cat: {
                     required: "This field cannot be left blank",
                     minlength: "Brand name is too short",
                 },
-                Img1:{
-                    required:"Please choose an image"
+                Img1: {
+                    required: "Please choose an image"
                 }
             }
 
@@ -447,19 +599,25 @@
                     required: true,
                     minlength: 2
                 },
-                Img2:{
+                carBrand_Id:{
                     required:true
+                },
+                Img2: {
+                    required: true
                 }
 
             },
 
-            messages:{
+            messages: {
                 Car_Model: {
                     required: "This field cannot be left blank",
                     minlength: "Model name is too short"
                 },
-                Img2:{
-                    required:"This field cannot be left blank"
+                carBrand_Id:{
+                    required:"Choose a brand"
+                },
+                Img2: {
+                    required: "This field cannot be left blank"
                 }
             }
 

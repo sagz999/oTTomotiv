@@ -8,5 +8,11 @@ window.onload = function() {
     } else if (sessionStorage.getItem("prodBrandDeleted")) {
         sessionStorage.removeItem("prodBrandDeleted");
         prodBrandDeleteNotification();
+    } else if (sessionStorage.getItem("carBrandDeleted")) {
+        sessionStorage.removeItem("carBrandDeleted");
+        carBrandDeleteNotification();
+    }else if (sessionStorage.getItem("carModelDeleted")) {
+        sessionStorage.removeItem("carModelDeleted");
+        carModelDeleteNotification();
     }
 }

@@ -22,44 +22,42 @@
                             <form method="POST" action="/admin/add-prodBrand" enctype="multipart/form-data"
                                 id="addProdBrand">
 
-                                <div class="row">
+                                <div class="row text-center">
 
-                                    <div class="col-4">
-                                        <label class="d-flex justify-content-center" style="font-weight: bold;">Brand
+                                    <div class="col-md-4">
+
+                                        <label style="font-weight: bold;">Brand
                                             Name</label>
                                         <input name="Prod_Brand" type="text" class="form-control">
                                     </div>
 
-                                    <div class="col-4">
-
-                                        <div class="row d-flex justify-content-center">
-
-                                            <label style="font-weight:bold;">Logo Image</label>
-
+                                    <div class="col-md-4">
+                                        <div class="row text-center">
+                                            <div class="col-md-12">
+                                                <label style="font-weight:bold;">Logo Image</label>
+                                            </div>
                                         </div>
-
-                                        <div class="row d-flex justify-content-center">
-
+                                        <div class="row text-center">
+                                            <div class="col-md-12">
+                                                <label class="btn btn-primary btn-sm" data-toggle="modal"
+                                                    data-target="#exampleModalCenter" for="file1">logo</label>
+                                                <input name="Img1" type="file" class="my-2 form-control-file" id="file1"
+                                                    onchange="return fileValidation1()" hidden>
+                                            </div>
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col-md-12">
                                             <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
-
+                                            <div class="row" id="errMsg1"></div>
+                                            </div>
                                         </div>
-
-                                        <div class="row d-flex justify-content-center">
-
-                                            <div id="errMsg1"></div>
-
-                                            <input name="Img1" type="file"
-                                                class="my-2 form-control-file" id="file1"
-                                                onchange="return fileValidation1()" data-toggle="modal" data-target="#exampleModalCenter">
-
-                                        </div>
-
+                                        
                                     </div>
 
-                                    <div class="col-4 d-flex justify-content-center">
+                                    <div class="col-md-4" style="display:flex;align-items: center;">
 
-                                        <button type="submit" id="confirm-btn" class="btn btn-primary btn-sm"><i
-                                                class="material-icons">add_to_photos</i></button>
+                                        <button type="submit" id="confirm-btn" class="btn btn-success"><i
+                                                class="material-icons">add_to_photos</i> Add product-brand</button>
 
                                     </div>
 
@@ -153,8 +151,8 @@
                                             {{this.Prod_Brand}}
                                         </td>
                                         <td>
-                                            <img style="width:50px;height:50px" src="/product-brand-logos/{{this._id}}PBL.jpg"
-                                                alt="">
+                                            <img style="width:50px;height:50px"
+                                                src="/product-brand-logos/{{this._id}}PBL.jpg" alt="">
                                         </td>
 
                                         <td>
@@ -162,9 +160,9 @@
                                             <button type="button" rel="tooltip" title="Remove Car Brand"
                                                 class="btn btn-white btn-link btn-sm"
                                                 onclick="confirmProdBrandDelete('{{this._id}}','{{this.Prod_Brand}}')">
-                                                
-                                                    <i class="material-icons">delete</i>
-                                                
+
+                                                <i class="material-icons">delete</i>
+
                                             </button>
                                         </td>
                                     </tr>
@@ -187,14 +185,14 @@
 
 
         {{>admin-footer}}
-       
+
 
     </div>
 </div>
 
 <script>
 
-    function confirmProdBrandDelete(id,prodBrand){
+    function confirmProdBrandDelete(id, prodBrand) {
 
         swal({
             title: "Are you sure?",
@@ -333,31 +331,31 @@
     $(document).ready(function () {
 
         $('#addProdBrand').validate({
-
+            ignore:"",
             rules: {
 
                 Prod_Brand: {
                     required: true,
                     minlength: 2
                 },
-                Img1:{
-                    required:true
+                Img1: {
+                    required: true
                 }
 
             },
 
-            messages:{
+            messages: {
 
                 Prod_Brand: {
                     required: "This field cannot be left blank",
                     minlength: "Brand name is too short"
                 },
-                Img1:{
-                    required:"This field cannot be left blank"
+                Img1: {
+                    required: "Choose a logo image"
                 }
 
             }
-            
+
         })
     })
 
