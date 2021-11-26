@@ -125,13 +125,13 @@
 
                                                 <div class="row">
 
-                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file1">Add Image</label>
-                                                    --}}
-                                                    <div id="errMsg1"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file1">Image-1</label>
+                                                   
+                                                    <input
                                                         name="Img1" type="file" class="my-2 form-control-file"
-                                                        id="file1" onchange="return fileValidation1()">
+                                                        id="file1" onchange="return fileValidation1()" hidden>
+                                                        <div id="errMsg1"></div>
 
                                                 </div>
 
@@ -148,13 +148,14 @@
 
                                                 <div class="row">
 
-                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file2">Add Image</label>
-                                                    --}}
-                                                    <div id="errMsg2"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file2">Image-2</label>
+                                                   
+                                                    
+                                                    <input
                                                         name="Img2" type="file" class="my-2 form-control-file"
-                                                        id="file2" onchange="return fileValidation2()">
+                                                        id="file2" onchange="return fileValidation2()" hidden>
+                                                        <div id="errMsg2"></div>
 
                                                 </div>
 
@@ -173,13 +174,14 @@
 
                                                 <div class="row">
 
-                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file3">Add Image</label>
-                                                    --}}
-                                                    <div id="errMsg3"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file3">Image-3</label>
+                                                   
+                                                   
+                                                    <input
                                                         name="Img3" type="file" class="my-2 form-control-file"
-                                                        id="file3" onchange="return fileValidation3()">
+                                                        id="file3" onchange="return fileValidation3()" hidden>
+                                                         <div id="errMsg3"></div>
 
                                                 </div>
 
@@ -195,13 +197,14 @@
 
                                                 <div class="row">
 
-                                                    {{!-- <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file4">Add Image</label>
-                                                    --}}
-                                                    <div id="errMsg4"></div>
-                                                    <input data-toggle="modal" data-target="#exampleModalCenter"
+                                                    <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                        class="btn btn-primary btn-sm" for="file4">Image-4</label>
+                                                   
+                                                    
+                                                    <input
                                                         name="Img4" type="file" class="my-2 form-control-file"
-                                                        id="file4" onchange="return fileValidation4()">
+                                                        id="file4" onchange="return fileValidation4()" hidden>
+                                                        <div id="errMsg4"></div>
 
                                                 </div>
 
@@ -582,7 +585,7 @@
     $(document).ready(function () {
 
         $('#addProd').validate({
-
+            ignore:"",
             rules: {
 
                 Product_Name: {
@@ -720,5 +723,17 @@
         color: red !important;
         font-size: small !important;
 
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 </style>

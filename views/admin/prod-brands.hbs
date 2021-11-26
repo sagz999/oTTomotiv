@@ -41,6 +41,7 @@
                                             <div class="col-md-12">
                                                 <label class="btn btn-primary btn-sm" data-toggle="modal"
                                                     data-target="#exampleModalCenter" for="file1">logo</label>
+                                                    
                                                 <input name="Img1" type="file" class="my-2 form-control-file" id="file1"
                                                     onchange="return fileValidation1()" hidden>
                                             </div>
@@ -157,7 +158,7 @@
 
                                         <td>
 
-                                            <button type="button" rel="tooltip" title="Remove Car Brand"
+                                            <button type="button" rel="tooltip" title="Remove Product Brand"
                                                 class="btn btn-white btn-link btn-sm"
                                                 onclick="confirmProdBrandDelete('{{this._id}}','{{this.Prod_Brand}}')">
 
@@ -211,7 +212,7 @@
                             sessionStorage.setItem("prodBrandDeleted", "true");
                             location.reload()
                         } else {
-                            console.log('Failed to delete category')
+                            console.log('Failed to delete prodBrand')
                         }
                     }
                 })

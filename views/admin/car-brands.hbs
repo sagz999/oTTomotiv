@@ -200,7 +200,7 @@
                                         <div class="row">
 
                                             <div class="col-md-6">
-                                                <label class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Modal logo</label>
+                                                <label class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter" for="file2">Model-image</label>
                                                 <input name="Img2" type="file" class="my-2 form-control-file" id="file2" onchange="return fileValidation2()" hidden>
                                                     
                                             </div>
@@ -413,7 +413,10 @@
         var filePath = fileInput.value;
         var allowedExtensions = /(\.jpg|\.jpeg|\.webp|\.png)$/i;
 
-        if (!allowedExtensions.exec(filePath)) {{{this._id}}
+        if (!allowedExtensions.exec(filePath)){
+
+            document.getElementById('errMsg1').innerHTML = '<p style="color:red;">Unsupported file type</p>'
+            fileInput.value = '';
             return false;
 
         } else {

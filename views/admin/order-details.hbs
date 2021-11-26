@@ -108,7 +108,7 @@
                                                         class="custom-select tm-select-accounts" name="status"
                                                         id="{{this.product._id}}">
 
-                                                        <option selected value="Cancelled" disabled>Cancelled</option>  
+                                                        <option selected value="Cancelled" disabled>Cancelled</option>
 
                                                     </select>
                                                     {{/eq}}
@@ -116,9 +116,9 @@
                                                     {{#eq this.status 'Delivered'}}
                                                     <select style="background-color:#3C4858;color:#8b92a9;border:none"
                                                         class="custom-select tm-select-accounts" name="status"
-                                                        id="{{this.product._id}}"> 
+                                                        id="{{this.product._id}}">
 
-                                                        <option selected value="Delivered" disabled>Delivered</option>   
+                                                        <option selected value="Delivered" disabled>Delivered</option>
 
                                                     </select>
                                                     {{/eq}}
@@ -200,10 +200,10 @@
                                                     {{#eq order.Status 'Cancelled'}}
                                                     <select style="background-color:#3C4858;color:#8b92a9;border:none"
                                                         class="custom-select tm-select-accounts" name="status"
-                                                        id="status" >
+                                                        id="status">
 
                                                         <option selected value="Cancelled" disabled>Cancelled</option>
-                                                        
+
                                                     </select>
                                                     {{/eq}}
 
@@ -284,50 +284,71 @@
 
 <script>
 
-    function orderStatus(orderId,prodId) {
-
-
+    function orderStatus(orderId, prodId) {
 
         let statusUpdate = document.getElementById(prodId).value
 
-        $.ajax({
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to change the status to "${statusUpdate}" ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
 
-            url: '/admin/Change-orderStat?orderId=' + orderId + '&prodId=' + prodId,
+                $.ajax({
 
-            data: {
-                status: statusUpdate
-            },
+                    url: '/admin/Change-orderStat?orderId=' + orderId + '&prodId=' + prodId,
 
-            method: 'post',
-            success:()=>{
-                location.reload()
+                    data: {
+                        status: statusUpdate
+                    },
+
+                    method: 'post',
+                    success: () => {
+                        location.reload()
+                    }
+
+                })
+
             }
-
-        })
+        });
 
     }
 
     function orderStatus1(orderId) {
-        
 
         let statusUpdate = document.getElementById('status').value
 
-        $.ajax({
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to change the status to "${statusUpdate}" ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
 
-            url: '/admin/Change-buyNowOrderStat',
+                $.ajax({
 
-            data: {
-                orderId:orderId,
-                status: statusUpdate
-            },
+                    url: '/admin/Change-buyNowOrderStat',
 
-            method: 'post',
-            success:()=>{
-                location.reload()
+                    data: {
+                        orderId: orderId,
+                        status: statusUpdate
+                    },
+
+                    method: 'post',
+                    success: () => {
+                        location.reload()
+                    }
+
+
+                })
+
             }
-
-  
-        })
+        });
 
     }
 

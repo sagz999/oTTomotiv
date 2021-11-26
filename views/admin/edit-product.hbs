@@ -14,8 +14,8 @@
                         </div>
                         <div class="card-body text-left">
 
-                            <form method="POST" action="/admin/edit-product/{{product._id}}"
-                                enctype="multipart/form-data">
+                            <form method="POST" action="/admin/edit-product?prodId={{product._id}}"
+                                enctype="multipart/form-data" id="editProduct">
 
                                 <div class="form-row my-1">
 
@@ -112,7 +112,7 @@
                                     <div class="col-md-1 my-1"></div>
 
                                     <div class="col-md-6 my-1">
-                                        <label style="font-weight:bold;">Add Images</label>
+                                        <label style="font-weight:bold;">Edit Images</label>
                                         <div class="row">
 
                                             <div class="col-md-6 my-1">
@@ -125,12 +125,12 @@
                                                 <div class="row">
 
                                                     <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file1">Add Image</label>
+                                                        class="btn btn-primary btn-sm" for="file1">Image-1</label>
                                                     <div id="errMsg1"></div>
 
-                                                    <input style="display:none" name="Img1" type="file"
+                                                    <input name="Img1" type="file"
                                                         class="my-2 form-control-file" id="file1"
-                                                        onchange="return fileValidation1()">
+                                                        onchange="return fileValidation1()" hidden>
 
                                                 </div>
 
@@ -147,11 +147,11 @@
 
                                                 <div class="row">
                                                     <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file2">Add Image</label>
+                                                        class="btn btn-primary btn-sm" for="file2">Image-2</label>
                                                     <div id="errMsg2"></div>
-                                                    <input style="display:none" name="Img2" type="file"
+                                                    <input name="Img2" type="file"
                                                         class="my-2 form-control-file" id="file2"
-                                                        onchange="return fileValidation2()">
+                                                        onchange="return fileValidation2()" hidden>
                                                 </div>
 
                                             </div>
@@ -169,11 +169,11 @@
 
                                                 <div class="row">
                                                     <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file3">Add Image</label>
+                                                        class="btn btn-primary btn-sm" for="file3">Image-3</label>
                                                     <div id="errMsg3"></div>
-                                                    <input style="display:none" name="Img3" type="file"
+                                                    <input name="Img3" type="file"
                                                         class="my-2 form-control-file" id="file3"
-                                                        onchange="return fileValidation3()">
+                                                        onchange="return fileValidation3()" hidden>
                                                 </div>
 
                                             </div>
@@ -188,11 +188,11 @@
 
                                                 <div class="row">
                                                     <label data-toggle="modal" data-target="#exampleModalCenter"
-                                                        class="btn btn-primary btn-sm" for="file4">Add Image</label>
+                                                        class="btn btn-primary btn-sm" for="file4">Image-4</label>
                                                     <div id="errMsg4"></div>
-                                                    <input style="display:none" name="Img4" type="file"
+                                                    <input name="Img4" type="file"
                                                         class="my-2 form-control-file" id="file4"
-                                                        onchange="return fileValidation4()">
+                                                        onchange="return fileValidation4()" hidden>
                                                 </div>
 
                                             </div>
@@ -280,6 +280,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
 <script>
 
@@ -639,5 +640,77 @@
             flex: 0 0 83.333333%;
             max-width: 83.333333%;
         }
+    }
+</style>
+
+<script>
+
+    //input field validation
+    $(document).ready(function () {
+
+        $('#editProduct').validate({
+            ignore:"",
+            rules: {
+
+                Product_Name: {
+                    required: true,
+                    minlength: 3
+                },
+                Stock: {
+                    required: true
+                },
+
+                Main_Category: {
+                    required: true
+                },
+
+                Sub_Category: {
+                    required: true
+                },
+
+                Product_Brand: {
+                    required: true
+                },
+
+                Car_Brand: {
+                    required: true
+                },
+
+                Car_Model: {
+                    required: true
+                },
+
+                Price: {
+                    required: true
+                },
+
+                Description: {
+                    required: true,
+                    minlength: 10
+                }
+
+
+            }
+        })
+    })
+
+</script>
+<style>
+    .error {
+        color: red !important;
+        font-size: small !important;
+
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 </style>

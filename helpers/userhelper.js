@@ -1729,21 +1729,27 @@ module.exports = {
             offerData.offerDiscount = parseInt(offerData.offerDiscount)
 
             db.get().collection(collection.OFFER_COLLECTION).insertOne({
+
                 offerName: offerData.offerName,
                 subCategory: offerData.subCategory,
                 addedDate: new Date().toLocaleString('en-US').slice(0, 10),
                 expiryDate: new Date(offerData.expiryDate).getTime(),
+                expiryDateToDisplay:new Date(offerData.expiryDate).toLocaleString('en-US').slice(0, 10),
                 offerDiscount: offerData.offerDiscount
+
             }).then(() => {
 
                 db.get().collection(collection.PRODUCT_COLLECTION).updateMany(
+
                     { Sub_Category: offerData.subCategory },
+                    
                     {
                         $set: {
                             offer: offerData.offerDiscount,
                             offerName:offerData.offerName
                         }
                     }
+
                 ).then(() => {
 
                     db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: offerData.subCategory }).toArray().then((products) => {

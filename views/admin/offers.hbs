@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
 <div class="wrapper ">
     {{>admin-sidebar}}
     <div class="main-panel">
@@ -17,11 +17,7 @@
                             <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
                         </div>
                         {{/if}}
-                        {{#if Err}}
-                        <div>
-                            <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
-                        </div>
-                        {{/if}}
+                        
                         <div class="card-body text-left">
 
                             <div class="row">
@@ -50,19 +46,19 @@
 
                                                 <div class="modal-body d-flex justify-content-center">
 
-                                                    <form class="text-center" id="offer-form">
+                                                    <form class="text-center" action="/admin/add-new-offer" method="post" id="offerForm">
                                                         
                                                         <label for="offerName" style="color: black;">Offer Name</label>
                                                         <input id="offerName" class="form-control" name="offerName"
                                                             type="text" placeholder="Enter The offer Name"
-                                                            style="display: block;color: black;">
+                                                            style="color: black;">
 
                                                         <label for="subCategory" class="mt-4"
                                                             style="color: black;">Offer category</label><br>
                                                         <select style="color: black;" name="subCategory"
                                                             id="subCategory" onchange="checkOfferExist()">
 
-                                                            <option selected disabled>Choose a product</option>
+                                                            <option value="" selected disabled>Choose a product</option>
                                                             {{#each Categories}}
                                                             {{#each this.Sub_Cat}}
 
@@ -79,14 +75,14 @@
                                                             Date</label>
                                                            
                                                         <input id="expiryDate" class="form-control " name="expiryDate"
-                                                            type="date" style="display: block;color: black;">
+                                                            type="date" style="color: black;">
 
                                                         <label for="offerDiscount" class="mt-4"
                                                             style="color: black;">Discount rate (%)</label>
                                                         <input id="offerDiscount" class="form-control "
                                                             name="offerDiscount" type="number"
                                                             placeholder="Enter the discount rate"
-                                                            style="display: block;color: black;">
+                                                            style="color: black;">
 
                                                         <button type="button" class="btn btn-secondary mt-5"
                                                             data-dismiss="modal">Close</button>
@@ -104,7 +100,7 @@
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
                                                 <th class="text-center" scope="col">Offer_Name</th>
-                                                <th class="text-center" scope="col">Sub_Category</th>
+                                                <th class="text-center" scope="col">Sub-Category</th>
                                                 <th class="text-center" scope="col">Discount(%)</th>
                                                 <th class="text-center" scope="col">Created Date</th>
                                                 <th class="text-center" scope="col">Expiry Date</th>
@@ -132,7 +128,7 @@
                                                     {{this.addedDate}}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{this.expiryDate}}
+                                                    {{this.expiryDateToDisplay}}
                                                 </td>
                                                 <td class="text-center">
 
@@ -176,67 +172,19 @@
     </div>
 </div>
 
-
-
-<script>
-
-    function confirmDelete(offerId, offerName, subCat) {
-        swal({
-            title: "Are you sure?",
-            text: `Do you want remove "${offerName}" offer`,
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((confirmed) => {
-            if (confirmed) {
-                $.ajax({
-                    url: "/admin/delete-offer?offerId=" + offerId + "&subCat=" + subCat,
-                    method: "post",
-                    success: (status) => {
-                        swal("Deleted!", "The offer has been removed!", "success", {
-                            button: "OK",
-                        }).then(() => {
-                            location.reload()
-                        })
-                    }
-                })
-            }
-        })
-    }
-
-    function checkOfferExist(){
-
-       let subCat =document.getElementById('subCategory').value
-
-        $.ajax({
-
-            url:'/admin/check-offer-exist?subCat='+subCat,
-            method:'get',
-            success:(response)=>{
-                if(response){
-                    swal("Alert!", `Offer already exist for the selected category!`, "warning");
-                    document.getElementById('submitBtn').style.display='none'
-                }else{
-                    
-                    document.getElementById('submitBtn').style.display='inline'
-                }
-            }
-
-        })
-
-    }
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
 <script>
 
     $(document).ready(function () {
 
-        $('#offer-form').validate({
-           
+        $('#offerForm').validate({
+            
+           ignore:"",
             rules: {
 
                 offerName: {
+
                     required: true,
                     minlength: 4,
                     maxlength: 15
@@ -278,33 +226,67 @@
                     maxlength: "Invalid discount rate"
                 }
 
-            },
-
-            submitHandler: function () {
-
-                $.ajax({
-
-                    url: '/admin/add-new-offer',
-                    method: 'post',
-                    data: $('#offer-form').serialize(),
-                    success: (response) => {
-
-                        swal("Success!", "Added new offer!", "success", {
-                            button: "OK",
-                        }).then(() => {
-                            location.reload()
-                        })
-
-                    }
-
-                })
-
             }
-        })
+        });
 
     })
 
 </script>
+
+
+
+<script>
+
+    function confirmDelete(offerId, offerName, subCat) {
+        swal({
+            title: "Are you sure?",
+            text: `Do you want remove "${offerName}" offer`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((confirmed) => {
+            if (confirmed) {
+                $.ajax({
+                    url: "/admin/delete-offer?offerId=" + offerId +"&subCat="+ subCat,
+                    method: "get",
+                    success: (status) => {
+                         if (status) {
+                            sessionStorage.setItem("offerDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete offer')
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    function checkOfferExist(){
+
+       let subCat =document.getElementById('subCategory').value
+
+        $.ajax({
+
+            url:'/admin/check-offer-exist?subCat='+subCat,
+            method:'get',
+            success:(response)=>{
+                if(response){
+                    swal("Alert!", `Offer already exist for the selected category!`, "warning");
+                    document.getElementById('submitBtn').style.display='none'
+                }else{
+                    
+                    document.getElementById('submitBtn').style.display='inline'
+                }
+            }
+
+        })
+
+    }
+
+</script>
+
+
 
 <style>
     .error {
@@ -317,6 +299,18 @@
         font-weight: bold;
 
     }
+
+     /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 
 {{!-- data tables --}}
@@ -326,7 +320,6 @@
 <link rel="stylesheet" type="text/css"
     href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">
 
-<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
 
 <script type="text/javascript" charset="utf8"
     src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js" defer></script>

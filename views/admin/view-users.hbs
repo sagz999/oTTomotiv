@@ -64,10 +64,10 @@
                                                 </td> --}}
                                                 <td>
                                                     {{#if this.Status}}
-                                                    <a class="btn btn-danger btn-sm"
+                                                    <a class="btn btn-danger btn-sm" title="Block-user"
                                                         onclick="blockConfirm('{{this._id}}','{{this.Username}}','block')">Block</a>
                                                     {{else}}
-                                                    <a class="btn btn-success btn-sm"
+                                                    <a class="btn btn-success btn-sm" title="Unblock-user"
                                                         onclick="blockConfirm('{{this._id}}','{{this.Username}}','unblock')">Un-Block</a>
                                                     {{/if}}
 
@@ -114,7 +114,7 @@
         if (action == 'block') {
             swal({
                 title: "Are you sure?",
-                text: `Do you want to block user: ${userName} ?`,
+                text: `Do you want to block user "${userName}" ?`,
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
@@ -145,7 +145,7 @@
         } else {
             swal({
                 title: "Are you sure?",
-                text: `Do you want to Un-block user: ${userName} ?`,
+                text: `Do you want to Un-block user "${userName}" ?`,
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,

@@ -16,11 +16,7 @@
                             <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
                         </div>
                         {{/if}}
-                        {{#if Err}}
-                        <div>
-                            <h5 class="text-center mt-2" style="color:red;font-weight:normal">{{Err}}</h5>
-                        </div>
-                        {{/if}}
+
                         <div class="card-body text-left">
 
                             <div class="row">
@@ -68,10 +64,10 @@
 
                                                     <button type="button" rel="tooltip" title="Remove"
                                                         class="btn btn-white btn-link btn-sm"
-                                                        onclick="return confirm('Do you want to delete coupon - {{this.Coupon_Percentage}} ?')">
-                                                        <a href="/admin/delete-coupon?couponId={{this._id}}">
-                                                            <i class="material-icons">delete</i>
-                                                        </a>
+                                                        onclick="confirmCouponDelete('{{this.Coupon_Code}}','{{this._id}}')">
+
+                                                        <i class="material-icons">delete</i>
+
                                                     </button>
 
                                                 </td>
@@ -97,8 +93,6 @@
             </div>
 
         </div>
-
-
 
         {{>admin-footer}}
 
@@ -139,7 +133,7 @@
     //input field validation
     $(document).ready(function () {
 
-       
+
 
         $('#addCoupon').validate({
 
@@ -148,11 +142,11 @@
                 Coupon_Code: {
                     required: true,
                     minlength: 5,
-                    maxlength:8
+                    maxlength: 10
                 },
                 Coupon_Percentage: {
                     required: true,
-                    maxlength:3
+                    maxlength: 2
                 }
 
             },
@@ -160,7 +154,7 @@
                 Coupon_Code: {
                     required: "This field cannot be left blank",
                     minlength: "Coupon code is too short",
-                    maxlength:"Coupon code too long"
+                    maxlength: "Coupon code too long"
                 },
                 Coupon_Percentage: {
                     required: "This field cannot be left blank",
@@ -180,4 +174,47 @@
         font-size: small !important;
         margin-left: 10px
     }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
+
+<script>
+    function confirmCouponDelete(couponCode, couponId) {
+
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the coupon "${couponCode}" ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/delete-coupon?couponId=' + couponId,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            sessionStorage.setItem("couponDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete Coupon')
+                        }
+                    }
+                })
+
+            }
+        });
+
+    }
+</script>

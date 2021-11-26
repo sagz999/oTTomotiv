@@ -51,7 +51,7 @@
                                                     <a class="btn btn-primary btn-sm" href="">Orders</a>
                                                 </td> --}}
                                                 <td>
-                                                    <a class="btn btn-success btn-sm"
+                                                    <a class="btn btn-success btn-sm" title="Unblock-user"
                                                         onclick="unblockconfirm('{{this._id}}','{{this.Username}}')">Un-Block</a>
                                                 </td>
                                             </tr>
@@ -95,7 +95,7 @@
     function unblockconfirm(userId, userName) {
         swal({
             title: "Are you sure?",
-            text: `Do you want to Un-block user: ${userName} ?`,
+            text: `Do you want to Un-block user "${userName}" ?`,
             icon: "warning",
             buttons: true,
             dangerMode: true,

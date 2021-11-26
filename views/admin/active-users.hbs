@@ -52,7 +52,7 @@
                                                     <a class="btn btn-primary btn-sm" href="">Orders</a>
                                                 </td> --}}
                                                 <td>
-                                                    <a class="btn btn-danger btn-sm"
+                                                    <a class="btn btn-danger btn-sm" title="Block-user"
                                                         onclick="blockconfirm('{{this._id}}','{{this.Username}}')">Block</a>
                                                 </td>
                                             </tr>
@@ -96,7 +96,7 @@
     function blockconfirm(userId, userName) {
         swal({
             title: "Are you sure?",
-            text: `Do you want to block user: ${userName} ?`,
+            text: `Do you want to block user "${userName}" ?`,
             icon: "warning",
             buttons: true,
             dangerMode: true,

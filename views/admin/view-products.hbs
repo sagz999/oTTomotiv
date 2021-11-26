@@ -91,12 +91,9 @@
                                                         </a>
                                                     </button>
 
-                                                    <button type="button" rel="tooltip" title="Remove"
-                                                        class="btn btn-white btn-link btn-sm"
-                                                        onclick="return confirm('Do you want to delete product - {{this.Product_Name}} ?')">
-                                                        <a href="/admin/delete-product/{{this._id}}">
-                                                            <i class="material-icons">delete</i>
-                                                        </a>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm"
+                                                        onclick="confirmProdDelete('{{this.Product_Name}}','{{this._id}}')">                                                      
+                                                            <i class="material-icons">delete</i>                                                      
                                                     </button>
 
                                                 </td>
@@ -135,4 +132,35 @@
         $('#myTable').DataTable();
     });myTable
 
+</script>
+
+<script>
+    function confirmProdDelete(prodName,prodId) {
+
+        swal({
+            title: "Are you sure?",
+            text: `Do you want to delete the product ${prodName} ?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/delete-product?prodId='+prodId,
+                    method: 'get',
+                    success: (result) => {
+                        if (result) {
+                            sessionStorage.setItem("prodDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete product')
+                        }
+                    }
+                })
+
+            }
+        });
+
+    }
 </script>

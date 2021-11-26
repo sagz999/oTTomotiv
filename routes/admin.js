@@ -79,13 +79,11 @@ router.get('/view-products', verifyLog, (req, res) => {
 
 });
 
-router.get('/delete-product/:id', verifyLog, (req, res) => {
+router.get('/delete-product/', verifyLog, (req, res) => {
 
-    let prodId = req.params.id
-    productHelper.deleteProduct(prodId).then((response) => {
-        res.redirect('/admin/view-products')
+    productHelper.deleteProduct(req.query.prodId).then((response) => {
+        res.json(true)
     })
-
 
 });
 
@@ -101,24 +99,37 @@ router.get('/edit-product/', verifyLog, async(req, res) => {
 
 });
 
-router.post('/edit-product/:id', (req, res) => {
-    let id = req.params.id
+router.post('/edit-product/', (req, res) => {
+
+    let id = req.query.prodId
+    
     productHelper.updateProduct(req.params.id, req.body).then(() => {
-        res.redirect('/admin/view-products')
-        if (req.files.Img1 || req.files.Img2 || req.files.Img3 || req.files.Img4) {
 
-            let img1 = req.files.Img1
-            let img2 = req.files.Img2
-            let img3 = req.files.Img3
-            let img4 = req.files.Img4
+        if (req.files) {
 
-            img1.mv('./public/product-images/' + id + '_1.jpg')
-            img2.mv('./public/product-images/' + id + '_2.jpg')
-            img3.mv('./public/product-images/' + id + '_3.jpg')
-            img4.mv('./public/product-images/' + id + '_4.jpg')
-
+            if(req.files.Img1){
+                let img1 = req.files.Img1
+                img1.mv('./public/product-images/' + id + '_1.jpg')
+            } 
+            if(req.files.Img2){
+                let img2 = req.files.Img2
+                img2.mv('./public/product-images/' + id + '_2.jpg')
+            }
+            if(req.files.Img3){
+                let img3 = req.files.Img3
+                img3.mv('./public/product-images/' + id + '_3.jpg')
+            }
+            if(req.files.Img4){
+                let img4 = req.files.Img4
+                img4.mv('./public/product-images/' + id + '_4.jpg')
+            }
+            
         }
+
+        res.redirect('/admin/view-products')
+
     })
+
 })
 
 router.get('/add-product', verifyLog, async(req, res) => {
@@ -424,9 +435,9 @@ router.get('/coupons', verifyLog, (req, res) => {
 
     userHelper.fetchCoupons().then((coupons) => {
 
-        res.render('admin/coupons', { title: 'Coupon management', isAdmin: true, Msg: req.session.coupAddMsg, Err: req.session.coupDelMsg, coupons })
+        res.render('admin/coupons', { title: 'Coupon management', isAdmin: true, Msg: req.session.coupAddMsg,coupons })
         req.session.coupAddMsg = false
-        req.session.coupDelMsg = false
+       
 
     })
 
@@ -441,8 +452,7 @@ router.post('/add-coupon', (req, res) => {
 
 router.get('/delete-coupon/', verifyLog, (req, res) => {
     userHelper.deleteCoupon(req.query.couponId).then(() => {
-        req.session.coupDelMsg = 'COUPON DELETED'
-        res.redirect('/admin/coupons')
+        res.json(true)
     })
 })
 
@@ -458,13 +468,14 @@ router.post('/fetchCarModels/', verifyLog, (req, res) => {
 
         res.json(carModelList)
     })
-})
+}) 
 
 router.get('/offers', verifyLog, async(req, res) => {
     let offers = await userHelper.fetchOffers()
     let Categories = await productHelper.fetchCategories()
 
-    res.render('admin/offers', { title: 'Offers', isAdmin: true, offers, Categories })
+    res.render('admin/offers', { title: 'Offers', isAdmin: true, offers, Categories,Msg:req.session.offerAddMsg})
+    req.session.offerAddMsg=false
 
 })
 
@@ -488,14 +499,15 @@ router.post('/add-new-offer', (req, res) => {
         products.map((SingleProd) => {
             userHelper.changeOfferProdPrice(SingleProd)
         })
-
-        res.json(true)
+        req.session.offerAddMsg="ADDED NEW OFFER"
+        res.redirect('/admin/offers')
 
     })
 })
 
-router.post('/delete-offer/', (req, res) => {
+router.get('/delete-offer/', (req, res) => {
 
+    console.log('request received')
     userHelper.fetchAllProdInSubCatToUpdate(req.query.subCat).then((products) => {
 
         products.map((SingleProd) => {
