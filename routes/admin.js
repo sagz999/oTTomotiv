@@ -6,8 +6,8 @@ var userHelper = require('../helpers/userhelper')
 
 
 var credentials = {
-    username: 'sagar',
-    password: 4253
+    username: process.env.AdminUsername,
+    password: process.env.AdminPassword
 }
 
 const verifyLog = (req, res, next) => {

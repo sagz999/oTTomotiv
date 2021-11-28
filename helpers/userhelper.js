@@ -11,17 +11,19 @@ const { resolve } = require('path')
 const { v4: uuidv4 } = require('uuid');
 const { info } = require('console')
 const axios = require('axios')
-const ACCESS_KEY = '0cfd4d6b3fd4b48c97b9b9900a03cec5'
+const ACCESS_KEY = process.env.ACCESS_KEY
 
 var instance = new Razorpay({
-    key_id: 'rzp_test_BR5CAu00Vuru3P',
-    key_secret: 'QW2zVUpfyn2rg3lN5kO8knV7',
+    key_id: process.env.razorPayKey_id,
+    key_secret: process.env.razorPayKey_secret,
 });
 
 paypal.configure({
+
     'mode': 'sandbox', //sandbox or live
-    'client_id': 'AQqrMNJgHgz4dQumhvZ3hZOfPHEuBDxdSl531wQTEtEwTcLf27yX77QJc2ZIz2M94npHb7v9h4T7WuBP',
-    'client_secret': 'ED787-HyrIAalWO3hXIQpXREyYskVn0au2MchD0QURnRC1GnHrzkXtsC6S_RQDjeimtlzrP1sVXXIhMA'
+    'client_id': process.env.payPalClient_id,
+    'client_secret': process.env.payPalClient_secret
+    
 });
 
 module.exports = {
