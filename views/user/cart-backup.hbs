@@ -1,0 +1,234 @@
+{{>userheader}}
+
+<section id="page-title" class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <h3>Cart</h3>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+{{#if cartProd}}
+
+<section id="shopcart" class="shop shop-cart">
+
+    <div class="container">
+        <div class="row">
+            <div class="cart-table table-responsive">
+                <table class="table table-bordered">
+
+                    <thead class="thead-dark">
+
+                        <tr class="cart-product">
+
+                            <th class="cart-product-item">Product</th>
+                            <th class="cart-product-price">Price</th>
+                            <th class="cart-product-quantity">Quantity</th>
+                            <th class="cart-product-total">Total</th>
+                            <th class="cart-product-total">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {{#each cartProd}}
+
+                        <tr class="cart-product">
+
+                            <td class="cart-product-item">
+
+                                <div class="cart-product-img">
+                                    <img src="/product-images/{{this.product._id}}_1.jpg" alt="product"
+                                        style="height: 60px;width: 60px; margin-inline: 20px;">
+                                </div>
+
+                                <div class="cart-product-name">
+                                    <h6>{{this.product.Product_Name}}</h6>
+                                </div>
+
+                            </td>
+
+                            <td class="cart-product-price">₹ {{this.product.Price}}</td>
+
+
+
+                            <td class="cart-product-quantity">
+
+                                <div class="product-quantity">
+
+                                    <a style="cursor: pointer;"
+                                        onclick="changeQty('{{this.product.Stock}}','{{this._id}}','{{this.product._id}}',-1,'{{this.product.Price}}','{{../user._id}}')">
+                                        <i class="fa fa-minus"></i>
+                                    </a>
+
+                                    <span id="{{this.product._id}}">{{this.quantity}}</span>
+
+                                    <a style="cursor: pointer;"
+                                        onclick="changeQty('{{this.product.Stock}}','{{this._id}}','{{this.product._id}}',1,'{{this.product.Price}}','{{../user._id}}')">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                            <td class="cart-product-total">₹<span id="{{this.product._id}}1">{{this.total}}</span>
+                            </td>
+
+                            <td>
+
+                                <a style="cursor: pointer;"
+                                    onclick="deleteconfirm('{{this._id}}','{{this.product._id}}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path
+                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                        <path fill-rule="evenodd"
+                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                    </svg>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {{/each}}
+
+                    </tbody>
+
+                </table>
+
+                <div class="row clearfix text-right" style="margin-right: 10px;margin-top:30px">
+
+                    <h6>Cart Subtotal : ₹<span class="pull-right text-right" id="ctotal">{{cartTotal}}</span></h6>
+                    <a class="btn btn-primary" href="/cartCheckout">Proceed To Checkout</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{{else}}
+<section style="padding-top: 0px;padding-bottom: 40px">
+
+    <center>
+        <img src="https://cobblersmagic.com/images/empty-cart.png" style="width:500px;">
+        <h2 style="font-weight: bolder;text-transform: uppercase;">Your Cart is Empty!</h2>
+        
+        <a class="btn btn-primary" href="/shop">Add some products</a>
+    </center>
+
+    {{!-- <center>
+        <div style="">
+            <img src="https://cobblersmagic.com/images/empty-cart.png" width="120" height="120" alt="">
+        </div>
+        <h2 style="font-weight: bold; color:#544881;">Your Cart is Empty</h2>
+        <a href="/userAllProduct"
+            style="background-color: #544881; color: white; font-weight: bolder; margin-top: 30px;"
+            class="btn">Continue Shopping</a>
+    </center> --}}
+
+
+</section>
+
+{{/if}}
+
+
+
+
+
+
+{{>userfooter}}
+
+<script>
+
+    function changeQty(stock, cartId, prodId, count, price, userId) {
+
+        let quantity = parseInt(document.getElementById(prodId).innerHTML)
+
+        if (count == 1 && quantity == 8) {
+            swal("Limit reached!", "You can only add upto 8 products!", "warning");
+        } else {
+            if (count == 1) {
+                if (stock - 1 >= quantity) {
+
+                    count = parseInt(count)
+                    price = parseInt(price)
+                    id = prodId + '1'
+
+                    $.ajax({
+                        url: '/change-product-quantity',
+                        data: {
+                            user: userId,
+                            cart: cartId,
+                            product: prodId,
+                            count: count,
+                            quantity: quantity,
+                            price: price
+                        },
+                        method: 'post',
+                        success: (response) => {
+
+                            document.getElementById(prodId).innerHTML = quantity + count
+                            document.getElementById(id).innerHTML = (quantity + count) * price
+                            document.getElementById('ctotal').innerHTML = response.ctotal
+
+                        }
+                    })
+                } else {
+                    swal("Oops!!..", `Reached stock limit!`, "error");
+                }
+
+
+
+            } else {
+
+                count = parseInt(count)
+                price = parseInt(price)
+                id = prodId + '1'
+
+                $.ajax({
+                    url: '/change-product-quantity',
+                    data: {
+                        user: userId,
+                        cart: cartId,
+                        product: prodId,
+                        count: count,
+                        quantity: quantity,
+                        price: price
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        if (response.removeProd) {
+
+                            swal("Limit reached!", `You cannot reduce the quantity any further!`, "error");
+                        } else {
+                            document.getElementById(prodId).innerHTML = quantity + count
+                            document.getElementById(id).innerHTML = (quantity + count) * price
+                            document.getElementById('ctotal').innerHTML = response.ctotal
+                        }
+                    }
+                })
+
+            }
+        }
+
+
+    }
+
+
+
+</script>
