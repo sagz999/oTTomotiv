@@ -141,15 +141,33 @@
       <li class="nav-item ">
         <a class="nav-link" href="/admin/coupons">
           <i class="material-icons">local_offer</i>
-          <p>Coupons</p>
+          <p>Coupon Management</p>
         </a>
       </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="/admin/offers">
+
+      <li class="nav-item dropdown">
+
+        <a class="nav-link" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="material-icons">celebration</i>
-          <p>Offer</p>
+          <p>Offer Management</p>
         </a>
+
+        <div class="dropdown-menu dropdown-menu-right">
+
+          <a class="dropdown-item" href="/admin/product-offers">
+            <span class="material-icons">inventory_2</span>
+            <p style="margin-left: 1em;">Product Offer</p>
+          </a>
+
+          <a class="dropdown-item" href="/admin/category-offers">
+            <span class="material-icons">category</span>
+            <p style="margin-left: 1em;">Category Offer</p>
+          </a>
+
+        </div>
+
       </li>
+
       <li class="nav-item ">
         <a class="nav-link" href="/admin/ad-management">
           <i class="material-icons">campaign</i>

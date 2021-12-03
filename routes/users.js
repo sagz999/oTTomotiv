@@ -41,16 +41,35 @@ const cartCounter = async (req, res, next) => {
 
 router.get('/', cartCounter, async (req, res) => {
 
-  userHelper.checkOfferExpiry().then((offers) => {
+  await userHelper.checkCatOfferExpiry().then((offers) => {
+
     offers.map((eachOffers) => {
 
       userHelper.fetchAllProdInSubCatToUpdate(eachOffers.subCategory).then((products) => {
 
         products.map((SingleProd) => {
+
           userHelper.updateEachProdBackToOrgPrice(SingleProd)
+
         })
 
-        userHelper.deleteOffer(eachOffers._id)
+        userHelper.deleteCatOffer(eachOffers._id)
+
+      })
+
+    })
+
+  })
+
+  await userHelper.checkProdOfferExpiry().then((offers) => {
+
+    offers.map((eachOffers) => {
+
+      productHelper.fetchProduct(eachOffers.prodId).then((product) => {
+
+        userHelper.updateEachProdBackToOrgPrice(product)
+
+        userHelper.deleteprodOffer(eachOffers._id)
 
       })
 
@@ -75,10 +94,6 @@ router.get('/', cartCounter, async (req, res) => {
   }
 
   res.render('user/user-home', { title: 'Homepage', isUser: true, user: req.session.user, product, cartCount: req.session.cartCount, cart, carBrands, categories, Ads, offerProds });
-
-
-
-
 
 });
 
@@ -904,12 +919,12 @@ router.get('/shop', cartCounter, async (req, res) => {
   var categories = await productHelper.fetchCategories()
 
   if (req.session.filter) {
-    req.session.filter=false
+    req.session.filter = false
     if (req.session.filteredProds) {
-      
+
       var products = req.session.filteredProds
-      req.session.filteredProds=false
-     
+      req.session.filteredProds = false
+
     }
 
   } else {
@@ -919,7 +934,7 @@ router.get('/shop', cartCounter, async (req, res) => {
   if (req.session.user) {
     var cart = await userHelper.fetchCartProd(req.session.user._id)
   } else {
-    
+
     var cart = false
   }
 

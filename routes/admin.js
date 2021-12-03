@@ -19,7 +19,7 @@ const verifyLog = (req, res, next) => {
 }
 
 /* GET home page. */
-router.get('/', verifyLog, async(req, res) => {
+router.get('/', verifyLog, async (req, res) => {
 
     let userCounts = await userHelper.totalUsersCount()
     let totalProducts = await userHelper.totalProdCount()
@@ -30,16 +30,35 @@ router.get('/', verifyLog, async(req, res) => {
     let payMethod = await userHelper.orderPaymentMethod()
     let orderCount = await userHelper.orderCount()
 
-    userHelper.checkOfferExpiry().then((offers) => {
+    await userHelper.checkCatOfferExpiry().then((offers) => {
+
         offers.map((eachOffers) => {
 
             userHelper.fetchAllProdInSubCatToUpdate(eachOffers.subCategory).then((products) => {
 
                 products.map((SingleProd) => {
+
                     userHelper.updateEachProdBackToOrgPrice(SingleProd)
+
                 })
 
-                userHelper.deleteOffer(eachOffers._id)
+                userHelper.deleteCatOffer(eachOffers._id)
+
+            })
+
+        })
+
+    })
+
+    await userHelper.checkProdOfferExpiry().then((offers) => {
+
+        offers.map((eachOffers) => {
+
+            productHelper.fetchProduct(eachOffers.prodId).then((product) => {
+
+                userHelper.updateEachProdBackToOrgPrice(product)
+
+                userHelper.deleteprodOffer(eachOffers._id)
 
             })
 
@@ -87,7 +106,7 @@ router.get('/delete-product/', verifyLog, (req, res) => {
 
 });
 
-router.get('/edit-product/', verifyLog, async(req, res) => {
+router.get('/edit-product/', verifyLog, async (req, res) => {
 
     let product = await productHelper.fetchProduct(req.query.id)
     let category = await productHelper.fetchCategories()
@@ -102,28 +121,28 @@ router.get('/edit-product/', verifyLog, async(req, res) => {
 router.post('/edit-product/', (req, res) => {
 
     let id = req.query.prodId
-    
+
     productHelper.updateProduct(req.params.id, req.body).then(() => {
 
         if (req.files) {
 
-            if(req.files.Img1){
+            if (req.files.Img1) {
                 let img1 = req.files.Img1
                 img1.mv('./public/product-images/' + id + '_1.jpg')
-            } 
-            if(req.files.Img2){
+            }
+            if (req.files.Img2) {
                 let img2 = req.files.Img2
                 img2.mv('./public/product-images/' + id + '_2.jpg')
             }
-            if(req.files.Img3){
+            if (req.files.Img3) {
                 let img3 = req.files.Img3
                 img3.mv('./public/product-images/' + id + '_3.jpg')
             }
-            if(req.files.Img4){
+            if (req.files.Img4) {
                 let img4 = req.files.Img4
                 img4.mv('./public/product-images/' + id + '_4.jpg')
             }
-            
+
         }
 
         res.redirect('/admin/view-products')
@@ -132,7 +151,7 @@ router.post('/edit-product/', (req, res) => {
 
 })
 
-router.get('/add-product', verifyLog, async(req, res) => {
+router.get('/add-product', verifyLog, async (req, res) => {
 
     let category = await productHelper.fetchCategories()
     let carBrand = await productHelper.fetchCarBrands()
@@ -201,7 +220,7 @@ router.get('/orders', verifyLog, (req, res) => {
 })
 
 
-router.get('/order-details/', verifyLog, async(req, res) => {
+router.get('/order-details/', verifyLog, async (req, res) => {
 
     let order = await userHelper.getSpecificOrder(req.query.id)
 
@@ -240,14 +259,14 @@ router.get('/change-userstats/', verifyLog, (req, res) => {
     })
 })
 
-router.get('/ad-management', verifyLog, async(req, res) => {
+router.get('/ad-management', verifyLog, async (req, res) => {
 
     let offers = await userHelper.fetchOffers()
     let Ads = await productHelper.fetchAllAds()
 
-    res.render('admin/ad-management', { title: 'Ad Managemnet', isAdmin: true, offers, Ads, Msg: req.session.addMsg})
+    res.render('admin/ad-management', { title: 'Ad Managemnet', isAdmin: true, offers, Ads, Msg: req.session.addMsg })
     req.session.addMsg = false
-    
+
 
 })
 
@@ -435,9 +454,9 @@ router.get('/coupons', verifyLog, (req, res) => {
 
     userHelper.fetchCoupons().then((coupons) => {
 
-        res.render('admin/coupons', { title: 'Coupon management', isAdmin: true, Msg: req.session.coupAddMsg,coupons })
+        res.render('admin/coupons', { title: 'Coupon management', isAdmin: true, Msg: req.session.coupAddMsg, coupons })
         req.session.coupAddMsg = false
-       
+
 
     })
 
@@ -468,20 +487,20 @@ router.post('/fetchCarModels/', verifyLog, (req, res) => {
 
         res.json(carModelList)
     })
-}) 
+})
 
-router.get('/offers', verifyLog, async(req, res) => {
-    let offers = await userHelper.fetchOffers()
+router.get('/category-offers', verifyLog, async (req, res) => {
+    let catOffers = await userHelper.fetchCatOffers()
     let Categories = await productHelper.fetchCategories()
 
-    res.render('admin/offers', { title: 'Offers', isAdmin: true, offers, Categories,Msg:req.session.offerAddMsg})
-    req.session.offerAddMsg=false
+    res.render('admin/category-offers', { title: 'Category-Offers', isAdmin: true, catOffers, Categories, Msg: req.session.offerAddMsg })
+    req.session.offerAddMsg = false
 
 })
 
-router.get('/check-offer-exist/', verifyLog, (req, res) => {
+router.get('/check-catOffer-exist/', verifyLog, (req, res) => {
 
-    userHelper.checkOfferExist(req.query.subCat).then((response) => {
+    userHelper.checkCatOfferExist(req.query.subCat).then((response) => {
 
         if (response) {
             res.json(true)
@@ -493,34 +512,82 @@ router.get('/check-offer-exist/', verifyLog, (req, res) => {
 
 })
 
-router.post('/add-new-offer', (req, res) => {
-    userHelper.addNewOffer(req.body).then((products) => {
+router.post('/add-new-catOffer', (req, res) => {
+    userHelper.addNewCatOffer(req.body).then((products) => {
 
         products.map((SingleProd) => {
             userHelper.changeOfferProdPrice(SingleProd)
         })
-        req.session.offerAddMsg="ADDED NEW OFFER"
-        res.redirect('/admin/offers')
+        req.session.offerAddMsg = "ADDED NEW OFFER"
+        res.redirect('/admin/category-offers')
 
     })
 })
 
-router.get('/delete-offer/', (req, res) => {
+router.get('/delete-CatOffer/', (req, res) => {
 
-    console.log('request received')
     userHelper.fetchAllProdInSubCatToUpdate(req.query.subCat).then((products) => {
 
         products.map((SingleProd) => {
             userHelper.updateEachProdBackToOrgPrice(SingleProd)
         })
 
-        userHelper.deleteOffer(req.query.offerId).then(() => {
+        userHelper.deleteCatOffer(req.query.offerId).then(() => {
             res.json(true)
         })
 
     })
 
 })
+
+router.get('/product-offers', verifyLog, async (req, res) => {
+    let prodOffers = await userHelper.fetchProdOffers()
+    let Products = await productHelper.getAllproducts()
+
+    res.render('admin/product-offers', { title: 'Product-Offers', isAdmin: true, prodOffers, Products, Msg: req.session.offerAddMsg })
+    req.session.offerAddMsg = false
+
+})
+
+router.get('/check-prodOffer-exist/', verifyLog, (req, res) => {
+
+    userHelper.checkProdOfferExist(req.query.prodId).then((response) => {
+
+        res.json(response)
+
+    })
+
+})
+
+router.post('/add-new-prodOffer', (req, res) => {
+
+    userHelper.addNewprodOffer(req.body).then(() => {
+
+        req.session.offerAddMsg = "ADDED NEW OFFER"
+        res.redirect('/admin/product-offers')
+
+    })
+
+})
+
+router.get('/delete-prodOffer/', (req, res) => {
+
+    productHelper.fetchProduct(req.query.prodId).then((product) => {
+
+        userHelper.updateEachProdBackToOrgPrice(product).then(() => {
+
+            userHelper.deleteprodOffer(req.query.offerId).then(() => {
+
+                res.json(true)
+
+            })
+
+        })
+
+    })
+
+})
+
 
 router.get('/All-orderReport', verifyLog, (req, res) => {
 
@@ -568,7 +635,7 @@ router.get('/Cancelled-orderReport', verifyLog, (req, res) => {
 
 })
 
-router.post('/fetchSortedReports', async(req, res) => {
+router.post('/fetchSortedReports', async (req, res) => {
 
     var startDate = req.body.startDate
     var endDate = req.body.endDate

@@ -9,7 +9,8 @@ module.exports={
     ADDRESS_COLLECTION:'Address',
     COUPON_COLLECTION:'coupon',
     WISHLIST_COLLECTION:'wishlist',
-    OFFER_COLLECTION:'offer',
+    CATEGORY_OFFER_COLLECTION:'category-offer',
+    PRODUCT_OFFER_COLLECTION:'product-offer',
     REVIEW_COLLECTION:'product-reviews',
     AD_COLLECTION:'Advertisement'
     

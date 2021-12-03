@@ -10,7 +10,7 @@
                 <div class="col-md-10 col-sm-10 col-10">
                     <div class="card ">
                         <div class="card-header card-header-primary">
-                            <h4 class="card-title text-center" style="font-weight: bold">OFFER MANAGEMENT</h4>
+                            <h4 class="card-title text-center" style="font-weight: bold">PRODUCT-OFFER MANAGEMENT</h4>
                         </div>
                         {{#if Msg}}
                         <div>
@@ -36,7 +36,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" style="font-weight: bold;"
-                                                        id="exampleModalCenterTitle">ADD NEW OFFER
+                                                        id="exampleModalCenterTitle">ADD NEW PRODUCT-OFFER
                                                     </h5>
                                                     <button type="button" class="close" data-dismiss="modal"
                                                         aria-label="Close">
@@ -46,29 +46,25 @@
 
                                                 <div class="modal-body d-flex justify-content-center">
 
-                                                    <form class="text-center" action="/admin/add-new-offer" method="post" id="offerForm">
+                                                    <form class="text-center" action="/admin/add-new-prodOffer" method="post" id="offerForm">
                                                         
                                                         <label for="offerName" style="color: black;">Offer Name</label>
                                                         <input id="offerName" class="form-control" name="offerName"
                                                             type="text" placeholder="Enter The offer Name"
                                                             style="color: black;">
 
-                                                        <label for="subCategory" class="mt-4"
-                                                            style="color: black;">Offer category</label><br>
-                                                        <select style="color: black;" name="subCategory"
-                                                            id="subCategory" onchange="checkOfferExist()">
+                                                        <label for="product" class="mt-4"
+                                                            style="color: black;">Product</label><br>
+                                                        <select style="color: black;" name="product"
+                                                            id="product" onchange="checkOfferExist()">
 
                                                             <option value="" selected disabled>Choose a product</option>
-                                                            {{#each Categories}}
-                                                            {{#each this.Sub_Cat}}
-
-                                                            <option value="{{this.Sub_Cat}}">
-                                                                {{this.Sub_Cat}}</option>
-
-                                                            {{/each}}
+                                                            {{#each Products}}
+                                                            <option value="{{this._id}}">{{this.Product_Name}}</option>
                                                             {{/each}}
 
                                                         </select><br>
+                                                       
 
                                                         <label for="expiryDate" class="mt-4"
                                                             style="color: black;">Expiry
@@ -100,7 +96,7 @@
                                             <tr>
                                                 <th class="text-center" scope="col">Sl.No</th>
                                                 <th class="text-center" scope="col">Offer_Name</th>
-                                                <th class="text-center" scope="col">Sub-Category</th>
+                                                <th class="text-center" scope="col">Product</th>
                                                 <th class="text-center" scope="col">Discount(%)</th>
                                                 <th class="text-center" scope="col">Created Date</th>
                                                 <th class="text-center" scope="col">Expiry Date</th>
@@ -109,7 +105,7 @@
                                         </thead>
                                         <tbody>
 
-                                            {{#each offers}}
+                                            {{#each prodOffers}}
                                             <tr class="bg-dark">
 
                                                 <td class="text-center bg-dark">{{add @index '1'}}</td>
@@ -119,7 +115,7 @@
                                                 </td>
 
                                                 <td class="text-center">
-                                                    {{this.subCategory}}
+                                                    {{this.product}}
                                                 </td>
                                                 <td class="text-center">
                                                     {{this.offerDiscount}}
@@ -133,7 +129,7 @@
                                                 <td class="text-center">
 
                                                     <button
-                                                        onclick="confirmDelete('{{this._id}}','{{this.offerName}}','{{this.subCategory}}')"
+                                                        onclick="confirmDelete('{{this._id}}','{{this.offerName}}','{{this.prodId}}')"
                                                         type="button" rel="tooltip" title="Remove"
                                                         class="btn btn-white btn-link btn-sm">
 
@@ -190,7 +186,7 @@
                     maxlength: 15
                 },
 
-                subCategory: {
+                product: {
                     required: true
                 },
 
@@ -213,8 +209,8 @@
                     maxlength: "Offer name too long"
                 },
 
-                subCategory: {
-                    required: "Please choose a offer category"
+                product: {
+                    required: "Please choose a product"
                 },
 
                 expiryDate: {
@@ -237,7 +233,7 @@
 
 <script>
 
-    function confirmDelete(offerId, offerName, subCat) {
+    function confirmDelete(offerId, offerName, prodId) {
         swal({
             title: "Are you sure?",
             text: `Do you want remove "${offerName}" offer`,
@@ -247,14 +243,14 @@
         }).then((confirmed) => {
             if (confirmed) {
                 $.ajax({
-                    url: "/admin/delete-offer?offerId=" + offerId +"&subCat="+ subCat,
+                    url: "/admin/delete-prodOffer?offerId=" + offerId +"&prodId="+ prodId,
                     method: "get",
                     success: (status) => {
                          if (status) {
                             sessionStorage.setItem("offerDeleted", "true");
                             location.reload()
                         } else {
-                            console.log('Failed to delete offer')
+                            console.log('Failed to delete product-offer')
                         }
                     }
                 })
@@ -264,19 +260,20 @@
 
     function checkOfferExist(){
 
-       let subCat =document.getElementById('subCategory').value
+       let prodId =document.getElementById('product').value
 
         $.ajax({
 
-            url:'/admin/check-offer-exist?subCat='+subCat,
+            url:'/admin/check-prodOffer-exist?prodId='+prodId,
             method:'get',
             success:(response)=>{
                 if(response){
-                    swal("Alert!", `Offer already exist for the selected category!`, "warning");
+                    swal("Alert!", `Selected product is already under an offer!`, "warning");
                     document.getElementById('submitBtn').style.display='none'
                 }else{
                     
                     document.getElementById('submitBtn').style.display='inline'
+                    
                 }
             }
 

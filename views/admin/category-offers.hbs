@@ -1,0 +1,334 @@
+
+<div class="wrapper ">
+    {{>admin-sidebar}}
+    <div class="main-panel">
+        {{>admin-navbar}}
+        <div class="content">
+
+            <div class="row">
+                <div class="col-md-1 col-sm-1 col-1"></div>
+                <div class="col-md-10 col-sm-10 col-10">
+                    <div class="card ">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title text-center" style="font-weight: bold">CATEGORY-OFFER MANAGEMENT</h4>
+                        </div>
+                        {{#if Msg}}
+                        <div>
+                            <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
+                        </div>
+                        {{/if}}
+                        
+                        <div class="card-body text-left">
+
+                            <div class="row">
+                                <div class="col">
+
+                                    <div class="d-flex justify-content-center ml-3 ">
+                                        <button class="btn btn-primary btn-sm" data-toggle="modal"
+                                            data-target="#exampleModalCenter"><i
+                                                class="material-icons">add_to_photos</i> Add new-offer</button>
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" style="font-weight: bold;"
+                                                        id="exampleModalCenterTitle">ADD NEW CATEGORY-OFFER
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body d-flex justify-content-center">
+
+                                                    <form class="text-center" action="/admin/add-new-catOffer" method="post" id="offerForm">
+                                                        
+                                                        <label for="offerName" style="color: black;">Offer Name</label>
+                                                        <input id="offerName" class="form-control" name="offerName"
+                                                            type="text" placeholder="Enter The offer Name"
+                                                            style="color: black;">
+
+                                                        <label for="subCategory" class="mt-4"
+                                                            style="color: black;">Offer category</label><br>
+                                                        <select style="color: black;" name="subCategory"
+                                                            id="subCategory" onchange="checkOfferExist()">
+
+                                                            <option value="" selected disabled>Choose a category</option>
+                                                            {{#each Categories}}
+                                                            {{#each this.Sub_Cat}}
+
+                                                            <option value="{{this.Sub_Cat}}">
+                                                                {{this.Sub_Cat}}</option>
+
+                                                            {{/each}}
+                                                            {{/each}}
+
+                                                        </select><br>
+
+                                                        <label for="expiryDate" class="mt-4"
+                                                            style="color: black;">Expiry
+                                                            Date</label>
+                                                           
+                                                        <input id="expiryDate" class="form-control " name="expiryDate"
+                                                            type="date" style="color: black;">
+
+                                                        <label for="offerDiscount" class="mt-4"
+                                                            style="color: black;">Discount rate (%)</label>
+                                                        <input id="offerDiscount" class="form-control "
+                                                            name="offerDiscount" type="number"
+                                                            placeholder="Enter the discount rate"
+                                                            style="color: black;">
+
+                                                        <button type="button" class="btn btn-secondary mt-5"
+                                                            data-dismiss="modal">Close</button>
+                                                        <button id="submitBtn" type="submit" class="btn btn-success mt-5"> Add
+                                                            Offer</button>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table class="table table-dark" id="myTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" scope="col">Sl.No</th>
+                                                <th class="text-center" scope="col">Offer_Name</th>
+                                                <th class="text-center" scope="col">Sub-Category</th>
+                                                <th class="text-center" scope="col">Discount(%)</th>
+                                                <th class="text-center" scope="col">Created Date</th>
+                                                <th class="text-center" scope="col">Expiry Date</th>
+                                                <th class="text-center" scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {{#each catOffers}}
+                                            <tr class="bg-dark">
+
+                                                <td class="text-center bg-dark">{{add @index '1'}}</td>
+
+                                                <td class="text-center">
+                                                    {{this.offerName}}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    {{this.subCategory}}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{this.offerDiscount}}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{this.addedDate}}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{this.expiryDateToDisplay}}
+                                                </td>
+                                                <td class="text-center">
+
+                                                    <button
+                                                        onclick="confirmDelete('{{this._id}}','{{this.offerName}}','{{this.subCategory}}')"
+                                                        type="button" rel="tooltip" title="Remove"
+                                                        class="btn btn-white btn-link btn-sm">
+
+                                                        <i class="material-icons">delete</i>
+
+                                                    </button>
+
+                                                </td>
+
+                                            </tr>
+
+                                            {{/each}}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-1 col-sm-1 col-1"></div>
+
+            </div>
+
+        </div>
+
+
+
+        {{>admin-footer}}
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#offerForm').validate({
+            
+           ignore:"",
+            rules: {
+
+                offerName: {
+
+                    required: true,
+                    minlength: 4,
+                    maxlength: 15
+                },
+
+                subCategory: {
+                    required: true
+                },
+
+                expiryDate: {
+                    required: true
+                },
+
+                offerDiscount: {
+                    required: true,
+                    maxlength: 2
+                }
+
+            },
+
+            messages: {
+
+                offerName: {
+                    required: "Please enter the offer name",
+                    minlength: "Offer name too short",
+                    maxlength: "Offer name too long"
+                },
+
+                subCategory: {
+                    required: "Please choose a offer category"
+                },
+
+                expiryDate: {
+                    required: "Please set an expiry date"
+                },
+
+                offerDiscount: {
+                    required: "Please enter the discount rate",
+                    maxlength: "Invalid discount rate"
+                }
+
+            }
+        });
+
+    })
+
+</script>
+
+
+
+<script>
+
+    function confirmDelete(offerId, offerName, subCat) {
+        swal({
+            title: "Are you sure?",
+            text: `Do you want remove "${offerName}" offer`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((confirmed) => {
+            if (confirmed) {
+                $.ajax({
+                    url: "/admin/delete-CatOffer?offerId=" + offerId +"&subCat="+ subCat,
+                    method: "get",
+                    success: (status) => {
+                         if (status) {
+                            sessionStorage.setItem("offerDeleted", "true");
+                            location.reload()
+                        } else {
+                            console.log('Failed to delete category-offer')
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    function checkOfferExist(){
+
+       let subCat =document.getElementById('subCategory').value
+
+        $.ajax({
+
+            url:'/admin/check-catOffer-exist?subCat='+subCat,
+            method:'get',
+            success:(response)=>{
+                if(response){
+                    swal("Alert!", `Offer already exist for the selected category!`, "warning");
+                    document.getElementById('submitBtn').style.display='none'
+                }else{
+                    
+                    document.getElementById('submitBtn').style.display='inline'
+                }
+            }
+
+        })
+
+    }
+
+</script>
+
+
+
+<style>
+    .error {
+        color: red !important;
+        font-size: small !important;
+
+    }
+
+    .table thead tr th {
+        font-weight: bold;
+
+    }
+
+     /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+{{!-- data tables --}}
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables.css">
+
+<link rel="stylesheet" type="text/css"
+    href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">
+
+
+<script type="text/javascript" charset="utf8"
+    src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js" defer></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });myTable
+
+</script>
+
