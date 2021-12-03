@@ -33,6 +33,7 @@ const cartCounter = async (req, res, next) => {
     req.session.cartCount = cartCount
 
   }
+
   next()
 
 }
@@ -112,7 +113,6 @@ router.get('/otprequest', (req, res) => {
   res.render('user/otp-request', { title: 'OTP request', isUser: true, err: req.session.otpErr, forgotPass })
 
   req.session.otpErr = false
-
 
 })
 
@@ -1078,6 +1078,14 @@ router.get('/catFilter/', cartCounter, (req, res) => {
     req.session.filter = true
     req.session.filteredProds = products
     res.redirect('/shop')
+  })
+
+})
+
+router.get('/redirectToProdDetails/',(req,res)=>{
+
+  userHelper.fetchProdOfferData(req.query.offerName).then((prodId)=>{
+    res.redirect('/view-product?id='+prodId)
   })
 
 })

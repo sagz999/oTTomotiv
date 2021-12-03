@@ -261,13 +261,26 @@ router.get('/change-userstats/', verifyLog, (req, res) => {
 
 router.get('/ad-management', verifyLog, async (req, res) => {
 
-    let offers = await userHelper.fetchOffers()
+    let catOffers = await userHelper.fetchCatOffers()
+    let prodOffers = await userHelper.fetchProdOffers()
+    let offers= await catOffers.concat(prodOffers)
+
     let Ads = await productHelper.fetchAllAds()
 
     res.render('admin/ad-management', { title: 'Ad Managemnet', isAdmin: true, offers, Ads, Msg: req.session.addMsg })
     req.session.addMsg = false
 
 
+})
+
+router.get('/fetch-offerDetails/',verifyLog,(req,res)=>{
+    userHelper.fetchOfferDetails(req.query.offerName).then((result)=>{
+        if(result){
+            res.json(true)
+        }else{
+            res.json(false)
+        }
+    })
 })
 
 router.post('/add-newAd', verifyLog, (req, res) => {

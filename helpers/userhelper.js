@@ -2261,6 +2261,36 @@ module.exports = {
 
         })
 
+    },
+    
+    fetchOfferDetails:(offerName)=>{
+
+        return new Promise(async(resolve,reject)=>{
+
+            var result =await db.get().collection(collection.PRODUCT_OFFER_COLLECTION).findOne({offerName:offerName})
+
+            if(result){
+
+                resolve(true)
+
+            }else{
+
+                resolve(false)
+
+            }
+
+        })
+
+    },
+
+    fetchProdOfferData:(offerName)=>{
+
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.PRODUCT_OFFER_COLLECTION).findOne({offerName:offerName}).then((offerDetails)=>{
+                resolve(offerDetails.prodId)
+            })
+        })
+
     }
 
 }

@@ -5,8 +5,11 @@
   <div id="hero-slider" class="hero-slider">
 
     {{#each Ads}}
-    
+    {{#eq offerType 'category'}}
     <a href="/shop-by-offer?offerName={{this.Offer}}">
+    {{else}}
+    <a href="/redirectToProdDetails?offerName={{this.Offer}}">
+    {{/eq}}
       <div class="slide">
         <div class="bg-section">
           <img src="/Ad-Images/{{this._id}}Ad_img.jpg" alt="Background" />

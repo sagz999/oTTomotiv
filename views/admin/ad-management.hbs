@@ -30,7 +30,7 @@
                                         </div>
                                         <div class="row">
                                             <select style="background:#202940;color:#8b92a9;border:none" name="Offer"
-                                                class="custom-select">
+                                                class="custom-select" onchange="checkOfferType()" id="OfferSelect">
                                                 <option value="" selected disabled>Choose...</option>
                                                 {{#each offers}}
                                                 <option value="{{this.offerName}}">{{this.offerName}}</option>
@@ -38,6 +38,8 @@
                                             </select>
                                         </div>
                                     </div>
+
+                                    <input type="hidden" name="offerType" id="offerType">
 
                                     <div class="col-md-4 text-center">
 
@@ -367,5 +369,20 @@
 
             }
         });
+    }
+
+    function checkOfferType(){
+        let offerName=document.getElementById('OfferSelect').value
+        $.ajax({
+            url:'/admin/fetch-offerDetails?offerName='+offerName,
+            method:'get',
+            success:(result)=>{
+                if(result){
+                    document.getElementById('offerType').value= "product"
+                }else{
+                    document.getElementById('offerType').value= "category"
+                }
+            }
+        })
     }
 </script>
