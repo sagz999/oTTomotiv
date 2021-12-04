@@ -2,24 +2,24 @@
 
 <section id="hero" class="hero">
 
-  <div id="hero-slider" class="hero-slider">
+    <div id="hero-slider" class="hero-slider">
 
-    {{#each Ads}}
-    {{#eq offerType 'category'}}
-    <a href="/shop-by-offer?offerName={{this.Offer}}">
-    {{else}}
-    <a href="/redirectToProdDetails?offerName={{this.Offer}}">
-    {{/eq}}
-      <div class="slide">
-        <div class="bg-section">
-          <img src="/Ad-Images/{{this._id}}Ad_img.jpg" alt="Background" />
-        </div>
-      </div>
-    </a>
-    
-    {{/each}}
+        {{#each Ads}}
+        {{#eq offerType 'category'}}
+        <a href="/shop-by-offer?offerName={{this.Offer}}">
+            {{else}}
+            <a href="/redirectToProdDetails?offerName={{this.Offer}}">
+                {{/eq}}
+                <div class="slide">
+                    <div class="bg-section">
+                        <img src="/Ad-Images/{{this._id}}Ad_img.jpg" alt="Background" />
+                    </div>
+                </div>
+            </a>
 
-  </div>
+            {{/each}}
+
+    </div>
 
 </section>
 
@@ -73,7 +73,7 @@
 
 <section id="featuredItems" class="shop" style="padding-top: 8px;padding-bottom:0px;">
 
-    <div class="container heading" style="padding-bottom:0;margin-bottom:0"> 
+    <div class="container heading" style="padding-bottom:0;margin-bottom:0">
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -138,11 +138,8 @@
 
             </div>
 
-
-
-
-
         </div>
+    </div>
 
 </section>
 

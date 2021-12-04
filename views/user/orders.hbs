@@ -114,353 +114,394 @@
 
 </section>
 <section style="padding-top: 0;">
-    <div class="tab-wrap" style="margin-top: -0.001%;">
 
-        <input type="radio" id="tab1" name="tabGroup1" class="tab" checked>
-        <label for="tab1" style="font-weight: bolder;">PLACED</label>
+    <div class="container">
 
-        <input type="radio" id="tab2" name="tabGroup1" class="tab" >
-        <label for="tab2" style="font-weight: bolder;">SHIPPED</label>
+        <ul style="width:100%" class="nav  nav-tabs navbar-nav navbar-left">
 
-        <input type="radio" id="tab3" name="tabGroup1" class="tab" >
-        <label for="tab3" style="font-weight: bolder;">DELIVERED</label>
+            <li class="active">
 
-        <input type="radio" id="tab4" name="tabGroup1" class="tab" >
-        <label for="tab4" style="font-weight: bolder;">CANCELLED</label>
-        
+                <a style="color:black" data-toggle="tab" href="#placed">PLACED</a>
+            </li>
+            <li>
 
-        <div class="tab__content">
-            <div class="col-md-12">
+                <a style="color:black" data-toggle="tab" href="#shipped">SHIPPED</a>
+            </li>
+            <li>
 
-                {{#each allOrders}}
-                {{#eq this.Mode 'buynow'}}
-                {{#eq this.Status 'Placed'}}
+                <a style="color:black" data-toggle="tab" href="#delivered">DELIVERED</a>
+            </li>
+            <li>
 
-                <div class="gallery" style="display: inline;">
+                <a style="color:black" data-toggle="tab" href="#cancelled">CANCELLED</a>
+            </li>
 
-                    <div class="content" style="">
-                        <a href="">
-                        <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
-                        <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
-                        <h6>₹ {{this.Total_Amount}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <button class="buy-1" onclick="changeUserOrderStat1('{{this._id}}','{{this.ProdId}}')">Cancel</button>
+        </ul>
+
+        <div class="tab-content">
+
+            <div class="tab-pane active" id="placed">
+
+                <div class="col-md-12">
+
+                    {{#each allOrders}}
+                    {{#eq this.Mode 'buynow'}}
+                    {{#eq this.Status 'Placed'}}
+
+                    <div class="gallery" style="display: inline;">
+
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.ProdId}}">
+                                <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
+                            <h6>₹ {{this.Total_Amount}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <button class="buy-1"
+                                onclick="changeUserOrderStat1('{{this._id}}','{{this.ProdId}}')">Cancel</button>
+
+                        </div>
 
                     </div>
+                    {{!-- {{else}}
+                    
+                    <div class="text-center " style="margin-top:2%;">
+
+                        <div class="container">
+                            <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-3613108-3020773.png"
+                                style="height:280px;width:290px">
+                        </div>
+                        <h1 class="h2">Currently there are no placed orders</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+
+                   
+                    {{/eq}}
+
+                    {{else}}
+                    {{#each this.Products}}
+                    {{#eq this.status 'Placed'}}
+                    <div class="gallery" style="display: inline;">
+
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.item}}">
+                                <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
+                            <h6>₹ {{this.total}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <button class="buy-1"
+                                onclick="changeUserOrderStat('{{../this._id}}','{{this.item}}','{{this.quantity}}')">Cancel</button>
+
+                        </div>
+
+                    </div>
+
+                    {{!-- {{else}}
+                    
+                    <div class="text-center " style="margin-top:2%;">
+
+                        <div class="container">
+                            <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-3613108-3020773.png"
+                                style="height:280px;width:290px">
+                        </div>
+                        <h1 class="h2">Currently there are no placed orders</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+                   
+
+                    {{/eq}}
+                    {{/each}}
+                    {{/eq}}
+                    {{/each}}
 
                 </div>
-
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
-
-                    <div class="container">
-                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-3613108-3020773.png"
-                            style="height:280px;width:290px">
-                    </div>
-                    <h1 class="h2">Currently there are no placed orders</h1>
-                    <br>
-
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-
-                {{else}}
-                {{#each this.Products}}
-                {{#eq this.status 'Placed'}}
-                <div class="gallery" style="display: inline;">
-
-                    <div class="content" style="">
-                        <a href="">
-                        <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
-                        <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
-                        <h6>₹ {{this.total}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <button class="buy-1" onclick="changeUserOrderStat('{{../this._id}}','{{this.item}}','{{this.quantity}}')">Cancel</button>
-
-                    </div>
-
-                </div>
-
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
-
-                    <div class="container">
-                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-3613108-3020773.png"
-                            style="height:280px;width:290px">
-                    </div>
-                    <h1 class="h2">Currently there are no placed orders</h1>
-                    <br>
-
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-                {{/each}}
-                {{/eq}}
-                {{/each}}
 
             </div>
-        </div>
 
-        <div class="tab__content">
-            <div class="col-md-12">
+            <div class="tab-pane" id="shipped">
 
-                {{#each allOrders}}
-                {{#eq this.Mode 'buynow'}}
-                {{#eq this.Status 'Shipped'}}
+                <div class="col-md-12">
 
-                <div class="gallery" style="display: inline;">
+                    {{#each allOrders}}
+                    {{#eq this.Mode 'buynow'}}
+                    {{#eq this.Status 'Shipped'}}
 
-                    <div class="content" style="">
-                       <a href="">
-                            <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
-                            <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
-                        <h6>₹ {{this.Total_Amount}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <button class="buy-1" onclick="changeUserOrderStat1('{{this._id}}','{{this.ProdId}}')">Cancel</button>
+                    <div class="gallery" style="display: inline;">
 
-                    </div>
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.ProdId}}">
+                                <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
+                            <h6>₹ {{this.Total_Amount}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <button class="buy-1"
+                                onclick="changeUserOrderStat1('{{this._id}}','{{this.ProdId}}')">Cancel</button>
 
-                </div>
-
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
-
-
-                    <img src="https://cdn3.iconfinder.com/data/icons/virancie-shopping-1/30/shopping_072-no_shipping-delivery-truck-vehicle-transport-512.png"
-                        style="height:250px;width:290px">
-
-                    <h1 class="h2">Currently there are no products under transist</h1>
-                    <br>
-
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-
-                {{else}}
-                {{#each this.Products}}
-                {{#eq this.status 'Shipped'}}
-                <div class="gallery" style="display: inline;">
-
-                    <div class="content" style="">
-                         <a href="">
-                        <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
-                        <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
-                        <h6>₹ {{this.total}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <button class="buy-1" onclick="changeUserOrderStat('{{../this._id}}','{{this.item}}','{{this.quantity}}')">Cancel</button>
+                        </div>
 
                     </div>
 
+                    {{!-- {{else}}
+                    <div class="text-center " style="margin-top:2%;">
+
+
+                        <img src="https://cdn3.iconfinder.com/data/icons/virancie-shopping-1/30/shopping_072-no_shipping-delivery-truck-vehicle-transport-512.png"
+                            style="height:250px;width:290px">
+
+                        <h1 class="h2">Currently there are no products under transist</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+
+                    {{/eq}}
+
+                    {{else}}
+                    {{#each this.Products}}
+                    {{#eq this.status 'Shipped'}}
+                    <div class="gallery" style="display: inline;">
+
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.item}}">
+                                <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
+                            <h6>₹ {{this.total}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <button class="buy-1"
+                                onclick="changeUserOrderStat('{{../this._id}}','{{this.item}}','{{this.quantity}}')">Cancel</button>
+
+                        </div>
+
+                    </div>
+
+                    {{!-- {{else}}
+                    <div class="text-center " style="margin-top:2%;">
+
+
+                        <img src="https://cdn3.iconfinder.com/data/icons/virancie-shopping-1/30/shopping_072-no_shipping-delivery-truck-vehicle-transport-512.png"
+                            style="height:250px;width:290px">
+
+                        <h1 class="h2">Currently there are no products under transist</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+
+                    {{/eq}}
+                    {{/each}}
+                    {{/eq}}
+                    {{/each}}
+
                 </div>
+            </div>
 
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
+            <div class="tab-pane" id="delivered">
+
+                <div class="col-md-12">
+
+                    {{#each allOrders}}
+                    {{#eq this.Mode 'buynow'}}
+                    {{#eq this.Status 'Delivered'}}
+
+                    <div class="gallery" style="display: inline;">
+
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.ProdId}}">
+                                <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
+                            <h6>₹ {{this.Total_Amount}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <a href="/get-orderInvoice?orderId={{this._id}}"><button class="buy-1"
+                                    style="background-color: green;">Get Invoice</button></a>
 
 
-                    <img src="https://cdn3.iconfinder.com/data/icons/virancie-shopping-1/30/shopping_072-no_shipping-delivery-truck-vehicle-transport-512.png"
-                        style="height:250px;width:290px">
+                        </div>
 
-                    <h1 class="h2">Currently there are no products under transist</h1>
-                    <br>
+                    </div>
 
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-                {{/each}}
-                {{/eq}}
-                {{/each}}
+                    {{!-- {{else}}
+                    <div class="text-center " style="margin-top:2%;">
+
+
+                        <img src="https://image.freepik.com/free-vector/courier-delivering-order-customer-door-man-getting-parcel-box-package-flat-vector-illustration-postman-shipping-service_74855-8309.jpg"
+                            style="height:270px;width:300px">
+
+                        <h1 class="h2">No products delivered yet...</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+
+                    {{/eq}}
+
+                    {{else}}
+                    {{#each this.Products}}
+                    {{#eq this.status 'Delivered'}}
+                    <div class="gallery" style="display: inline;">
+
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.item}}">
+                                <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
+                            <h6>₹ {{this.total}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <a href="/get-orderInvoice?orderId={{../this._id}}&prodId={{this.item}}"><button
+                                    class="buy-1" style="background-color: green;">Get Invoice</button></a>
+
+                        </div>
+
+                    </div>
+
+                    {{!-- {{else}}
+                    <div class="text-center " style="margin-top:2%;">
+
+
+                        <img src="https://image.freepik.com/free-vector/courier-delivering-order-customer-door-man-getting-parcel-box-package-flat-vector-illustration-postman-shipping-service_74855-8309.jpg"
+                            style="height:270px;width:300px">
+
+                        <h1 class="h2">No products delivered yet...</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+
+                    {{/eq}}
+                    {{/each}}
+                    {{/eq}}
+                    {{/each}}
+
+                </div>
+            </div>
+
+            <div class="tab-pane" id="cancelled">
+
+                <div class="col-md-12">
+
+                    {{#each allOrders}}
+                    {{#eq this.Mode 'buynow'}}
+                    {{#eq this.Status 'Cancelled'}}
+
+                    <div class="gallery" style="display: inline;">
+
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.ProdId}}">
+                                <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
+                            <h6>₹ {{this.Total_Amount}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <a><button class="buy-1" style="background-color: red;" disabled>Cancelled</button></a>
+
+                        </div>
+
+                    </div>
+
+                    {{!-- {{else}}
+                    <div class="text-center " style="margin-top:2%;">
+
+
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGZJlKf7XUaS63Bv5NyzHEEOsKe3adztaCaGMrBXtwsTXhuQpSzF0vuyib2esYg7U62vc&usqp=CAU"
+                            style="height:250px;width:300px">
+
+                        <h1 class="h2">No products are cancelled...</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+                    {{/eq}}
+
+                    {{else}}
+                    {{#each this.Products}}
+                    {{#eq this.status 'Cancelled'}}
+                    <div class="gallery" style="display: inline;">
+
+                        <div class="content" style="">
+                            <a href="/view-product?id={{this.item}}">
+                                <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
+                                <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
+                            </a>
+                            <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
+                            <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
+                            <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
+                            <h6>₹ {{this.total}}</h6>
+                            <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
+                            <p style="color: #333;">Time: {{this.Time}}</p>
+                            <a><button class="buy-1" style="background-color: red;" disabled>Cancelled</button></a>
+
+                        </div>
+
+                    </div>
+
+                    {{!-- {{else}}
+                    <div class="text-center " style="margin-top:2%;">
+
+
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGZJlKf7XUaS63Bv5NyzHEEOsKe3adztaCaGMrBXtwsTXhuQpSzF0vuyib2esYg7U62vc&usqp=CAU"
+                            style="height:250px;width:300px">
+
+                        <h1 class="h2">No products are cancelled...</h1>
+                        <br>
+
+                        <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                    </div> --}}
+                    {{/eq}}
+                    {{/each}}
+                    {{/eq}}
+                    {{/each}}
+
+                </div>
 
             </div>
-        </div>
-
-        <div class="tab__content">
-            <div class="col-md-12">
-
-                {{#each allOrders}}
-                {{#eq this.Mode 'buynow'}}
-                {{#eq this.Status 'Delivered'}}
-
-                <div class="gallery" style="display: inline;">
-
-                    <div class="content" style="">
-                        <a href="">
-                        <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
-                        <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
-                        <h6>₹ {{this.Total_Amount}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <a href="/get-orderInvoice?orderId={{this._id}}"><button class="buy-1" style="background-color: green;">Get Invoice</button></a>
-                        {{!-- <a class="btn btn-success btn-sm" href="/get-orderInvoice?orderId={{this._id}}">
-                            
-                        </a> --}}
-
-                    </div>
-
-                </div>
-
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
 
 
-                    <img src="https://image.freepik.com/free-vector/courier-delivering-order-customer-door-man-getting-parcel-box-package-flat-vector-illustration-postman-shipping-service_74855-8309.jpg"
-                        style="height:270px;width:300px">
-
-                    <h1 class="h2">No products delivered yet...</h1>
-                    <br>
-
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-
-                {{else}}
-                {{#each this.Products}}
-                {{#eq this.status 'Delivered'}}
-                <div class="gallery" style="display: inline;">
-
-                    <div class="content" style="">
-                        <a href="">
-                        <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
-                        <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
-                        <h6>₹ {{this.total}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <a href="/get-orderInvoice?orderId={{../this._id}}&prodId={{this.item}}"><button class="buy-1" style="background-color: green;">Get Invoice</button></a>
-
-                    </div>
-
-                </div>
-
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
 
 
-                    <img src="https://image.freepik.com/free-vector/courier-delivering-order-customer-door-man-getting-parcel-box-package-flat-vector-illustration-postman-shipping-service_74855-8309.jpg"
-                        style="height:270px;width:300px">
-
-                    <h1 class="h2">No products delivered yet...</h1>
-                    <br>
-
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-                {{/each}}
-                {{/eq}}
-                {{/each}}
-
-            </div>
-        </div>
-
-        <div class="tab__content">
-            <div class="col-md-12">
-
-                {{#each allOrders}}
-                {{#eq this.Mode 'buynow'}}
-                {{#eq this.Status 'Cancelled'}}
-
-                <div class="gallery" style="display: inline;">
-
-                    <div class="content" style="">
-                        <a href="">
-                        <img src="/product-images/{{this.ProdId}}_1.jpg" style="width: 180px;">
-                        <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.Price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{this.Pay_Method}}</p>
-                        <h6>₹ {{this.Total_Amount}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <a><button class="buy-1" style="background-color: red;" disabled>Cancelled</button></a>
-
-                    </div>
-
-                </div>
-
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
-
-
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGZJlKf7XUaS63Bv5NyzHEEOsKe3adztaCaGMrBXtwsTXhuQpSzF0vuyib2esYg7U62vc&usqp=CAU"
-                        style="height:250px;width:300px">
-
-                    <h1 class="h2">No products are cancelled...</h1>
-                    <br>
-
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-
-                {{else}}
-                {{#each this.Products}}
-                {{#eq this.status 'Cancelled'}}
-                <div class="gallery" style="display: inline;">
-
-                    <div class="content" style="">
-                        <a href="">
-                        <img src="/product-images/{{this.item}}_1.jpg" style="width: 180px;">
-                        <h6 style="font-size:small;margin-top:5px">{{this.Product_Name}}</h6>
-                        </a>
-                        <p style="color: #333;margin-bottom:0">Unit Price: ₹{{this.price}}</p>
-                        <p style="color: #333;margin-bottom:0">Quantity: {{this.quantity}}</p>
-                        <p style="color: #333;margin-bottom:0">Payment Mode: {{../this.Pay_Method}}</p>
-                        <h6>₹ {{this.total}}</h6>
-                        <p style="color: #333;margin-bottom:0">Placed On: {{../this.Date}}</p>
-                        <p style="color: #333;">Time: {{this.Time}}</p>
-                        <a><button class="buy-1" style="background-color: red;" disabled>Cancelled</button></a>
-
-                    </div>
-
-                </div>
-
-                {{!-- {{else}}
-                <div class="text-center " style="margin-top:2%;">
-
-
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGZJlKf7XUaS63Bv5NyzHEEOsKe3adztaCaGMrBXtwsTXhuQpSzF0vuyib2esYg7U62vc&usqp=CAU"
-                        style="height:250px;width:300px">
-
-                    <h1 class="h2">No products are cancelled...</h1>
-                    <br>
-
-                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                </div> --}}
-                {{/eq}}
-                {{/each}}
-                {{/eq}}
-                {{/each}}
-
-            </div>
         </div>
 
     </div>
+    </div>
+
+
+
+
+
 </section>
 {{>userfooter}}
 
@@ -503,154 +544,3 @@
 
 
 </script>
-
-<style>
-    .tab-wrap {
-        -webkit-transition: 0.3s box-shadow ease;
-        transition: 0.3s box-shadow ease;
-        border-radius: 6px;
-        max-width: 100%;
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-wrap: wrap;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        position: relative;
-        list-style: none;
-        background-color: #fff;
-        margin: 40px 0;
-        );
-    }
-
-
-
-    .tab {
-        display: none;
-    }
-
-    .tab__content {
-        padding: 10px 25px;
-        background-color: transparent;
-        position: absolute;
-        width: 100%;
-        z-index: -1;
-        opacity: 0;
-        left: 0;
-        -webkit-transform: translateY(-3px);
-        transform: translateY(-3px);
-        border-radius: 6px;
-    }
-
-    .tab:checked:nth-of-type(1)~.tab__content:nth-of-type(1) {
-        opacity: 1;
-        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
-        transition: 0.5s opacity ease-in, 0.2s transform ease;
-        position: relative;
-        top: 0;
-        z-index: 100;
-        -webkit-transform: translateY(0px);
-        transform: translateY(0px);
-        text-shadow: 0 0 0;
-    }
-
-    .tab:checked:nth-of-type(2)~.tab__content:nth-of-type(2) {
-        opacity: 1;
-        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
-        transition: 0.5s opacity ease-in, 0.2s transform ease;
-        position: relative;
-        top: 0;
-        z-index: 100;
-        -webkit-transform: translateY(0px);
-        transform: translateY(0px);
-        text-shadow: 0 0 0;
-    }
-
-    .tab:checked:nth-of-type(3)~.tab__content:nth-of-type(3) {
-        opacity: 1;
-        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
-        transition: 0.5s opacity ease-in, 0.2s transform ease;
-        position: relative;
-        top: 0;
-        z-index: 100;
-        -webkit-transform: translateY(0px);
-        transform: translateY(0px);
-        text-shadow: 0 0 0;
-    }
-
-    .tab:checked:nth-of-type(4)~.tab__content:nth-of-type(4) {
-        opacity: 1;
-        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
-        transition: 0.5s opacity ease-in, 0.2s transform ease;
-        position: relative;
-        top: 0;
-        z-index: 100;
-        -webkit-transform: translateY(0px);
-        transform: translateY(0px);
-        text-shadow: 0 0 0;
-    }
-
-    .tab:first-of-type:not(:last-of-type)+label {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .tab:not(:first-of-type):not(:last-of-type)+label {
-        border-radius: 0;
-    }
-
-    .tab:last-of-type:not(:first-of-type)+label {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-
-    .tab:checked+label {
-        background-color: #fcd5d5;
-        box-shadow: 0 -1px 0 #fcd5d5 inset;
-        cursor: default;
-    }
-
-    .tab:checked+label:hover {
-        box-shadow: 0 -1px 0 #fcd5d5 inset;
-        background-color: #b3a0a0;
-    }
-
-    .tab+label {
-        width: 100%;
-        box-shadow: 0 -1px 0 #eee inset;
-        border-radius: 6px 6px 0 0;
-        cursor: pointer;
-        display: block;
-        text-decoration: none;
-        color: #333;
-        -webkit-box-flex: 3;
-        -webkit-flex-grow: 3;
-        -ms-flex-positive: 3;
-        flex-grow: 3;
-        text-align: center;
-        background-color: #f8f9fa;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        text-align: center;
-        -webkit-transition: 0.3s background-color ease, 0.3s box-shadow ease;
-        transition: 0.3s background-color ease, 0.3s box-shadow ease;
-        height: 50px;
-        box-sizing: border-box;
-        padding: 15px;
-    }
-
-    @media (min-width:768px) {
-
-        .tab+label {
-            width: auto;
-        }
-    }
-
-    .tab+label:hover {
-        background-color: #b3a0a0;
-        box-shadow: 0 1px 0 #b3a0a0 inset;
-    }
-</style>
