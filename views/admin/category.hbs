@@ -65,16 +65,16 @@
                                         <div class="row">
                                             <div class="col-md-3">
 
-                                                <label data-toggle="modal" data-target="#exampleModalCenter"
+                                                <label 
                                                     class="btn btn-primary btn-sm" for="file1">Add Image</label>
 
-                                                <input name="Img1" type="file" class="my-2 form-control-file" id="file1"
+                                                <input data-toggle="modal"  name="Img1" type="file" class="my-2 form-control-file" id="file1"
                                                     onchange="return fileValidation1()" hidden>
 
                                             </div>
 
                                             <div class="col-md-3">
-                                                <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
+                                                <img src="" alt="" style="width: 50px; height:auto;margin-top:5px" id="imgview1">
                                                 <div id="errMsg1"></div>
                                             </div>
 
@@ -275,6 +275,7 @@
 
     function buttonDisplay() {
         document.getElementById('confirm-btn').style.display = 'block';
+        document.getElementById('file1').value=''
     }
 
 
@@ -295,6 +296,21 @@
             return false;
 
         } else {
+
+             //Image input field id
+            var fileTrue = document.getElementById('file1').onchange.length
+            if (fileTrue == 1) {
+                document.getElementById('file1').dataset.target = '#exampleModalCenter'
+                //Give modal target to the input field
+
+                //add a click event to the input field so that the modal could open
+                document.getElementById('file1').click()
+
+                //Making filetrue to 0 So that the modal will only open if there is a file 
+                fileTrue = 0
+            }
+            //Making data target to none so that modal will open if there is a file
+            document.getElementById('file1').dataset.target = 'none'
 
             //Image preview
             document.getElementById('errMsg1').innerHTML = ''

@@ -23,77 +23,7 @@
                         {{/if}}
                         <div class="card-body text-left">
 
-                            {{!-- <div class="row">
-                                <div class="col-md-12">
-
-                                    <div class="d-flex ml-3">
-                                        <form action="/admin/add-carBrand" style="display: flex;" method="post"
-                                            enctype="multipart/form-data" id="addCarBrand">
-
-                                            <input name="Car_Brand" class="form-control" type="text"
-                                                placeholder="Add car brand">
-
-                                            <div class="mx-2">
-
-                                                <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
-
-                                            </div>
-
-                                            <div>
-
-                                                <input name="Img1" type="file" data-toggle="modal"
-                                                    data-target="#exampleModalCenter" class="my-2 form-control-file"
-                                                    id="file1" onchange="return fileValidation1()">
-                                                <div id="errMsg1"></div>
-
-                                            </div>
-
-
-                                            <button type="submit" id="confirm-btn" class="btn btn-primary btn-sm ml-2">
-                                                <i class="material-icons">add_to_photos</i>
-                                            </button>
-
-                                            <!-- Modal for cropping-->
-
-                                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                                                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-
-                                                <div class="modal-dialog modal-dialog-centered" role="document">
-
-                                                    <div class="modal-content">
-
-                                                        <div class="modal-header">
-
-                                                            <h4 class="modal-title" style="font-weight: bold;"
-                                                                id="exampleModalLongTitle">Crop
-                                                                Image</h4>
-                                                        </div>
-
-                                                        <div class="modal-body">
-                                                            <div id="image-box" style="display:none;"></div>
-                                                        </div>
-
-                                                        <div class="modal-footer">
-
-                                                            <button onclick="buttonDisplay()" type="button"
-                                                                class="btn btn-secondary"
-                                                                data-dismiss="modal">Close</button>
-                                                            <button id="crop-btn" data-dismiss="modal" type="button"
-                                                                class="btn btn-primary">Crop</button>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-
-
-                                        </form>
-                                    </div>
-                                </div>
-                            </div> --}}
+                            
 
                             <div class="row">
                                 <div class="col-md-6 text-center">
@@ -107,8 +37,8 @@
                                                     placeholder="Car-brand name">
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter" for="file1">Brand logo</label>
-                                                <input name="Img1" type="file" class="my-2 form-control-file"
+                                                <label class="btn btn-primary btn-sm" for="file1">Brand logo</label>
+                                                <input data-toggle="modal" name="Img1" type="file" class="my-2 form-control-file"
                                                     id="file1" onchange="return fileValidation1()" hidden>
                                             </div>
                                         </div>
@@ -122,7 +52,7 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                                <img src="" alt="" style="width: 50px; height:auto" id="imgview1">
+                                                <img src="" alt="" style="width: 50px; height:auto;margin-top:5px" id="imgview1">
                                                 <div id="errMsg1"></div>
                                             </div>
 
@@ -200,15 +130,15 @@
                                         <div class="row">
 
                                             <div class="col-md-6">
-                                                <label class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter" for="file2">Model-image</label>
-                                                <input name="Img2" type="file" class="my-2 form-control-file" id="file2" onchange="return fileValidation2()" hidden>
+                                                <label class="btn btn-primary btn-sm" for="file2">Model-image</label>
+                                                <input data-toggle="modal" name="Img2" type="file" class="my-2 form-control-file" id="file2" onchange="return fileValidation2()" hidden>
                                                     
                                             </div>
 
                                             <div class="col-md-6">
 
                                                 
-                                                <button type="submit" id="confirm-btn"
+                                                <button type="submit" id="confirm-btn1"
                                                     class="btn btn-success ml-2">
                                                     <i class="material-icons">add_to_photos</i> Add car-model</button>
                                                 
@@ -220,10 +150,44 @@
 
                                             
 
-                                                <img src="" alt="" style="width:50px; height:auto;margin-left:15px" id="imgview2">
+                                                <img src="" alt="" style="width:50px; height:auto;margin-left:15px;margin-top:5px" id="imgview2">
                                                 <div id="errMsg2"></div>
 
                                             
+
+                                        </div>
+
+                                        <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+
+                                                        <h4 class="modal-title" style="font-weight: bold;"
+                                                            id="exampleModalLongTitle">Crop
+                                                            Image</h4>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <div id="image-box1" style="display:none;"></div>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+
+                                                        <button onclick="buttonDisplay1()" type="button"
+                                                            class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                        <button id="crop-btn1" data-dismiss="modal" type="button"
+                                                            class="btn btn-primary">Crop</button>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
 
                                         </div>
 
@@ -400,6 +364,12 @@
 
     function buttonDisplay() {
         document.getElementById('confirm-btn').style.display = 'block';
+        document.getElementById('file1').value=''
+    }
+
+    function buttonDisplay1() {
+        document.getElementById('confirm-btn1').style.display = 'block';
+        document.getElementById('file2').value=''
     }
 
 
@@ -420,6 +390,21 @@
             return false;
 
         } else {
+
+            //Image input field id
+            var fileTrue = document.getElementById('file1').onchange.length
+            if (fileTrue == 1) {
+                document.getElementById('file1').dataset.target = '#exampleModalCenter'
+                //Give modal target to the input field
+
+                //add a click event to the input field so that the modal could open
+                document.getElementById('file1').click()
+
+                //Making filetrue to 0 So that the modal will only open if there is a file 
+                fileTrue = 0
+            }
+            //Making data target to none so that modal will open if there is a file
+            document.getElementById('file1').dataset.target = 'none'
 
             //Image preview
             document.getElementById('errMsg1').innerHTML = ''
@@ -472,8 +457,8 @@
 
     function fileValidation2() {
 
-        const imagebox = document.getElementById('image-box')
-        const crop_btn = document.getElementById('crop-btn')
+        const imagebox = document.getElementById('image-box1')
+        const crop_btn = document.getElementById('crop-btn1')
         var fileInput = document.getElementById('file2');
 
         var filePath = fileInput.value;
@@ -487,15 +472,30 @@
 
         } else {
 
+            //Image input field id
+            var fileTrue = document.getElementById('file2').onchange.length
+            if (fileTrue == 1) {
+                document.getElementById('file2').dataset.target = '#exampleModalCenter1'
+                //Give modal target to the input field
+
+                //add a click event to the input field so that the modal could open
+                document.getElementById('file2').click()
+
+                //Making filetrue to 0 So that the modal will only open if there is a file 
+                fileTrue = 0
+            }
+            //Making data target to none so that modal will open if there is a file
+            document.getElementById('file2').dataset.target = 'none'
+
             //Image preview
             document.getElementById('errMsg2').innerHTML = ''
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
             imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
             const image = document.getElementById('image')
-            document.getElementById('image-box').style.display = 'block'
-            document.getElementById('crop-btn').style.display = 'block'
-            document.getElementById('confirm-btn').style.display = 'none'
+            document.getElementById('image-box1').style.display = 'block'
+            document.getElementById('crop-btn1').style.display = 'block'
+            document.getElementById('confirm-btn1').style.display = 'none'
 
             const cropper = new Cropper(image, {
 
@@ -524,9 +524,9 @@
                     var url = URL.createObjectURL(img)
                     fileInputElement.files = container.files;
                     document.getElementById('imgview2').src = url
-                    document.getElementById('image-box').style.display = 'none'
-                    document.getElementById('crop-btn').style.display = 'none'
-                    document.getElementById('confirm-btn').style.display = 'block'
+                    document.getElementById('image-box1').style.display = 'none'
+                    document.getElementById('crop-btn1').style.display = 'none'
+                    document.getElementById('confirm-btn1').style.display = 'block'
 
                 });
 

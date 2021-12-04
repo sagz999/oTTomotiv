@@ -209,10 +209,10 @@
                                 <div class="modal-footer">
 
                                     <button onclick="buttonDisplay()" type="button" class="btn btn-danger btn-sm"
-                                        data-dismiss="modal" style="display: inline;">Close</button>
+                                        data-dismiss="modal" >Close</button>
 
                                     <button id="crop-btn" data-dismiss="modal" type="button"
-                                        class="btn btn-success btn-sm" style="display: inline;">Crop</button>
+                                        class="btn btn-success btn-sm">Crop</button>
 
                                 </div>
 
@@ -409,6 +409,7 @@
 
     function buttonDisplay() {
         document.getElementById('confirm-btn').style.display = 'block';
+        document.getElementById('file1').value=''
     }
 
 
