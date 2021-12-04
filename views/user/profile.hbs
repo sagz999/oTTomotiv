@@ -1,6 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
 <script>
 
 
@@ -51,20 +48,73 @@
     {{/if}}
     {{#if Msg}}
     <div>
-        <h5 class="text-center mt-2" style="color:yellowgreen;font-weight:normal">{{Msg}}</h5>
+        <h5 class="text-center mt-2" style="color:green;font-weight:normal">{{Msg}}</h5>
     </div>
     {{/if}}
     <div class="container bootstrap snippet">
 
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#home">Details</a></li>
-            <li><a data-toggle="tab" href="#messages"> Address</a></li>
+            <li class="active"><a data-toggle="tab" href="#home">DETAILS</a></li>
+            <li><a data-toggle="tab" href="#messages"> ADDRESS</a></li>
         </ul>
 
         <div class="tab-content">
             <div class="tab-pane active" id="home">
                 <br>
-                <form class="form" action="/update-profile" method="post" id="profileForm" enctype="multipart/form-data">
+                <div class="row text-right">
+                    <a class="btn btn-danger btn-sm" data-toggle="modal" data-target="#resetPasModal">CHANGE PASSWORD</a>
+                    <div class="modal fade" id="resetPasModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+
+                                    <h4 class="modal-title text-center " id="exampleModalLongTitle">CHANGE PASSWORD
+                                    </h4>
+
+                                </div>
+                                <form class="mb-0" action="/change-password" method="POST" id="changePass-form">
+                                    <div class="modal-body">
+
+                                        <div class="form-group">
+                                            <input type="password" onchange="checkPass()"
+                                                name="CurrentPass" class="form-control" id="CurrentPass"
+                                                placeholder="Current Password">
+
+                                            <input type="password" name="NewPassword" class="form-control" id="NewPass"
+                                                placeholder="New Password">
+
+                                            <input type="password" name="Re_Pass" class="form-control" id="Re_Pass"
+                                                placeholder="Re-enter new password">
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <div class="form-group">
+                                            <button class="btn btn-danger btn-sm" data-dismiss="modal">CANCEL</button>
+
+                                            <button  type="submit" class="btn btn-success btn-sm"
+                                                id="changePassBtn">CHANGE PASSWORD</button>
+                                        </div>
+
+                                    </div>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <form class="form" action="/update-profile" method="post" id="profileForm"
+                    enctype="multipart/form-data">
+
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group text-center">
@@ -73,7 +123,7 @@
                                         class="avatar img-circle img-thumbnail" alt="avatar" id="imgview1">
                                 </div>
                                 <div class="row">
-                                    <label style="margin-top: 8px;" class="btn btn-sm btn-danger" for="file1">Change
+                                    <label style="margin-top: 8px;" class="btn btn-sm btn-danger" for="file1">CHANGE
                                         DP</label>
 
                                     <input style="display:none" type="file" name="userImage" class="form-control"
@@ -127,7 +177,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <br>
-                                        <button class="btn btn-success" id="confirm-btn" type="submit">Update</button>
+                                        <button class="btn btn-success" id="confirm-btn" type="submit">UPDATE</button>
 
                                     </div>
                                 </div>
@@ -532,40 +582,81 @@
 
                 Username: {
                     required: true,
-                    alpha:true,
+                    alpha: true,
                     minlength: 5
                 },
 
                 Email: {
                     required: true,
-                    minlength:5
+                    minlength: 5
                 },
 
                 Pnum: {
                     required: true,
-                    minlength:10,
-                    maxlength:10
+                    minlength: 10,
+                    maxlength: 10
                 }
 
             },
 
             messages: {
 
-                 Username: {
+                Username: {
                     required: "Enter your username",
-                    alpha:"Name should be in alphabets",
+                    alpha: "Name should be in alphabets",
                     minlength: "Username must be atleast of 5 characters"
                 },
 
                 Email: {
                     required: "Enter your email id",
-                    minlength:"Email id is too short"
+                    minlength: "Email id is too short"
                 },
 
                 Pnum: {
                     required: "Enter your mobile number",
-                    minlength:"Mobile number must be of 10 digits",
-                    maxlength:"Mobile number must not exceed 10 digits"
+                    minlength: "Mobile number must be of 10 digits",
+                    maxlength: "Mobile number must not exceed 10 digits"
+                }
+            }
+
+        })
+
+        $('#changePass-form').validate({
+            ignore: "",
+            rules: {
+
+                CurrentPass: {
+                    required: true,
+                },
+
+                NewPassword: {
+                    required: true,
+                    minlength: 4
+                },
+
+                Re_Pass: {
+                    required: true,
+                    equalTo: "#NewPass"
+
+                }
+
+            },
+
+            messages: {
+
+                CurrentPass: {
+                    required: "Enter your current password",
+                },
+
+                NewPassword: {
+                    required: "Enter you new password",
+                    minlength: "password too short"
+                },
+
+                Re_Pass: {
+                    required: "Re-enter you new password",
+                    equalTo:"Password mismatch"
+
                 }
             }
 
@@ -579,7 +670,7 @@
     .error {
         color: red !important;
         font-size: x-small !important;
-        margin-left: 10px
+        margin-left: 10px;
     }
 </style>
 
@@ -600,3 +691,24 @@
         margin: 0;
     }
 </style>
+<script>
+    function checkPass() {
+
+        var currentPass = document.getElementById('CurrentPass').value
+        $.ajax({
+
+            url: '/checkPass?pass='+currentPass,
+            method: 'get',
+            success: (result) => {
+                if (result) {
+                    document.getElementById('changePassBtn').style.display = 'inline'
+                } else {
+                    swal("Oops!!..", `Incorrect password!`, "error");
+                    document.getElementById('changePassBtn').style.display = 'none'
+                }
+            }
+
+        })
+
+    }
+</script>

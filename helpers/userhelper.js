@@ -80,6 +80,23 @@ module.exports = {
         })
     },
 
+    checkPass:(pass,userId)=>{
+
+        return new Promise((resolve,reject)=>{
+
+        db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)}).then((user)=>{
+            bcrypt.compare(pass,user.Password).then((result)=>{
+                if(result){
+                    resolve(true)
+                }else{
+                    resolve(false)
+                }
+            })
+        })
+
+        })
+
+    },
 
     resetPass: (newPass, userId) => {
 
@@ -98,7 +115,22 @@ module.exports = {
         })
     },
 
+    changePass:(newPass, userId)=>{
 
+        return new Promise(async (resolve, reject) => {
+
+            newPass.NewPassword = await bcrypt.hash(newPass.NewPassword, 10)
+
+            db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(userId) },
+                {
+                    $set: {
+                        Password: newPass.NewPassword
+                    }
+                }).then(() => {
+                    resolve()
+                })
+        })
+    },
 
     doLogin: (loginData) => {
 
@@ -2292,6 +2324,7 @@ module.exports = {
         })
 
     }
+
 
 }
 

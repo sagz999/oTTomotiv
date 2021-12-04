@@ -268,6 +268,26 @@ router.post('/reset-password', (req, res) => {
 
 })
 
+router.get('/checkPass/', (req, res) => {
+  userHelper.checkPass(req.query.pass, req.session.user._id).then((result) => {
+    if (result) {
+      res.json(true)
+    } else {
+      res.json(false)
+    }
+  })
+})
+
+router.post('/change-password', (req, res) => {
+  userHelper.changePass(req.body, req.session.user._id).then(() => {
+    req.session.userLog = false
+    req.session.user = false
+    req.session.cartCount = false
+    req.session.signupSucc = 'Password succesfully changed, Please log-in to continue'
+    res.redirect('/login')
+  })
+})
+
 
 router.get('/login/', (req, res) => {
 
@@ -1082,10 +1102,10 @@ router.get('/catFilter/', cartCounter, (req, res) => {
 
 })
 
-router.get('/redirectToProdDetails/',(req,res)=>{
+router.get('/redirectToProdDetails/', (req, res) => {
 
-  userHelper.fetchProdOfferData(req.query.offerName).then((prodId)=>{
-    res.redirect('/view-product?id='+prodId)
+  userHelper.fetchProdOfferData(req.query.offerName).then((prodId) => {
+    res.redirect('/view-product?id=' + prodId)
   })
 
 })
