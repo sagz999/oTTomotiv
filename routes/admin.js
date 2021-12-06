@@ -66,6 +66,16 @@ router.get('/', verifyLog, async (req, res) => {
 
     })
 
+    await userHelper.checkcouponExpiry().then((coupons) => {
+
+        coupons.map((coupon) => {
+
+            userHelper.deleteCoupon(coupon._id)
+
+        })
+
+    })
+
 
     res.render('admin/admin-dash', {
         title: 'Admin Dashboard',
@@ -466,8 +476,8 @@ router.get('/delete-prodBrand/', verifyLog, (req, res) => {
 router.get('/coupons', verifyLog, (req, res) => {
 
     userHelper.fetchCoupons().then((coupons) => {
-
-        res.render('admin/coupons', { title: 'Coupon management', isAdmin: true, Msg: req.session.coupAddMsg, coupons })
+        let todayDate = new Date().toISOString().slice(0, 10)
+        res.render('admin/coupons', { title: 'Coupon management', isAdmin: true, Msg: req.session.coupAddMsg, coupons,todayDate })
         req.session.coupAddMsg = false
 
 
@@ -505,8 +515,9 @@ router.post('/fetchCarModels/', verifyLog, (req, res) => {
 router.get('/category-offers', verifyLog, async (req, res) => {
     let catOffers = await userHelper.fetchCatOffers()
     let Categories = await productHelper.fetchCategories()
+    let todayDate = new Date().toISOString().slice(0, 10)
 
-    res.render('admin/category-offers', { title: 'Category-Offers', isAdmin: true, catOffers, Categories, Msg: req.session.offerAddMsg })
+    res.render('admin/category-offers', { title: 'Category-Offers', isAdmin: true, catOffers, Categories, Msg: req.session.offerAddMsg,todayDate })
     req.session.offerAddMsg = false
 
 })
@@ -556,8 +567,9 @@ router.get('/delete-CatOffer/', (req, res) => {
 router.get('/product-offers', verifyLog, async (req, res) => {
     let prodOffers = await userHelper.fetchProdOffers()
     let Products = await productHelper.getAllproducts()
+    let todayDate = new Date().toISOString().slice(0, 10)
 
-    res.render('admin/product-offers', { title: 'Product-Offers', isAdmin: true, prodOffers, Products, Msg: req.session.offerAddMsg })
+    res.render('admin/product-offers', { title: 'Product-Offers', isAdmin: true, prodOffers, Products, Msg: req.session.offerAddMsg,todayDate })
     req.session.offerAddMsg = false
 
 })

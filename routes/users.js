@@ -79,6 +79,16 @@ router.get('/', cartCounter, async (req, res) => {
 
   })
 
+  await userHelper.checkcouponExpiry().then((coupons) => {
+
+    coupons.map((coupon) => {
+
+      userHelper.deleteCoupon(coupon._id)
+
+    })
+
+  })
+
   let product = await productHelper.getAllproducts()
   let carBrands = await productHelper.fetchCarBrands()
   let categories = await productHelper.fetchCategories()
@@ -1103,6 +1113,16 @@ router.get('/catFilter/', cartCounter, (req, res) => {
 
 })
 
+router.get('/brandFilter/', cartCounter, (req, res) => {
+
+  productHelper.fetchProdsUnderBrand(req.query.prodBrand).then((prod) => {
+    req.session.filter = true
+    req.session.filteredProds = prod.products
+    res.redirect('/shop')
+  })
+
+})
+
 router.get('/redirectToProdDetails/', (req, res) => {
 
   userHelper.fetchProdOfferData(req.query.offerName).then((prodId) => {
@@ -1111,9 +1131,9 @@ router.get('/redirectToProdDetails/', (req, res) => {
 
 })
 
-router.get('/termsNconditions',(req,res)=>{
-  res.render('user/Terms-and-conditions',{title:'T and C',isUser:true})
-})
+// router.get('/termsNconditions',(req,res)=>{
+//   res.render('user/Terms-and-conditions',{title:'T and C',isUser:true})
+// })
 
 // router.get('/Privacy-policy',(req,res)=>{
 //   res.render('user/Privacy-policy',{title:'Privacy policy',isUser:true})

@@ -80,19 +80,19 @@ module.exports = {
         })
     },
 
-    checkPass:(pass,userId)=>{
+    checkPass: (pass, userId) => {
 
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
 
-        db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)}).then((user)=>{
-            bcrypt.compare(pass,user.Password).then((result)=>{
-                if(result){
-                    resolve(true)
-                }else{
-                    resolve(false)
-                }
+            db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) }).then((user) => {
+                bcrypt.compare(pass, user.Password).then((result) => {
+                    if (result) {
+                        resolve(true)
+                    } else {
+                        resolve(false)
+                    }
+                })
             })
-        })
 
         })
 
@@ -115,7 +115,7 @@ module.exports = {
         })
     },
 
-    changePass:(newPass, userId)=>{
+    changePass: (newPass, userId) => {
 
         return new Promise(async (resolve, reject) => {
 
@@ -1041,8 +1041,14 @@ module.exports = {
     },
 
     addnewCoupon: (newCoupon) => {
+       
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.COUPON_COLLECTION).insertOne(newCoupon).then(() => {
+            db.get().collection(collection.COUPON_COLLECTION).insertOne({
+                Coupon_Code: newCoupon.Coupon_Code,
+                Coupon_Percentage: newCoupon.Coupon_Percentage,
+                expiryDate: new Date(newCoupon.expiryDate).getTime(),
+                expiryDateToDisplay: new Date(newCoupon.expiryDate).toLocaleString('en-US').slice(0, 10)
+            }).then(() => {
                 resolve()
             })
         })
@@ -1053,6 +1059,19 @@ module.exports = {
             db.get().collection(collection.COUPON_COLLECTION).deleteOne({ _id: objectId(couponId) }).then(() => {
                 resolve()
             })
+        })
+    },
+
+    checkcouponExpiry:()=>{
+
+        return new Promise((resolve, reject) => {
+
+            let date = new Date().getTime()
+
+            db.get().collection(collection.COUPON_COLLECTION).find({ expiryDate: { $lte: date } }).toArray().then((coupons) => {
+                resolve(coupons)
+            })
+
         })
     },
 
@@ -1779,19 +1798,19 @@ module.exports = {
 
                 db.get().collection(collection.PRODUCT_COLLECTION).updateMany(
 
-                    { Sub_Category: offerData.subCategory,offer:{$exists:false} },
+                    { Sub_Category: offerData.subCategory, offer: { $exists: false } },
 
                     {
                         $set: {
                             offer: offerData.offerDiscount,
                             offerName: offerData.offerName,
-                            offerType:'category'
+                            offerType: 'category'
                         }
                     }
 
                 ).then(() => {
 
-                    db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: offerData.subCategory,offerType:'category' }).toArray().then((products) => {
+                    db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: offerData.subCategory, offerType: 'category' }).toArray().then((products) => {
                         resolve(products)
                     })
 
@@ -1829,7 +1848,7 @@ module.exports = {
 
         return new Promise((resolve, reject) => {
 
-            db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: subCat,offerType:'category' }).toArray().then((products) => {
+            db.get().collection(collection.PRODUCT_COLLECTION).find({ Sub_Category: subCat, offerType: 'category' }).toArray().then((products) => {
 
                 resolve(products)
 
@@ -1854,7 +1873,7 @@ module.exports = {
                 db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
                     { _id: objectId(SingleProd._id) },
                     {
-                        $unset: { tempPrice: "", offer: "", offerName: "",offerType:"" }
+                        $unset: { tempPrice: "", offer: "", offerName: "", offerType: "" }
                     }
                 ).then(() => {
 
@@ -1948,7 +1967,7 @@ module.exports = {
                         $set: {
                             offer: offerData.offerDiscount,
                             offerName: offerData.offerName,
-                            offerType:'product',
+                            offerType: 'product',
                             tempPrice: prod.Price,
                             Price: prod.Price - (prod.Price * offerData.offerDiscount / 100)
                         }
@@ -1966,7 +1985,7 @@ module.exports = {
 
     },
 
-    deleteprodOffer:(offerId)=>{
+    deleteprodOffer: (offerId) => {
 
         return new Promise((resolve, reject) => {
 
@@ -1978,7 +1997,7 @@ module.exports = {
 
     },
 
-    checkProdOfferExpiry:()=>{
+    checkProdOfferExpiry: () => {
         return new Promise((resolve, reject) => {
 
             let date = new Date().getTime()
@@ -1989,7 +2008,7 @@ module.exports = {
 
         })
     },
-    
+
 
     //product-offer helpers ends
 
@@ -2294,18 +2313,18 @@ module.exports = {
         })
 
     },
-    
-    fetchOfferDetails:(offerName)=>{
 
-        return new Promise(async(resolve,reject)=>{
+    fetchOfferDetails: (offerName) => {
 
-            var result =await db.get().collection(collection.PRODUCT_OFFER_COLLECTION).findOne({offerName:offerName})
+        return new Promise(async (resolve, reject) => {
 
-            if(result){
+            var result = await db.get().collection(collection.PRODUCT_OFFER_COLLECTION).findOne({ offerName: offerName })
+
+            if (result) {
 
                 resolve(true)
 
-            }else{
+            } else {
 
                 resolve(false)
 
@@ -2315,10 +2334,10 @@ module.exports = {
 
     },
 
-    fetchProdOfferData:(offerName)=>{
+    fetchProdOfferData: (offerName) => {
 
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.PRODUCT_OFFER_COLLECTION).findOne({offerName:offerName}).then((offerDetails)=>{
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PRODUCT_OFFER_COLLECTION).findOne({ offerName: offerName }).then((offerDetails) => {
                 resolve(offerDetails.prodId)
             })
         })
