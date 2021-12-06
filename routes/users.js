@@ -6,6 +6,7 @@ var productHelper = require('../helpers/producthelper')
 var otpConfig = require('../config/otpconfig');
 const userhelper = require('../helpers/userhelper');
 const { v4: uuidv4 } = require('uuid');
+const { TrustProductsEntityAssignmentsList } = require('twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEntityAssignments');
 
 const otpClient = require('twilio')(otpConfig.accountSID, otpConfig.authToken)
 
@@ -1109,6 +1110,14 @@ router.get('/redirectToProdDetails/', (req, res) => {
   })
 
 })
+
+router.get('/termsNconditions',(req,res)=>{
+  res.render('user/Terms-and-conditions',{title:'T and C',isUser:true})
+})
+
+// router.get('/Privacy-policy',(req,res)=>{
+//   res.render('user/Privacy-policy',{title:'Privacy policy',isUser:true})
+// })
 
 
 
