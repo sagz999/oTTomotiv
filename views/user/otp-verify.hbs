@@ -20,7 +20,7 @@
                         <input type="hidden" name="Pnum" value="{{Pnum}}">
                     </div>
                     <div id="counter"></div>
-                    <button onclick="resendotp('{{Ccode}}','{{Pnum}}')" type="button" class="btn btn=success btn-sm" id="resendButton">Resend OTP</button>
+                    <button onclick="resendotp('{{Ccode}}','{{Pnum}}')" type="button" class="btn btn-success btn-sm" id="resendButton">Resend OTP</button>
                     <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
                 </form>
             </div>
@@ -100,20 +100,14 @@
         count = count - 1;
         if (count >= 0) {
             setTimeout(counter, 1000)
+        }else{
+            document.getElementById("counter").style.display='none'
+            document.getElementById('resendButton').disabled = false
         }
     }
 
     window.onload = counter();
     window.onload = document.getElementById('resendButton').disabled = true
-
-    window.onload = function () {
-        window.setTimeout(setDisabled, 30000);
-    }
-
-    //function to enable resend button
-    function setDisabled() {
-        document.getElementById('resendButton').disabled = false
-    }
 
 
     function resendotp(countryCode,Pnum) {

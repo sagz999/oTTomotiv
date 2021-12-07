@@ -235,12 +235,12 @@
 
                 <div class="row">
 
-
+                    {{#if address}}
                     <div class="billing-address text-center">
-                        {{#if address}}
+                        
                         <h5 class="checkout-box-title">SAVED ADDRESS</h5>
                         <hr>
-                        {{/if}}
+                        
 
                         <div class="row checkout-billing-adress-box">
                             {{#each address.Address}}
@@ -268,6 +268,7 @@
                         </div>
 
                     </div>
+                    {{/if}}
 
                 </div>
                 <hr>

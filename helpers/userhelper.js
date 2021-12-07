@@ -937,16 +937,19 @@ module.exports = {
     fetchUserAddress: (userId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.ADDRESS_COLLECTION).findOne({ user: objectId(userId) }).then((address) => {
+                
+                if(address){
+                    let addArray = address.Address
 
-                let addArray = address.Address
-
-                if (addArray.length > 0) {
-                    resolve(address)
-                } else {
+                    if (addArray.length > 0) {
+                        resolve(address)
+                    } else {
+                        resolve(false)
+                    }
+                }else{
                     resolve(false)
                 }
-
-
+               
             })
         })
     },
